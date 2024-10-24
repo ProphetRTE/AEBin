@@ -893,7 +893,7 @@ local bc=_c.uuid;local cc=_c.wrapText;local dc=_c.tableCount;local _d=300;local 
 local dd=term.current()local __a="1.7.0"
 local a_a=fs.getDir(table.pack(...)[2]or"")local b_a,c_a,d_a,_aa,aaa={},{},{},{},{}local baa,caa,daa,_ba;local aba={}if not term.isColor or
 not term.isColor()then
-error('Basalt requires an advanced (golden) computer to run.',0)end;local bba={}
+error('Basalt requires an advanced (golden) computer to run.',"0")end;local bba={}
 for adb,bdb in
 pairs(colors)do if(type(bdb)=="number")then
 bba[adb]={dd.getPaletteColor(bdb)}end end
