@@ -22,28 +22,36 @@
     <pre id="output"></pre>
 
     <script>
-        const repoOwner = 'prophetrte'; // Replace with your GitHub username
+        const repoOwner = 'prophetrte';    // Replace with your GitHub username
         const repoName = 'aebin'; // Replace with your repository name
-        const scriptsFolder = 'scripts'; // Your folder with Lua scripts
+        const scriptsFolder = 'scripts';        // Your folder with Lua scripts
 
-        // Function to fetch script file names
-        async function loadScriptsList() {
-            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${scriptsFolder}`);
+        async function loadScriptsList(path) {
+            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`);
             const data = await response.json();
-            const select = document.getElementById("scriptSelect");
 
-            data.forEach(file => {
-                if (file.name.endsWith('.lua')) { // Ensure we're only adding Lua files
+            // Error handling for the fetch response
+            if (!Array.isArray(data)) {
+                console.error(`Error fetching ${path}:`, data);
+                return;
+            }
+
+            for (const item of data) {
+                if (item.type === 'file' && item.name.endsWith('.lua')) {
+                    // Add the Lua file to the dropdown
                     const option = document.createElement("option");
-                    option.value = file.download_url; // Use the raw URL to fetch content
-                    option.textContent = file.name; 
-                    select.appendChild(option);
+                    option.value = item.download_url; // Use raw URL to fetch content later
+                    option.textContent = item.path;  // Full path for clarity
+                    document.getElementById("scriptSelect").appendChild(option);
+                } else if (item.type === 'dir') {
+                    // Recursively call this function for subdirectories
+                    await loadScriptsList(item.path);
                 }
-            });
+            }
         }
 
         // Load the script list on page load
-        window.onload = loadScriptsList;
+        window.onload = () => loadScriptsList(scriptsFolder);
 
         document.getElementById("loadScript").addEventListener("click", async function() {
             const select = document.getElementById("scriptSelect");
