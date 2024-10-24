@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lua Scripts Viewer</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        pre { background: #f0f0f0; padding: 10px; border: 1px solid #ddd; }
+        select { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Lua Scripts Viewer</h1>
+    <label for="scriptSelect">Select a Lua script:</label>
+    <select id="scriptSelect">
+        <option value="">-- Select a script --</option>
+    </select>
+    <button id="loadScript">Load Script</button>
+    
+    <h2>Script Contents:</h2>
+    <pre id="output"></pre>
+
+    <script>
+        const repoOwner = 'prophetrte'; // Replace with your GitHub username
+        const repoName = 'aebin'; // Replace with your repository name
+        const scriptsFolder = 'scripts'; // Your folder with Lua scripts
+
+        // Function to fetch script file names
+        async function loadScriptsList() {
+            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${scriptsFolder}`);
+            const data = await response.json();
+            const select = document.getElementById("scriptSelect");
+
+            data.forEach(file => {
+                if (file.name.endsWith('.lua')) { // Ensure we're only adding Lua files
+                    const option = document.createElement("option");
+                    option.value = file.download_url; // Use the raw URL to fetch content
+                    option.textContent = file.name; 
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // Load the script list on page load
+        window.onload = loadScriptsList;
+
+        document.getElementById("loadScript").addEventListener("click", async function() {
+            const select = document.getElementById("scriptSelect");
+            const scriptUrl = select.value;
+            if (scriptUrl) {
+                const response = await fetch(scriptUrl);
+                if (!response.ok) {
+                    document.getElementById("output").textContent = "Error: File not found.";
+                    return;
+                }
+                const data = await response.text();
+                document.getElementById("output").textContent = data;
+            } else {
+                document.getElementById("output").textContent = "Please select a script.";
+            }
+        });
+    </script>
+</body>
+</html>
