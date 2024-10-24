@@ -1,75 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lua Scripts Directory Viewer</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .directory, .file { padding-left: 20px; cursor: pointer; }
-        .hidden { display: none; }
-        pre { background: none; border: none; white-space: pre; font-family: monospace; }
-    </style>
-</head>
-<body>
-    <h1>Lua Scripts Directory Viewer</h1>
-    <div id="fileTree"></div>
-    <h2>Script Contents:</h2>
-    <pre id="output"></pre>
-
+<html>
+  <body>
     <script>
-        const repoOwner = 'your-username';    // Replace with your GitHub username
-        const repoName = 'lua-scripts-viewer'; // Replace with your repository name
-        const scriptsFolder = 'scripts';        // Your folder with Lua scripts
+      async function fetchContents(url) {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+      }
 
-        // Recursive function to load directory contents
-        async function loadDirectory(path, parentElement) {
-            const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`);
-            const data = await response.json();
+      async function displayContents(path) {
+        const contents = await fetchContents(`https://api.github.com/repos/:user/:repo/contents/${path}`);
+        let htmlString = '<ul>';
 
-            if (!Array.isArray(data)) return;
-
-            const folder = document.createElement('div');
-
-            for (const item of data) {
-                if (item.type === 'file' && item.name.endsWith('.lua')) {
-                    const fileElement = document.createElement('div');
-                    fileElement.textContent = item.name;
-                    fileElement.classList.add('file');
-                    fileElement.onclick = async () => {
-                        const fileResponse = await fetch(item.download_url);
-                        const fileContent = await fileResponse.text();
-                        document.getElementById('output').textContent = fileContent; // Display raw Lua content
-                    };
-                    folder.appendChild(fileElement);
-                } else if (item.type === 'dir') {
-                    const dirElement = document.createElement('div');
-                    dirElement.textContent = item.name;
-                    dirElement.classList.add('directory');
-                    dirElement.onclick = async (event) => {
-                        event.stopPropagation();
-
-                        // Toggle visibility of the folder's contents
-                        if (dirElement.nextElementSibling) {
-                            const isHidden = dirElement.nextElementSibling.classList.toggle('hidden');
-                            dirElement.textContent = isHidden ? `${item.name} ➕` : `${item.name} ➖`;
-                        } else {
-                            const subFolder = document.createElement('div');
-                            subFolder.classList.add('hidden');
-                            await loadDirectory(item.path, subFolder);
-                            dirElement.textContent = `${item.name} ➖`;
-                            folder.appendChild(subFolder);
-                        }
-                    };
-                    folder.appendChild(dirElement);
-                }
-            }
-
-            parentElement.appendChild(folder);
+        for (let file of contents) {
+          if (file.type === 'dir') {
+            htmlString += `<li>${file.name}<ul>`;
+            htmlString += await displayContents(file.path); // Recursively fetch contents of subdirectories
+            htmlString += '</ul></li>';
+          } else {
+            htmlString += `<li><a href="${file.download_url ? file.download_url : file.html_url}" target="_blank">${file.name}</a></li>`;
+          }
         }
 
-        // Load the initial scripts directory on page load
-        window.onload = () => loadDirectory(scriptsFolder, document.getElementById('fileTree'));
+        htmlString += '</ul>';
+        return htmlString;
+      }
+
+      (async () => {
+        const initialPath = ''; // start from root directory
+        const htmlString = await displayContents(initialPath);
+        document.body.innerHTML = htmlString;
+      })();
     </script>
-</body>
+  </body>
 </html>
