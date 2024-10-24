@@ -1,41 +1,63 @@
-#Designed to go on a 1x1 screen, but can go on a larger one
-local tArgs = {...}
-local screenSide = (tArgs[1]):lower()
-local sunrise = {start = 4.75, ending = 6 }
-local sunset = {start = 17.75, ending = 19 }
-local times = {"Day", "Sunset", "Sunrise", "Night"}
-local frontColor = colors[tArgs[2]] or colors.white
-local backColor = colors[tArgs[3]] or colors.black
+-- Clock for display on a monitor
+-- Author: CecilKilmer
+-- Version: 1.0
+-- Date: 2013/09/15
 
-local function center(text, xDim)
-  for i=1, (xDim-#text)/2 do
-    text = " "..text.." "
-  end
-  return text
+-- Min width required (IE: 10:00 PM)
+minWidthReq = 8
+minHeightReq = 2
+
+-- Figure out where our monitor is
+monitorSide = nil
+monitor = nil
+
+if peripheral.getType("left") == "monitor" then
+	monitorSide = "left"
+elseif peripheral.getType("right") == "monitor" then
+	monitorSide = "right"
+elseif peripheral.getType("top") == "monitor" then
+	monitorSide = "top"
+elseif peripheral.getType("bottom") == "monitor" then
+	monitorSide = "bottom"
+elseif peripheral.getType("front") == "monitor" then
+	monitorSide = "front"
+elseif peripheral.getType("back") == "monitor" then
+	monitorSide = "back"
 end
 
-sleep(2)
-term.redirect(peripheral.wrap(screenSide) or peripheral.find("monitor") or error("No Monitors attached, please attach one",0))
-if term.isColor() then
-  term.setTextColor(frontColor)
-  term.setBackgroundColor(backColor)
+screenWidth = 0
+screenHeight = 0
+
+-- If we have one, redirect term to it
+if monitorSide ~= nil then
+	monitor = peripheral.wrap(monitorSide)
+	term.redirect(monitor)
+	
+	local scale = 5.5
+	
+	repeat
+		scale = scale - 0.5
+		monitor.setTextScale(scale)
+		screenWidth, screenHeight = term.getSize()
+	until screenWidth > minWidthReq and screenHeight > minHeightReq
 end
-local x, y = term.getSize()
-local state = 1
+
+-- Determine our screen size
+screenWidth, screenHeight = term.getSize()
+yPos = screenHeight - minHeightReq
+yPos = math.floor(yPos / 2)
+
+-- Main loop
 while true do
-  local time = os.time()
-  if time > sunrise.ending and time < sunset.start then --Day Time
-    state = 1
-  elseif time > sunset.start and time < sunset.ending then --Sunset
-    state = 2
-  elseif time > sunrise.start and time < sunrise.ending then --Sunrise
-    state = 3
-  else --Night
-    state = 4
-  end
-  term.clear()
-  term.setCursorPos(1,2)
-  print(center(textutils.formatTime(os.time(),false),x))
-  print(center(times[state], x))
-  sleep(0.05)
+	term.clear()
+	
+	local time = os.time()
+	time = textutils.formatTime(time, false)
+
+	local xPos = screenWidth - string.len(time)
+	xPos = math.ceil(xPos / 2)
+	term.setCursorPos(xPos + 1, yPos + 2)
+	print(time)
+	
+	sleep(.1)
 end
