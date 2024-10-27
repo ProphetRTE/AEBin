@@ -1,4 +1,4 @@
-local uri = "https://github.com/ProphetRTE/AEBin/tree/master/scripts/computercraft/Music%20Scripts/MusicPlayer/install.lua"
+local uri = "https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/Music%20Scripts/MusicPlayer/install.lua"
 local file = fs.open("install.lua", "w")
 
 local response = http.get(uri)
