@@ -67,7 +67,8 @@ return {
 			print("Command needs the side to send the redstone signal on.")
 			return 'false'
 		end
-		redstone.setOutput("top", !isToggled)
+		isToggled = not isToggled
+		redstone.setOutput("top", isToggled)
 		return 'true'
 	end
 }
