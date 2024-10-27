@@ -61,14 +61,13 @@ return {
 		os.reboot()
 	end,
 
-	toggle_redstone = function(args)
-		local redstoneSide = args[2]
-		local isToggled = args[3]
+	toggle_redstone = function()
+		local isToggled = false
 		if redstoneSide == nil then
 			print("Command needs the side to send the redstone signal on.")
 			return 'false'
 		end
-		redstone.setOutput(redstoneSide, isToggled)
+		redstone.setOutput("top", !isToggled)
 		return 'true'
 	end
 }
