@@ -52,6 +52,13 @@ return {
 		menu:use(title)
 	end},
 
+	-- Load redstone menu
+	{'Gamemode', function(menu)
+		local title = 'Select a redstone function' 
+		menu:add(title, menuinterface.load('redstone', serverID, protocol))
+		menu:use(title)
+	end},
+
 	{'Exit', function(menu)
 		menu:back()
 	end}
