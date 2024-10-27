@@ -1,0 +1,11 @@
+{
+    "Amida": {
+        "City Entrance": [351, 74, 260],
+        "Server Room": [351, 85, 337],
+        "Docks": [416, 64, 195],
+        "Watchtower": [424, 83, 402]
+    },
+    "Farm": [223, 67, 300],
+    "Quartier de Lagnol": [356, 71, 561],
+    "GPS Cluster": [359, 256, 323]
+}

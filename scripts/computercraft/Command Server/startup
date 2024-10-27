@@ -1,0 +1,9 @@
+(dofile('/modules/update.lua'))()
+
+local rednetrpc = dofile('/modules/rednetrpc.lua')
+
+-- create instance of the RPC server and use hostname 'command_server'
+local rpcServer = rednetrpc.new(dofile('/procedures.lua'), 'command_server')
+
+-- start listening for RPC commands over rednet
+rpcServer:listen()
