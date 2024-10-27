@@ -59,7 +59,7 @@ return {
 
 	restart = function()
 		os.reboot()
-	end
+	end,
 
 	toggle_redstone = function(args)
 		local redstoneSide = args[2]
@@ -70,4 +70,5 @@ return {
 		end
 		redstone.setOutput(redstoneSide, isToggled)
 		return 'true'
+	end,
 }

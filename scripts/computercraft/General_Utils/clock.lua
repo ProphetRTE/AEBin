@@ -1,8 +1,3 @@
--- Clock for display on a monitor
--- Author: CecilKilmer
--- Version: 1.0
--- Date: 2013/09/15
-
 -- Min width required (IE: 10:00 PM)
 minWidthReq = 8
 minHeightReq = 2
