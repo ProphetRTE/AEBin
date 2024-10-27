@@ -1,6 +1,16 @@
 local username = 'AEV1ridis'
 local side = "top"
 
+function isToggled()
+	local output = redstone.getOutput(side)
+	print("Output is: ["..output.."]")
+	if output > 0 then
+		return true
+	else
+		return false
+	end
+end
+
 return {
 	mode_creative = function()
 		commands.exec('gamemode 1 ' .. username)
@@ -63,12 +73,11 @@ return {
 	end,
 
 	toggle_redstone = function()
-		local isToggled = redstone.getOutput(side)
 		if redstoneSide == nil then
 			print("Command needs the side to send the redstone signal on.")
 			return 'false'
 		end
-		redstone.setOutput(side,  not isToggled)
+		redstone.setOutput(side,  isToggled())
 		return 'true'
 	end
 }
