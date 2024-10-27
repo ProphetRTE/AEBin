@@ -70,5 +70,5 @@ return {
 		end
 		redstone.setOutput(redstoneSide, isToggled)
 		return 'true'
-	end,
+	end
 }
