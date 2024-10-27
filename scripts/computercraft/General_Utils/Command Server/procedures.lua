@@ -73,10 +73,6 @@ return {
 	end,
 
 	toggle_redstone = function()
-		if redstoneSide == nil then
-			print("Command needs the side to send the redstone signal on.")
-			return 'false'
-		end
 		redstone.setOutput(side,  isToggled())
 		return 'true'
 	end
