@@ -1,16 +1,6 @@
 local username = 'AEV1ridis'
 local side = "top"
 
-function isToggled()
-	local output = redstone.getOutput(side)
-	print("Output is: ["..output.."]")
-	if output > 0 then
-		return true
-	else
-		return false
-	end
-end
-
 return {
 	mode_creative = function()
 		commands.exec('gamemode 1 ' .. username)
@@ -73,7 +63,9 @@ return {
 	end,
 
 	toggle_redstone = function()
-		redstone.setOutput(side,  isToggled())
+		local output = redstone.getOutput(side)
+		local value = not output
+		redstone.setOutput(side,  value)
 		return 'true'
 	end
 }
