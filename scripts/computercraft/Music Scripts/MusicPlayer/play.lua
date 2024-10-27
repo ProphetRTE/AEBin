@@ -93,6 +93,7 @@ function playChunk(chunk)
 end
 
 if drive == nil or not drive.isDiskPresent() then
+	local songName = selectedSong:gsub(selectedSong, ".txt", "")
 	print("Playing '" .. selectedSong .. "' at volume " .. (volume or 1.0))
 else
 	print("Playing '" .. drive.getDiskLabel() .. "' at volume " .. (volume or 1.0))
