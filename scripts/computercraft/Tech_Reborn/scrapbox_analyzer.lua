@@ -1,11 +1,11 @@
-local scrapinator = peripheral.wrap("bottom")
-local methods = peripheral.getMethods("bottom")
+local scrapperSide = "bottom"
+local scrapinator = peripheral.wrap(scrapperSide)
 local items = nil
 
 function toggleOutput()
-    redstone.setOutput("bottom", true)
+    redstone.setOutput(scrapperSide, true)
     sleep(0.1)
-    redstone.setOutput("bottom", false)
+    redstone.setOutput(scrapperSide, false)
 end
 
 while true do
