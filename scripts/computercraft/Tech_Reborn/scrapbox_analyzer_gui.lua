@@ -61,10 +61,11 @@ while true do
                 table.insert(displayedItems, item.displayName)
                 SRItems()
             end
+            drawGUI() -- Draw the GUI after collecting items
         end
     end
     
-    drawGUI() -- Draw the GUI after collecting items
+    
     -- Handle user input to scroll through the items
     if not handleInput() then
         print("Exited")
