@@ -39,6 +39,7 @@ function handleInput()
             startIdx = startIdx + 1
         end
     elseif param == keys.q then
+        print("Exiting program.")
         return false -- Exit the loop
     end
     return true -- Continue the loop
@@ -53,7 +54,8 @@ while true do
     end
 
     for k, v in pairs(items) do
-        if v.name ~= "techreborn:scrap_box" then
+        if v.name == "techreborn:scrap_box" then
+        else
             local item = scrapinator.getItemDetail(k) -- Use item index instead of a hardcoded value (2)
             if item then -- Ensure item exists before attempting to access it
                 table.insert(displayedItems, item.displayName)
@@ -65,6 +67,7 @@ while true do
     drawGUI() -- Draw the GUI after collecting items
     -- Handle user input to scroll through the items
     if not handleInput() then
+        print("Exited")
         break -- Exit the loop
     end
 end
