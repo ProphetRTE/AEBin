@@ -3,9 +3,9 @@ local scrapinator = peripheral.wrap(scrapperSide)
 local items = nil
 
 function toggleOutput()
-    redstone.setOutput(scrapperSide, false)
-    sleep(0.1)
     redstone.setOutput(scrapperSide, true)
+    sleep(1)
+    redstone.setOutput(scrapperSide, false)
 end
 
 while true do
@@ -17,6 +17,6 @@ while true do
             print(v.name)
         end
     end
+    sleep(0.9)
     toggleOutput()
-    sleep(0.20)
 end
