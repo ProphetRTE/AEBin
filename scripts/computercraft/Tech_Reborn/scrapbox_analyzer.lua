@@ -15,9 +15,11 @@ while true do
         return
     end
     for k, v in pairs(items) do
+        local itemname = input:match(":(.*)$")
         if v.name == "techreborn:scrap_box" then
         else
-            print(v.name)
+            local itemname = v.name:match(":(.*)$")
+            print(itemname)
             SRItems()
         end
     end
