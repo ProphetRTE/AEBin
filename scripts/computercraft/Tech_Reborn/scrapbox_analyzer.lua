@@ -15,11 +15,10 @@ while true do
         return
     end
     for k, v in pairs(items) do
-        local itemname = v.name:match(":(.*)$")
         if v.name == "techreborn:scrap_box" then
         else
-            local itemname = v.name:match(":(.*)$")
-            print(itemname)
+            local item = scrapinator.getItemDetail(2)
+            print(item.displayName)
             SRItems()
         end
     end
