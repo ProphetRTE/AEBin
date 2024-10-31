@@ -41,7 +41,21 @@ while running do
         if v then  -- Ensure the item exists
             local itemDetail = chest.getItemDetail(v.slot)  -- Get item details from the chest
             if itemDetail then 
-                table.insert(displayItems, {displayName = itemDetail.displayName, count = v.count})  -- Store item name and count
+                local found = false
+                
+                -- Check if the item is already in the display list
+                for i, item in ipairs(displayItems) do
+                    if item.displayName == itemDetail.displayName then
+                        item.count = item.count + v.count  -- Increment the count
+                        found = true
+                        break
+                    end
+                end
+
+                -- If the item was not found in the display list, add it
+                if not found then
+                    table.insert(displayItems, {displayName = itemDetail.displayName, count = v.count})  -- Store item name and count
+                end
             end
         end
     end
