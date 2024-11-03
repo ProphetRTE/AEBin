@@ -50,7 +50,7 @@ local function displayItems()
     term.clear()
     term.setCursorPos(1, 1)
 
-    print("\nOBJECTS (Sort by " .. currentSort .. "):")
+    print("\n======[" .. currentSort .. "]======")
     local totalItems = #itemList
     local maxPages = math.ceil(totalItems / itemsPerPage)
 
@@ -59,11 +59,10 @@ local function displayItems()
 
     for idx = startIdx, endIdx do
         if itemList[idx] then
-            print(itemList[idx].displayName .. ": " .. itemList[idx].amount)
+            print(itemList[idx].displayName .. "x" .. itemList[idx].amount)
         end
     end
-
-    print("\nPage " .. currentPage .. " of " .. maxPages)
+    print("\n======[" .. currentPage .. "/" maxPages .. "]======")
     print("Scroll up and down to navigate.")
     print("Press 'N' to sort by name, 'A' to sort by amount.")
 end
