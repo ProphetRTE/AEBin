@@ -17,46 +17,81 @@ for _, object in pairs(objects) do
     end
 end
 
--- Calculate total items
-local totalItems = 0
-for _ in pairs(aggregatedItems) do
-    totalItems = totalItems + 1
+-- Convert aggregatedItems to a sortable array
+local itemList = {}
+for _, item in pairs(aggregatedItems) do
+    table.insert(itemList, item)
 end
+
+local function sortByName(a, b)
+    return a.displayName < b.displayName
+end
+
+local function sortByAmount(a, b)
+    return a.amount > b.amount
+end
+
+local currentSort = "name"  -- current sorting method
+local function sortItems()
+    if currentSort == "name" then
+        table.sort(itemList, sortByName)
+    elseif currentSort == "amount" then
+        table.sort(itemList, sortByAmount)
+    end
+end
+
+-- Initial sort
+sortItems()
 
 local itemsPerPage = 10
 local currentPage = 1
-local maxPages = math.ceil(totalItems / itemsPerPage)
 
 local function displayItems()
     term.clear()
     term.setCursorPos(1, 1)
 
-    print("\nOBJECTS:")
+    print("\nOBJECTS (Sort by " .. currentSort .. "):")
+    local totalItems = #itemList
+    local maxPages = math.ceil(totalItems / itemsPerPage)
+
     local startIdx = (currentPage - 1) * itemsPerPage + 1
     local endIdx = math.min(startIdx + itemsPerPage - 1, totalItems)
 
-    local idx = 1
-    for displayName, item in pairs(aggregatedItems) do
-        if idx >= startIdx and idx <= endIdx then
-            print(item.displayName .. ": " .. item.amount)
+    for idx = startIdx, endIdx do
+        if itemList[idx] then
+            print(itemList[idx].displayName .. ": " .. itemList[idx].amount)
         end
-        idx = idx + 1
     end
 
     print("\nPage " .. currentPage .. " of " .. maxPages)
     print("Scroll up and down to navigate.")
+    print("Press 'N' to sort by name, 'A' to sort by amount.")
 end
 
 displayItems()
 
 while true do
-    local event, dir, x, y = os.pullEvent("mouse_scroll")
-    
-    if dir == -1 and currentPage < maxPages then
-        currentPage = currentPage + 1  -- Scroll down
-    elseif dir == 1 and currentPage > 1 then
-        currentPage = currentPage - 1  -- Scroll up
+    local event, param = os.pullEvent()
+
+    if event == "mouse_scroll" then
+        if param == -1 and currentPage * itemsPerPage < #itemList then
+            currentPage = currentPage + 1  -- Scroll down
+        elseif param == 1 and currentPage > 1 then
+            currentPage = currentPage - 1  -- Scroll up
+        end
+    elseif event == "key" then
+        if param == keys.n then
+            currentSort = "name"
+            sortItems()
+            currentPage = 1  -- Reset to the first page
+            displayItems()
+        elseif param == keys.a then
+            currentSort = "amount"
+            sortItems()
+            currentPage = 1  -- Reset to the first page
+            displayItems()
+        end
     end
-    
+
     displayItems()
 end
