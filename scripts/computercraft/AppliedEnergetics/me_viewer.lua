@@ -62,7 +62,7 @@ local function displayItems()
             print(itemList[idx].displayName .. "x" .. itemList[idx].amount)
         end
     end
-    print("\n======[" .. currentPage .. "/" maxPages .. "]======")
+    print("\n======[" .. currentPage .. "/" .. maxPages .. "]======")
     print("Scroll up and down to navigate.")
     print("Press 'N' to sort by name, 'A' to sort by amount.")
 end
