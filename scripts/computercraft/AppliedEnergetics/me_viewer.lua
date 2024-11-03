@@ -17,7 +17,12 @@ for _, object in pairs(objects) do
     end
 end
 
-local totalItems = #aggregatedItems
+-- Calculate total items
+local totalItems = 0
+for _ in pairs(aggregatedItems) do
+    totalItems = totalItems + 1
+end
+
 local itemsPerPage = 10
 local currentPage = 1
 local maxPages = math.ceil(totalItems / itemsPerPage)
