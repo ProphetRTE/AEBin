@@ -59,7 +59,7 @@ local function displayItems()
 
     for idx = startIdx, endIdx do
         if itemList[idx] then
-            print(itemList[idx].displayName .. "x" .. itemList[idx].amount)
+            print(itemList[idx].displayName .. " x" .. itemList[idx].amount)
         end
     end
     print("\n======[" .. currentPage .. "/" .. maxPages .. "]======")
