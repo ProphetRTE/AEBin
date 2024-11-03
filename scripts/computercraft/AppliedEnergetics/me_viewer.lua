@@ -1,5 +1,4 @@
 local connectionSide = "bottom"
-local methods = peripheral.getMethods(connectionSide)
 local converter = peripheral.wrap(connectionSide)
 local objects = converter.getAvailableObjects()
 
@@ -26,10 +25,6 @@ local maxPages = math.ceil(totalItems / itemsPerPage)
 local function displayItems()
     term.clear()
     term.setCursorPos(1, 1)
-    print("METHODS:")
-    for n, m in pairs(methods) do
-        print("[" .. n .. "]: " .. m)
-    end
 
     print("\nOBJECTS:")
     local startIdx = (currentPage - 1) * itemsPerPage + 1
