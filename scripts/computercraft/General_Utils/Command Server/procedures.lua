@@ -67,14 +67,14 @@ return {
 		local value = not output
 		redstone.setOutput(side,  value)
 		return 'true'
-	end
+	end,
 
 	lights_hq = function()
 		local output = redstone.getOutput(side)
 		local value = not output
 		redstone.setOutput(side,  value)
 		return 'true'
-	end
+	end,
 
 	lights_ws = function()
 		local output = redstone.getOutput(side)
