@@ -15,19 +15,12 @@ local songNames = {
     -- Add more song names as needed
 }
 
--- Function to execute the command to save a song
-local function saveToDevice(songName, songUrl)
-    -- Create a command to save to device using the song name with spaces for the display title
-    local displayName = songName:gsub("%%20", " ")  -- Decode %20 to spaces
-    local command = "savetodevice " .. displayName .. " " .. songUrl
-    shell.run(command)  -- Execute the command
-end
-
 -- Loop through the song names and save each one
 for _, songName in ipairs(songNames) do
     -- Create the URL using the original song name
     local songUrl = rootUrl .. songName .. ".dfpwm"  -- Ensure the URL is correctly formatted
-    saveToDevice(songName, songUrl)  -- Call the saving function
+    local displayName = songName:gsub("%%20", " ")  -- Decode %20 to spaces
+    shell.run("savetodevice" .. displayName .. songUrl)
 end
 
 print("All songs have been saved to the device.")
