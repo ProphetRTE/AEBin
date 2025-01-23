@@ -6,7 +6,7 @@
 
   (site
     (title "artist")
-    (source-link https://github.com/ProphetRTE/AEBin/blob/master/scripts/computercraft/${path}#L${line})
+    (source-link https://github.com/ProphetRTE/AEBin/blob/master/scripts/computercraft/ME%20System/${path}#L${line})
     (styles _site/custom.css))
 
   (library-path /src/))
