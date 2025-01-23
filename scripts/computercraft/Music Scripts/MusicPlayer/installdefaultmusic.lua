@@ -17,7 +17,8 @@ local songNames = {
 
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
-    local command = "savetodevice " .. songName .. " \"" .. songUrl .. "\""
+    local cleanedName = songName:gsub("%20", " ")  -- Replace %20 with spaces for the command
+    local command = "savetodevice " .. cleanedName .. " \"" .. songUrl .. "\""
     shell.run(command)  -- Execute the command
 end
 
