@@ -10,7 +10,7 @@ function drawGUI(storageInfo)
     -- Iterate through the storage devices and display their usage
     for name, info in pairs(storageInfo) do
         local percentUsed = (info.max > 0) and (info.used / info.max) * 100 or 0
-        print(string.format("%s: %d/%d %.2f%%", name, info.used, info.max, percentUsed))
+        print(string.format("%s: %d/%d (%.2f%%)", name, info.used, info.max, percentUsed))
     end
     
     print("----------------")
@@ -38,7 +38,7 @@ function getStorageInfo(peripheral)
         local itemDetail = peripheral.getItemDetail(slot)  -- Get item details from the peripheral
         if itemDetail then
             used = used + itemDetail.count  -- Aggregate used space
-            max = max + itemDetail.maxDamage -- Maybe adding this might help but it should typically be understood
+            max = max + itemDetail.maxDamage or 0 -- Looks for maxDamage or sets to 0 if nil
         end
     end
     
@@ -55,16 +55,18 @@ local function main()
 
         -- Loop through all connected peripherals
         for _, name in ipairs(peripheral.getNames()) do
-            local peripheralInstance = peripheral.wrap(name)
+            if string.find(name, "chest") then  -- Check if the name contains "chest"
+                local peripheralInstance = peripheral.wrap(name)
 
-            -- Check if the peripheral supports inventory methods
-            local hasInventoryMethods = peripheralInstance.getInventorySize and peripheralInstance.getItemDetail
-            print(string.format("Checking peripheral: %s, supports inventory methods: %s", name, tostring(hasInventoryMethods)))
+                -- Check if the peripheral supports inventory methods
+                local hasInventoryMethods = peripheralInstance.getInventorySize and peripheralInstance.getItemDetail
+                print(string.format("Checking peripheral: %s, supports inventory methods: %s", name, tostring(hasInventoryMethods)))
 
-            if hasInventoryMethods then
-                local used, max = getStorageInfo(peripheralInstance)
-                storageInfo[name] = {used = used, max = max}
-                print(string.format("%s: used=%d, max=%d", name, used, max))  -- Debugging output
+                if hasInventoryMethods then
+                    local used, max = getStorageInfo(peripheralInstance)
+                    storageInfo[name] = {used = used, max = max}
+                    print(string.format("%s: used=%d, max=%d", name, used, max))  -- Debugging output
+                end
             end
         end
 
