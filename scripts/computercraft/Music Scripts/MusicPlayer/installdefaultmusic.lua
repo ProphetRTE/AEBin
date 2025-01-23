@@ -23,9 +23,8 @@ end
 
 -- Loop through the song names and save each one
 for _, songName in ipairs(songNames) do
-    local cleanName = songName:gsub("%%20", " ")  -- Decode %20 to space
-    local songUrl = rootUrl .. songName .. ".txt"  -- Construct the full URL
-    saveToDevice(cleanName, songUrl)  -- Call the saving function
+    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
+    saveToDevice(songName, songUrl)  -- Call the saving function
 end
 
 print("All songs have been saved to the device.")
