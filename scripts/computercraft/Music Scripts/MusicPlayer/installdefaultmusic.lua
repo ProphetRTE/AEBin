@@ -17,18 +17,15 @@ local songNames = {
 
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
-    -- Decode the song name by replacing %20 with spaces for the command
-    local cleanedName = songName:gsub("%%20", " ")  -- Use %%20 to refer to the %20 in Lua
-
-    -- Construct and run the command
-    local command = "savetodevice \"" .. cleanedName .. "\" \"" .. songUrl .. "\""
+    -- Use the original songName for the command and URL
+    local command = "savetodevice \"" .. songName:gsub("%%20", " ") .. "\" \"" .. songUrl .. "\""
     shell.run(command)  -- Execute the command
 end
 
 -- Loop through the song names and save each one
 for _, songName in ipairs(songNames) do
-    -- Construct the full URL using the original song name
-    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Ensure the URL includes %20
+    -- Create the URL using the original song name
+    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Ensure the URL is correctly formatted
     saveToDevice(songName, songUrl)  -- Call the saving function
 end
 
