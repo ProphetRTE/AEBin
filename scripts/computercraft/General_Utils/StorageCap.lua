@@ -9,7 +9,7 @@ function drawGUI(storageInfo)
     
     -- Iterate through the storage devices and display their usage
     for name, info in pairs(storageInfo) do
-        local percentUsed = (info.used / info.max) * 100
+        local percentUsed = (info.max > 0) and (info.used / info.max) * 100 or 0
         print(string.format("%s: %d/%d %.2f%%", name, info.used, info.max, percentUsed))
     end
     
@@ -38,7 +38,7 @@ function getStorageInfo(peripheral)
         local itemDetail = peripheral.getItemDetail(slot)  -- Get item details from the peripheral
         if itemDetail then
             used = used + itemDetail.count  -- Aggregate used space
-            max = max + itemDetail.count * itemDetail.maxDamage  -- Estimate max space with max stack size
+            max = max + itemDetail.maxDamage -- Maybe adding this might help but it should typically be understood
         end
     end
     
@@ -58,9 +58,13 @@ local function main()
             local peripheralInstance = peripheral.wrap(name)
 
             -- Check if the peripheral supports inventory methods
-            if peripheralInstance.getInventorySize and peripheralInstance.getItemDetail then
+            local hasInventoryMethods = peripheralInstance.getInventorySize and peripheralInstance.getItemDetail
+            print(string.format("Checking peripheral: %s, supports inventory methods: %s", name, tostring(hasInventoryMethods)))
+
+            if hasInventoryMethods then
                 local used, max = getStorageInfo(peripheralInstance)
                 storageInfo[name] = {used = used, max = max}
+                print(string.format("%s: used=%d, max=%d", name, used, max))  -- Debugging output
             end
         end
 
