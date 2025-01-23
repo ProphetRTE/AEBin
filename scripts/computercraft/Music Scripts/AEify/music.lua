@@ -1,4 +1,4 @@
-local api_base_url = "https://ipod-73dorwh4pq-uc.a.run.app"
+local api_base_url = "https://us-central1-aeify-a264b.cloudfunctions.net/ipod"
 
 local width, height = term.getSize()
 
