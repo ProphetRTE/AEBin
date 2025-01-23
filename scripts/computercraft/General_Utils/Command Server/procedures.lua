@@ -68,4 +68,18 @@ return {
 		redstone.setOutput(side,  value)
 		return 'true'
 	end
+
+	lights_hq = function()
+		local output = redstone.getOutput(side)
+		local value = not output
+		redstone.setOutput(side,  value)
+		return 'true'
+	end
+
+	lights_ws = function()
+		local output = redstone.getOutput(side)
+		local value = not output
+		redstone.setOutput(side,  value)
+		return 'true'
+	end
 }
