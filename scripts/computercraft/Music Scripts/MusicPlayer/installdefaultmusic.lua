@@ -15,17 +15,30 @@ local songNames = {
     -- Add more song names as needed
 }
 
+local formattedNames = {
+    "Aphex Twin - Windowlicker",
+    "Bill Conti - Going the Distance",
+    "Deathgrips - Beware",
+    "Enigma - Return To Inocence",
+    "J-Cut & Kolt Siewerts - The Flute Tune",
+    "Ludacris - Move Bitch",
+    "Prince - Purple Rain",
+    "Prince Bard - Purple Rain",
+    "Queen - Underpressure",
+    -- Add more song names as needed
+}
+
 -- Function to execute the command to save a song
-local function saveToDevice(songName, songUrl)
-    local formattedName = songName:gsub("%%20", " ")  -- Decode %20 to spaces
-    local command = "savetodevice \"" .. formattedName .."\" \"" .. songUrl .. "\""  -- Construct the command
+local function saveToDevice(formattedName, songUrl)
+    local command = "savetodevice \"" .. formattedName .. ".dfpwm\" \"" .. songUrl .. "\""  -- Construct the command
     shell.run(command)  -- Execute the command
 end
 
 -- Loop through the song names and save each one
-for _, songName in ipairs(songNames) do
+for i, songName in ipairs(songNames) do
     local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
-    saveToDevice(songName, songUrl)  -- Call the saving function
+    local formattedName = formattedNames[i]  -- Get the corresponding formatted name
+    saveToDevice(formattedName, songUrl)  -- Call the saving function
 end
 
 print("All songs have been saved to the device.")
