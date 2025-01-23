@@ -1,7 +1,7 @@
 -- Root URL for the GitHub songs directory
 local rootUrl = "https://github.com/ProphetRTE/AEBin/raw/refs/heads/master/scripts/computercraft/Music%20Scripts/Music/"
 
--- List of song names (without the .txt extension)
+-- List of song names (with %20 encoding for spaces)
 local songNames = {
     "Aphex%20Twin%20-%20Windowlicker",
     "Bill%20Conti%20-%20Going%20the%20Distance",
@@ -17,14 +17,18 @@ local songNames = {
 
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
-    local cleanedName = songName:gsub("%%20", " ")  -- Replace %20 with spaces for the command
-    local command = "savetodevice " .. cleanedName .. " \"" .. songUrl .. "\""
+    -- Decode the song name by replacing %20 with spaces for the command
+    local cleanedName = songName:gsub("%%20", " ")  -- Use %%20 to refer to the %20 in Lua
+
+    -- Construct and run the command
+    local command = "savetodevice \"" .. cleanedName .. "\" \"" .. songUrl .. "\""
     shell.run(command)  -- Execute the command
 end
 
 -- Loop through the song names and save each one
 for _, songName in ipairs(songNames) do
-    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
+    -- Construct the full URL using the original song name
+    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Ensure the URL includes %20
     saveToDevice(songName, songUrl)  -- Call the saving function
 end
 
