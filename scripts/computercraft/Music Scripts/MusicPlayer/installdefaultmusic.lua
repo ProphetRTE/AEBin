@@ -20,7 +20,7 @@ for _, songName in ipairs(songNames) do
     -- Create the URL using the original song name
     local songUrl = rootUrl .. songName .. ".dfpwm"  -- Ensure the URL is correctly formatted
     local displayName = songName:gsub("%%20", " ")  -- Decode %20 to spaces
-    shell.run("savetodevice" .. displayName .. songUrl)
+    shell.run("savetodevice " .. displayName .. " " .. songUrl)
 end
 
 print("All songs have been saved to the device.")
