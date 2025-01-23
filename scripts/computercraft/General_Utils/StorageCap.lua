@@ -1,48 +1,76 @@
--- Function to check if a peripheral has storage methods
-local function isStoragePeripheral(peripheral)
-    return peripheral.getInventorySize ~= nil and peripheral.getInventorySize() > 0
+local running = true  -- Control variable to keep the loop running
+
+-- Function to draw the GUI
+function drawGUI(storageInfo)
+    term.clear()
+    term.setCursorPos(1, 1)
+    print("Storage Overview:")
+    print("----------------")
+    
+    -- Iterate through the storage devices and display their usage
+    for name, info in pairs(storageInfo) do
+        local percentUsed = (info.used / info.max) * 100
+        print(string.format("%s: %d/%d %.2f%%", name, info.used, info.max, percentUsed))
+    end
+    
+    print("----------------")
+    print("Press 'q' to quit.")
 end
 
--- Function to calculate the used and max storage of a peripheral
-local function getStorageInfo(peripheral)
+-- Coroutine function to handle user input for quitting the program
+function inputHandler()
+    while running do
+        local event, param = os.pullEvent("key")
+        if param == keys.q then
+            print("Exiting program.")
+            running = false -- Exit the loop and signal to stop the main loop
+        end
+    end
+end
+
+-- Function to gather storage info from a specified peripheral
+function getStorageInfo(peripheral)
     local used = 0
     local max = 0
-    
-    for slot = 1, peripheral.getInventorySize() do
-        local item = peripheral.getItemDetail(slot)
-        if item then
-            used = used + item.count
+    local size = peripheral.getInventorySize()
+
+    for slot = 1, size do
+        local itemDetail = peripheral.getItemDetail(slot)  -- Get item details from the peripheral
+        if itemDetail then
+            used = used + itemDetail.count  -- Aggregate used space
+            max = max + itemDetail.count * itemDetail.maxDamage  -- Estimate max space with max stack size
         end
     end
     
-    max = peripheral.getInventorySize()
-
     return used, max
 end
 
 -- Main function
 local function main()
-    local totalUsed = 0
-    local totalMax = 0
+    -- Start the input handler coroutine
+    coroutine.wrap(inputHandler)()
 
-    -- Loop through all connected peripherals
-    for _, name in ipairs(peripheral.getNames()) do
-        local peripheralType = peripheral.getType(name)
-        local peripheralInstance = peripheral.wrap(name)
+    while running do
+        local storageInfo = {}
 
-        if isStoragePeripheral(peripheralInstance) then
-            local used, max = getStorageInfo(peripheralInstance)
-            totalUsed = totalUsed + used
-            totalMax = totalMax + max
-            print(string.format("%s: %d/%d %.2f%%", name, used, max, (used / max) * 100))
+        -- Loop through all connected peripherals
+        for _, name in ipairs(peripheral.getNames()) do
+            local peripheralInstance = peripheral.wrap(name)
+
+            -- Check if the peripheral supports inventory methods
+            if peripheralInstance.getInventorySize and peripheralInstance.getItemDetail then
+                local used, max = getStorageInfo(peripheralInstance)
+                storageInfo[name] = {used = used, max = max}
+            end
         end
+
+        -- Draw the GUI with collected storage info
+        drawGUI(storageInfo)
+
+        sleep(1) -- Sleep to limit CPU usage
     end
 
-    if totalMax > 0 then
-        print(string.format("Total: %d/%d %.2f%%", totalUsed, totalMax, (totalUsed / totalMax) * 100))
-    else
-        print("No valid storage peripherals found.")
-    end
+    print("Exited")
 end
 
 -- Run the main function
