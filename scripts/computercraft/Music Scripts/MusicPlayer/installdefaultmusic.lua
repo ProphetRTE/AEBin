@@ -17,14 +17,14 @@ local songNames = {
 
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
-    local cleanedName = songName:gsub("%20", " ")  -- Replace %20 with spaces for the command
+    local cleanedName = songName:gsub("%%20", " ")  -- Replace %20 with spaces for the command
     local command = "savetodevice " .. cleanedName .. " \"" .. songUrl .. "\""
     shell.run(command)  -- Execute the command
 end
 
 -- Loop through the song names and save each one
 for _, songName in ipairs(songNames) do
-    local songUrl = rootUrl .. songName .. ".txt"  -- Construct the full URL
+    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
     saveToDevice(songName, songUrl)  -- Call the saving function
 end
 
