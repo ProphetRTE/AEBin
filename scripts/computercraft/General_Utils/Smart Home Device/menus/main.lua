@@ -1,7 +1,6 @@
 local serverID, protocol = ...
 
 local menuinterface = dofile('/modules/menuinterface.lua')
-local Teleport = dofile('/modules/teleport.lua')
 
 return {
 	-- Load Lights menu
