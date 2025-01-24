@@ -1,5 +1,6 @@
 -- Root URL for the GitHub songs directory
 local rootUrl = "https://github.com/ProphetRTE/AEBin/raw/refs/heads/master/scripts/computercraft/Music%20Scripts/Music/"
+local songsFolder = "songs/"  -- The folder where songs are stored
 
 -- List of song names (with %20 encoding for spaces)
 local songNames = {
@@ -18,8 +19,16 @@ local songNames = {
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
     local formattedName = songName:gsub("%%20", " ")
-    local command = "savetodevice " .. "\"" .. formattedName .. "\" " .. songUrl  -- Construct the command
-    shell.run(command)  -- Execute the command
+    local filePath = songsFolder .. formattedName .. ".dfpwm"  -- Define the file path
+
+     -- Check if the file already exists
+    if fs.exists(filePath) then
+        print(formattedName .. " already exists. Skipping download.")
+    else
+        local command = "savetodevice \"" .. formattedName .. "\" " .. songUrl  -- Construct the command
+        shell.run(command)  -- Execute the command
+        print("Downloaded: " .. formattedName)
+    end
 end
 
 -- Loop through the song names and save each one
