@@ -13,7 +13,7 @@ for _, file in pairs(files) do
 	fileInstance.close()
 end
 
-local updateUri = "https://cc.prophecypixel.com/scripts/computercraft/MusicPlayer/version.txt"
+local updateUri = baseUri .. "/version.txt"
 
 local updateResponse = http.get(updateUri)
 local updateFile = fs.open("version.txt", "w")
