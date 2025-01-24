@@ -1,5 +1,6 @@
 -- Root URL for the GitHub songs directory
 local rootUrl = "https://cc.prophecypixel.com/music/"
+local musicList = "music_list.txt"
 local songsFolder = "songs/"
 
 -- List of song names (with %20 encoding for spaces)
@@ -22,6 +23,29 @@ local songNames = {
     -- Add more song names as needed
 }
 
+
+-- Function to read the local music list
+local function getServerMusicList()
+    local response = http.get(rootUrl .. musicList)
+    if response then
+        local content = response.readAll()
+        response.close()
+        return textutils.unserialize(content) or {}
+    end
+    return {}
+end
+
+-- Function to get the list of existing songs in the songs folder
+local function getLocalSongsList()
+    local localSongs = {}
+    if fs.exists(songsFolder) then
+        for _, file in ipairs(fs.list(songsFolder)) do
+            table.insert(localSongs, file:match("^(.*)%.txt$"))  -- Store the song names without the .txt extension
+        end
+    end
+    return localSongs
+end
+
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
     local formattedName = songName:gsub("%%20", " ")
@@ -35,10 +59,18 @@ local function saveToDevice(songName, songUrl)
     end
 end
 
--- Loop through the song names and save each one
-for i, songName in ipairs(songNames) do
-    local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
-    saveToDevice(songName, songUrl)  -- Call the saving function
+-- Main logic
+local serverSongs = getServerMusicList()  -- Get the list of songs from the server
+local localSongs = getLocalSongsList()  -- Get the current songs in the songs folder
+
+-- Compare and save new songs
+for _, songName in ipairs(serverSongs) do
+    if not table.contains(localSongs, songName) then
+        local songUrl = rootUrl .. songName .. ".dfpwm"  -- Construct the full URL
+        saveToDevice(songName, songUrl)  -- Save the new song
+    else
+        print(songName .. " already exists in the songs folder. Skipping.")
+    end
 end
 
 print("All songs have been saved to the device.")
