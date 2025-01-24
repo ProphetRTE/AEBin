@@ -1,5 +1,5 @@
 -- Root URL for the GitHub songs directory
-local rootUrl = "https://github.com/ProphetRTE/AEBin/raw/refs/heads/master/scripts/computercraft/Music%20Scripts/Music/"
+local rootUrl = "https://cc.prophecypixel.com/music/"
 local songsFolder = "songs/"
 
 -- List of song names (with %20 encoding for spaces)
