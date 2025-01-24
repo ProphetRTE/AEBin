@@ -19,7 +19,7 @@ local songNames = {
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
     local formattedName = songName:gsub("%%20", " ")
-    local filePath = "/" .. songsFolder .. formattedName .. ".text"  -- Define the file path
+    local filePath = "/" .. songsFolder .. formattedName .. ".txt"  -- Define the file path
 
      -- Check if the file already exists
     if fs.exists(filePath) then
