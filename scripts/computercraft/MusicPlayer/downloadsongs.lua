@@ -46,6 +46,16 @@ local function getLocalSongsList()
     return localSongs
 end
 
+-- Helper function to check if a song is in the table
+function table.contains(table, val)
+    for _, value in ipairs(table) do
+        if value == val then
+            return true
+        end
+    end
+    return false
+end
+
 -- Function to execute the command to save a song
 local function saveToDevice(songName, songUrl)
     local formattedName = songName:gsub("%%20", " ")
