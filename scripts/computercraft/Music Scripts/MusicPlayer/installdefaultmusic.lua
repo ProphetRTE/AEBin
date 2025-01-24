@@ -13,6 +13,12 @@ local songNames = {
     "Prince%20-%20Purple%20Rain",
     "Prince%20Bard%20-%20Purple%20Rain",
     "Queen%20-%20Underpressure",
+    "Grieg%20-%20In%20the%20Hall%20of%20the%20Mountain%20King",
+    "Harry%20Mack%20-%20No%20Regard",
+    "Little%20Stranger%20-%20Brain%20Fog",
+    "Ocean%20Noises",
+    "Raido%20-%20Wardruna",
+    "Sleep%20Token%20-%20Are%20You%20Really%20Okay",
     -- Add more song names as needed
 }
 
