@@ -1,4 +1,4 @@
-local baseUri = "cc.prophecypixel.com/scripts/computercraft/MusicPlayer/scripts/computercraft/MusicPlayer/"
+local baseUri = "https://cc.prophecypixel.com/scripts/computercraft/MusicPlayer/"
 local files = { "help", "play", "save", "savetodevice", "startup", "menu", "setvolume" }
 
 term.clear()
