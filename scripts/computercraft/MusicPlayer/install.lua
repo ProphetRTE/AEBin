@@ -1,5 +1,5 @@
 local baseUri = "https://cc.prophecypixel.com/scripts/computercraft/MusicPlayer/"
-local files = { "help", "play", "save", "savetodevice", "startup", "menu", "setvolume", "downloadSongs" }
+local files = { "help", "play", "save", "savetodevice", "startup", "menu", "setvolume", "downloadsongs" }
 
 term.clear()
 
