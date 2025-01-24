@@ -42,7 +42,7 @@ else
 	speaker.playNote(instr, 3, 16)
 	sleep(0.01)
 
-	local updateUri = "cc.prophecypixel.com/scripts/computercraft/MusicPlayer/version.txt"
+	local updateUri = "https://cc.prophecypixel.com/scripts/computercraft/MusicPlayer/version.txt"
 
 	local updateResponse = http.get(updateUri)
 

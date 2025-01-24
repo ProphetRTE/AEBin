@@ -1,4 +1,4 @@
-local uri = "cc.prophecypixel.com/scripts/computercraft/MusicPlayer/install.lua"
+local uri = "https://cc.prophecypixel.com/scripts/computercraft/MusicPlayer/install.lua"
 local file = fs.open("install.lua", "w")
 
 local response = http.get(uri)
