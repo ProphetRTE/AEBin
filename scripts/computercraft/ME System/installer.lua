@@ -31,7 +31,7 @@ local files = {
 local tasks = {}
 for i, path in ipairs(files) do
   tasks[i] = function()
-    local req, err = http.get("https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/ME%20System/src/" .. path)
+    local req, err = http.get("cc.prophecypixel.com/scripts/computercraft/ME%20System/src/" .. path)
     if not req then error("Failed to download " .. path .. ": " .. err, 0) end
 
     local file = fs.open(".artist.d/src/" .. path, "w")

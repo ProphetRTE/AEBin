@@ -42,7 +42,7 @@ else
 	speaker.playNote(instr, 3, 16)
 	sleep(0.01)
 
-	local updateUri = "https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/Music%20Scripts/MusicPlayer/version.txt"
+	local updateUri = "cc.prophecypixel.com/scripts/computercraft/Music%20Scripts/MusicPlayer/version.txt"
 
 	local updateResponse = http.get(updateUri)
 
@@ -62,3 +62,4 @@ print("To save songs, they need to be converted to the DFPWMA audio format and u
 
 if fs.exists("download.lua") then fs.delete("download.lua") end
 if fs.exists("install.lua") then fs.delete("install.lua") end
+if fs.exists("installdefaultmusic.lua") then fs.delete("installdefaultmusic.lua") end
