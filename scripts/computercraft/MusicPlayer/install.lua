@@ -1,4 +1,4 @@
-local baseUri = "https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/Music%20Scripts/MusicPlayer/"
+local baseUri = "cc.prophecypixel.com/scripts/computercraft/MusicPlayer/scripts/computercraft/MusicPlayer/"
 local files = { "help", "play", "save", "savetodevice", "startup", "menu", "setvolume" }
 
 term.clear()
@@ -13,7 +13,7 @@ for _, file in pairs(files) do
 	fileInstance.close()
 end
 
-local updateUri = "https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/Music%20Scripts/MusicPlayer/version.txt"
+local updateUri = "https://raw.githubusercontent.com/ProphetRTE/AEBin/refs/heads/master/scripts/computercraft/MusicPlayer/version.txt"
 
 local updateResponse = http.get(updateUri)
 local updateFile = fs.open("version.txt", "w")

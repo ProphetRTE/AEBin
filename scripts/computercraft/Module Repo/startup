@@ -1,3 +1,0 @@
-local repositoryserver = dofile('/modules/repositoryserver.lua')
-
-repositoryserver()
