@@ -127,9 +127,8 @@ function play()
     while true do
         if isShuffleEnabled then
             songs = fs.list("songs/")
-            shuffleSongs()
-            selectedSong = songs[1]  -- Get the first song after shuffle
-            uri = "songs/" .. selectedSong
+            shuffleSongs() -- Shuffle the songs
+            updateURI()
         end
 
         print("Now playing: " .. selectedSong)
@@ -154,15 +153,8 @@ function play()
                 os.pullEvent("speaker_audio_empty")
             end
         end
-
-        if isShuffleEnabled then
-            table.remove(songs, 1)  -- Remove the played song from the list
-            if #songs == 0 then
-                isShuffleEnabled = false  -- Disable shuffle if no more songs
-            else
-                selectedSong = songs[1]  -- Get the next song
-            end
-        end
+        
+        updateURI() -- Prepare for the next song
     end
 end
 
@@ -185,7 +177,7 @@ function readUserInput()
                 os.queueEvent("resume")  -- Trigger the resume event
             end
         end,
-		["skip"] = function()
+        ["skip"] = function()
             print("Skipping to the next song.")
             updateURI() -- Update the URI to the next song
         end
