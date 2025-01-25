@@ -60,16 +60,10 @@ if drive == nil or not drive.isDiskPresent() then
 		else error() end
 	end
 else
-	local success, err = pcall(function()
-        local songFile = fs.open("disk/song.txt", "r")
-        uri = songFile.readAll()
-        songFile.close()
-    end)
+	local songFile = fs.open("disk/song.txt", "r")
+	uri = songFile.readAll()
 
-    if not success then
-        print("ERR - Unable to read disk: " .. err)
-        return nil
-    end
+	songFile.close()
 end
 
 if uri == nil or not uri:find("^https") then
