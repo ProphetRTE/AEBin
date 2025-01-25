@@ -54,7 +54,10 @@ end
 local serverSongs = getServerMusicList()  -- Get the list of songs from the server
 local localSongs = getLocalSongsList()  -- Get the current songs in the songs folder
 print("Checking for new songs...")
-print("[" .. serverSongs.count .. "]" .. " songs found on the server.")
+if #serverSongs == 0 then
+    print("No songs found on the server.")
+    return
+end
 print("[" .. #localSongs .. "]" .. " songs found locally.")
 
 -- Compare and save new songs
