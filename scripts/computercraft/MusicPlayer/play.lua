@@ -130,50 +130,41 @@ function updateURI()
 end
 
 function play()
-    local songs = fs.list("songs/") -- List songs before entering the loop
     while true do
         if isShuffleEnabled then
+            songs = fs.list("songs/")
             shuffleSongs() -- Shuffle the songs
+            selectedSong = songs[1] -- Select the first song after shuffling or manage selection accordingly
+            updateURI()
         end
-        
-        updateURI() -- Assume this updates `uri` based on `selectedSong`
 
-        if not selectedSong or #songs == 0 then
+        if not selectedSong then
             print("No song selected to play.")
-            break -- Exit the loop if there's no song to play
-        end
-        
-        print("Now playing: " .. (selectedSong or "Unknown song"))
-        
-        local response = http.get(uri, nil, true) -- Fetch the new response
-        
-        if not response then
-            print("Failed to get response for: " .. selectedSong)
-            break -- Exit if the response is nil
+            break -- Exit loop if there's no song selected
         end
 
-        local chunkSize = 4 * 1024 -- Size of each chunk
+        print("Now playing: " .. selectedSong)
+        local response = http.get(uri, nil, true)
+
+        local chunkSize = 4 * 1024
         local chunk
-        
         while true do
             if isPaused then
                 -- Wait for a signal to continue playing
                 os.pullEvent("resume")
             end
             
-            chunk = response.read(chunkSize) -- Attempt to read a chunk
-            
+            chunk = response.read(chunkSize)
             if not chunk then
-                print("Song ended: " .. (selectedSong or "Unknown song"))
-                break -- Exit the inner loop if the song has ended
+                print("Song ended: " .. selectedSong)
+                break
             end
 
-            local buffer = decoder(chunk) -- Decode the chunk
+            local buffer = decoder(chunk)
             while not playChunk(buffer) do
-                os.pullEvent("speaker_audio_empty") -- Wait for the speaker to be ready
+                os.pullEvent("speaker_audio_empty")
             end
         end
-        
     end
 end
 
