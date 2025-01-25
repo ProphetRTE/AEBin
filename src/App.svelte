@@ -130,6 +130,7 @@
     <p>
       Developed by <a href="https://github.com/SquidDev">@SquidDev</a>. To report bugs or view the source code, see
       <a href="https://github.com/SquidDev-CC/music.madefor.cc">the GitHub repository</a>.
+      Maintained by <a href="https://github.com/ProphetRTE">@ProphetRTE</a>.
     </p>
   </div>
 </div>
