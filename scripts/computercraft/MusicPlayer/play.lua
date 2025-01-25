@@ -130,63 +130,52 @@ function updateURI()
 end
 
 function play()
+    local songs = fs.list("songs/") -- List songs before entering the loop
     while true do
         if isShuffleEnabled then
-            songs = fs.list("songs/")
             shuffleSongs() -- Shuffle the songs
-            selectedSong = songs[1] -- Assume selecting the first shuffled song
-            updateURI()
         end
-
-        if not selectedSong then
+        
+        if not selectedSong or #songs == 0 then
             print("No song selected to play.")
-            break -- Exit loop if there's no song selected
+            break -- Exit the loop if there's no song to play
+        end
+        
+        selectedSong = selectedSong or songs[1] -- Default to the first song if nothing is selected
+        updateURI() -- Assume this updates `uri` based on `selectedSong`
+        
+        print("Now playing: " .. (selectedSong or "Unknown song"))
+        
+        local response = http.get(uri, nil, true) -- Fetch the new response
+        
+        if not response then
+            print("Failed to get response for: " .. selectedSong)
+            break -- Exit if the response is nil
         end
 
-        print("Now playing: " .. (selectedSong or "No song selected"))
-        local response = nil
-        local uri = "" 
-
-        -- Wait until the new response is available
-        while not response do
-            if isPaused then
-                -- Wait for a signal to continue playing
-                os.pullEvent("resume")
-            end
-            
-            -- Update URI and check if there's a new response
-            local tempURI = updateURI()
-
-            -- Check if there was a URI change
-            if tempURI ~= uri then
-                -- If there's a new URI, get the new response for it
-                uri = tempURI 
-                response = http.get(uri, nil, true)
-            end
-        end
-
-        local chunkSize = 4 * 1024
+        local chunkSize = 4 * 1024 -- Size of each chunk
         local chunk
+        
         while true do
             if isPaused then
                 -- Wait for a signal to continue playing
                 os.pullEvent("resume")
             end
             
-            -- Read a chunk
-            chunk = response.read(chunkSize)
-
-            -- End of the song reached
+            chunk = response.read(chunkSize) -- Attempt to read a chunk
+            
             if not chunk then
                 print("Song ended: " .. (selectedSong or "Unknown song"))
-                break
+                break -- Exit the inner loop if the song has ended
             end
 
-            local buffer = decoder(chunk)
+            local buffer = decoder(chunk) -- Decode the chunk
             while not playChunk(buffer) do
-                os.pullEvent("speaker_audio_empty")
+                os.pullEvent("speaker_audio_empty") -- Wait for the speaker to be ready
             end
         end
+        
+        selectedSong = nil -- Reset selection for the next iteration
     end
 end
 
