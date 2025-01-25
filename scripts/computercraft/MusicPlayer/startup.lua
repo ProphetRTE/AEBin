@@ -55,7 +55,11 @@ else
 		end
 	end
 
-	shell.run("downloadsongs.lua")
+	if fs.exists("downloadsongs.lua") then
+		shell.run("downloadsongs.lua")
+	else
+		print("WARN - The download script is missing. You will have to download it manually. Contact the server administrator for more information.")
+	end
 	
 end
 
