@@ -135,7 +135,6 @@ function play()
         if not response then
             print("Failed to get response for: " .. selectedSong)
             songs = fs.list("songs/") -- Refresh song list
-            continue -- Go to the next iteration of the loop
         end
 
         local chunkSize = 4 * 1024 -- Size of each chunk
