@@ -109,31 +109,23 @@ function updateURI()
             shuffleSongs() -- Reshuffle the songs
         end
         selectedSong = songs[1] -- Get the next song
+        uri = "songs/" .. selectedSong
     else
         -- If looping is enabled
         if isLoopEnabled then
-            -- Reuse the current selectedSong
-            -- Defined outside of this function
+            uri = "songs/" .. selectedSong -- Looping the same song
         else
-            -- Normal play, remove the played song
-            if #songs > 0 then
-                selectedSong = songs[1]
-                uri = "songs/" .. selectedSong
-                table.remove(songs, 1) -- Remove the played song from the list
-            end
-            
-            -- Check for empty songs list and reshuffle
+            selectedSong = songs[1] -- Get the next song
+            table.remove(songs, 1) -- Remove the played song from the list
             if #songs == 0 then
                 print("No more songs in the playlist. Reshuffling...")
                 songs = fs.list("songs/")
                 shuffleSongs() -- Reshuffle the songs
+            else
+                selectedSong = songs[1] -- Get the next song
+                uri = "songs/" .. selectedSong
             end
         end
-    end
-
-    -- At the end of the function, ensure the URI is established
-    if selectedSong then
-        uri = "songs/" .. selectedSong
     end
 end
 
