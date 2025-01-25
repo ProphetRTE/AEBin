@@ -144,7 +144,7 @@ function play()
         selectedSong = songs[1] -- Default to the first song if nothing is selected
         updateURI() -- Assume this updates `uri` based on `selectedSong`
         
-        print("Now playing: " .. (selectedSong or "No song selected"))
+        print("Now playing: " .. (selectedSong))
         
         local response = http.get(uri, nil, true) -- Fetch the new response
         
@@ -165,7 +165,7 @@ function play()
             chunk = response.read(chunkSize) -- Attempt to read a chunk
             
             if not chunk then
-                print("Song ended: " .. (selectedSong or "Unknown song"))
+                print("Song ended: " .. (selectedSong))
                 break -- Exit the inner loop if the song has ended
             end
 
