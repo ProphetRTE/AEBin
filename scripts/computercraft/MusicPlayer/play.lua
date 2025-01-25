@@ -10,6 +10,8 @@ local uri = nil
 local volume = settings.get("media_center.volume")
 local selectedSong = nil
 local isShuffleEnabled = false
+local isPaused = false
+local quit = false
 
 if drive == nil or not drive.isDiskPresent() then
     local savedSongs = fs.list("songs/")
@@ -31,7 +33,6 @@ if drive == nil or not drive.isDiskPresent() then
                 label = fp:match("^([^.]+)"),
                 callback = function()
                     selectedSong = fp
-
                     menu.exit()
                 end
             })
@@ -50,13 +51,10 @@ if drive == nil or not drive.isDiskPresent() then
 
             if fs.exists(fp) then
                 local file = fs.open(fp, "r")
-
                 uri = file.readAll()
-
                 file.close()
             else
                 print("Song was not found on device!")
-
                 return
             end
         else error() end
@@ -64,7 +62,6 @@ if drive == nil or not drive.isDiskPresent() then
 else
     local songFile = fs.open("disk/song.txt", "r")
     uri = songFile.readAll()
-
     songFile.close()
 end
 
@@ -103,36 +100,36 @@ function shuffleSongs()
     end
 end
 
-if drive == nil or not drive.isDiskPresent() then
-    local songName = string.gsub(selectedSong, ".txt", "")
-    print("Playing '" .. songName .. "' at volume " .. (volume or 1.0))
-else
-    print("Playing '" .. drive.getDiskLabel() .. "' at volume " .. (volume or 1.0))
-end
-
-local quit = false
-
 function play()
     while true do
-        -- Shuffle logic
         if isShuffleEnabled then
             songs = fs.list("songs/")
             shuffleSongs()
             selectedSong = songs[1]  -- Get the first song after shuffle
+            uri = "songs/" .. selectedSong
         end
 
+        print("Now playing: " .. selectedSong)
         local response = http.get(uri, nil, true)
 
         local chunkSize = 4 * 1024
-        local chunk = response.read(chunkSize)
-        while chunk ~= nil do
-            local buffer = decoder(chunk)
+        local chunk
+        while true do
+            if isPaused then
+                -- Wait for a signal to continue playing
+                os.pullEvent("resume")
+            end
+            
+            chunk = response.read(chunkSize)
+            if not chunk then
+                print("Song ended: " .. selectedSong)
+                break
+            end
 
+            local buffer = decoder(chunk)
             while not playChunk(buffer) do
                 os.pullEvent("speaker_audio_empty")
             end
-
-            chunk = response.read(chunkSize)
         end
 
         if isShuffleEnabled then
@@ -141,7 +138,6 @@ function play()
                 isShuffleEnabled = false  -- Disable shuffle if no more songs
             else
                 selectedSong = songs[1]  -- Get the next song
-                uri = "songs/" .. selectedSong  -- Set the next URI to be played
             end
         end
     end
@@ -150,11 +146,25 @@ end
 function readUserInput()
     local commands = {
         ["stop"] = function()
+            print("Stopping the media center.")
             quit = true
         end,
         ["shuffle"] = function()
             isShuffleEnabled = not isShuffleEnabled
             print("Shuffle is now " .. (isShuffleEnabled and "enabled" or "disabled"))
+        end,
+        ["pause"] = function()
+            isPaused = not isPaused
+            if isPaused then
+                print("Media is paused. Type 'resume' to continue.")
+            else
+                print("Media is playing now.")
+                os.queueEvent("resume")  -- Trigger the resume event
+            end
+        end,
+		["skip"] = function()
+            print("Skipping to the next song.")
+            updateURI() -- Update the URI to the next song
         end
     }
 
@@ -174,11 +184,10 @@ function readUserInput()
         end
 
         local command = commands[commandName]
-
-        if command ~= nil then
+        if command then
             command(table.unpack(cmdargs))
-        else 
-            print('"' .. cmdargs[1] .. '" is not a valid command!') 
+        else
+            print('"' .. cmdargs[1] .. '" is not a valid command!')
         end
     end
 end
