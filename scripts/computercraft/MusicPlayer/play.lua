@@ -100,6 +100,29 @@ function shuffleSongs()
     end
 end
 
+function updateURI()
+    if isShuffleEnabled then
+        if #songs == 0 then
+            print("No more songs available to play. Exiting shuffle.")
+            isShuffleEnabled = false
+            return
+        end
+        selectedSong = songs[1] -- Get the next song
+        uri = "songs/" .. selectedSong
+    else
+        -- Move to the next song in the playlist (sequential)
+        selectedSong = songs[1]
+        table.remove(songs, 1) -- Remove the played song from the list
+        if #songs == 0 then
+            print("No more songs in the playlist.")
+            isShuffleEnabled = false
+            return
+        end
+        selectedSong = songs[1] -- Get the next song
+        uri = "songs/" .. selectedSong
+    end
+end
+
 function play()
     while true do
         if isShuffleEnabled then
