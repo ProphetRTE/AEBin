@@ -53,15 +53,17 @@ function render()
 
         -- Center the text visually
         local entryLine = caret .. menu.entries[entryIndex].label
-        local padded = string.format("%-" .. (w - 3) .. "s", entryLine)
+        local padded = string.format("%-" .. (w - 6) .. "s", entryLine)  -- Adjust padding to fit within width
         print(padded)
     end
 
-    -- Construct the bottom border with page indicators
-    local bottomLine = string.rep("-", w - 14) .. string.format("[%d|%d]", currentPage, maxPages) .. string.rep("-", w - 14 - 8)
+    -- Construct the bottom border with page indicators, ensuring it fits within the width of the terminal
+    local pageIndicator = string.format("[%d|%d]", currentPage, maxPages)
+    local paddingLength = w - #pageIndicator - 2  -- Two dashes on each side
+    local bottomLine = string.rep("-", paddingLength / 2) .. pageIndicator .. string.rep("-", math.ceil(paddingLength / 2))
     print(bottomLine) -- Print the bottom line with the page information
 
-    -- Reset the text color for any future prints
+    -- Reset the text color for future prints
     term.setTextColor(colors.white)
 end
 
