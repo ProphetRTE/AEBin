@@ -1,12 +1,11 @@
 -- Root URL for the GitHub songs directory
 local rootUrl = "https://cc.prophecypixel.com/music/"
-local musicList = "music_list.txt"
-local musicUri = rootUrl .. musicList
+local musicList = "https://cc.prophecypixel.com/music/music_list.txt"
 local songsFolder = "songs/"
 
 -- Function to read the local music list
 local function getServerMusicList()
-    local response = http.get(musicUri)
+    local response = http.get(musicList)
     if response then
         local content = response.readAll()
         response.close()
