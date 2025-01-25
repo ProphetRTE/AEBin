@@ -144,7 +144,26 @@ function play()
         end
 
         print("Now playing: " .. (selectedSong or "No song selected"))
-        local response = http.get(uri, nil, true)
+        local response = nil
+        local uri = "" 
+
+        -- Wait until the new response is available
+        while not response do
+            if isPaused then
+                -- Wait for a signal to continue playing
+                os.pullEvent("resume")
+            end
+            
+            -- Update URI and check if there's a new response
+            local tempURI = updateURI()
+
+            -- Check if there was a URI change
+            if tempURI ~= uri then
+                -- If there's a new URI, get the new response for it
+                uri = tempURI 
+                response = http.get(uri, nil, true)
+            end
+        end
 
         local chunkSize = 4 * 1024
         local chunk
@@ -154,7 +173,10 @@ function play()
                 os.pullEvent("resume")
             end
             
+            -- Read a chunk
             chunk = response.read(chunkSize)
+
+            -- End of the song reached
             if not chunk then
                 print("Song ended: " .. (selectedSong or "Unknown song"))
                 break
@@ -165,8 +187,6 @@ function play()
                 os.pullEvent("speaker_audio_empty")
             end
         end
-        
-        updateURI() -- Prepare for the next song
     end
 end
 
