@@ -44,6 +44,7 @@ local function saveToDevice(songName)
     if fs.exists(filePath) then
         print(songName .. " already exists. Skipping download.")
     else    
+        print("Downloading " .. songName .. "...")  -- Inform the user
         local command = "savetodevice " .. "\"" .. songName .. "\" " .. rootUrl .. formattedName .. ".dfpwm"  -- Construct the command with the formatted name
         shell.run(command)  -- Execute the command
     end
@@ -52,12 +53,14 @@ end
 -- Main logic
 local serverSongs = getServerMusicList()  -- Get the list of songs from the server
 local localSongs = getLocalSongsList()  -- Get the current songs in the songs folder
-
+print("Checking for new songs...")
+print("[" .. serverSongs.count .. "]" .. " songs found on the server.")
+print("[" .. #localSongs .. "]" .. " songs found locally.")
 
 -- Compare and save new songs
 for _, songName in ipairs(serverSongs) do
     if not table.contains(localSongs, songName) then
-        saveToDevice(songName)  -- Save the new song
+        --saveToDevice(songName)  -- Save the new song
     else
         print(songName .. " already exists in the songs folder. Skipping.")
     end
