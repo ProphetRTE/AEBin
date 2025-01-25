@@ -75,9 +75,7 @@ for _, songName in ipairs(serverSongs) do
 end
 
 if #serverSongs == #localSongs then
-    print("All songs are up to date.")
-else if #serverSongs > #localSongs then
-    print("Not all songs are up to date. Run the script again to check for new songs.")
+    
 else
     print("All songs have downloaded successfully.")
 end
