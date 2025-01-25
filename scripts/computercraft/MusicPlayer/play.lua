@@ -125,8 +125,10 @@ function play()
             print("No song selected to play.")
             break -- Exit loop if there's no song selected
         end
-        
-        updateURI()
+
+        if not isLoopEnabled then
+            updateURI() -- Update the URI to the next song
+        end
 
         
 
