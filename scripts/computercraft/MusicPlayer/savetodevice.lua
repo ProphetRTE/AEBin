@@ -5,7 +5,7 @@ if arg[2] ~= nil then
 
 	file.write(arg[2])
 
-	print("Sucessfully wrote song to device. Play with 'play \"" .. arg[1] .. "\"'." .. "\n")
+	print("[" .. arg[1] .. "] was saved succesfully.")
 
 	file.close()
 else
