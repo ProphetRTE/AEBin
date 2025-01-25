@@ -1,17 +1,22 @@
 -- Root URL for the GitHub songs directory
 local rootUrl = "https://cc.prophecypixel.com/music/"
-local musicList = "https://cc.prophecypixel.com/music/music_list.txt"
+local musicList = rootUrl .. "music_list.txt"
 local songsFolder = "songs/"
 
--- Function to read the local music list
+-- Function to get the list of songs from the server
 local function getServerMusicList()
     local response = http.get(musicList)
     if response then
         local content = response.readAll()
-        response.close()
-        return textutils.unserialize(content) or {}
+        response.close()  -- Close the response to prevent memory leaks
+        -- Split the content into a list based on newlines
+        local songs = {}
+        for line in content:gmatch("[^\r\n]+") do
+            table.insert(songs, line)
+        end
+        return songs  -- Return the list of songs
     end
-    return {}
+    return {}  -- Return an empty table if the response is nil
 end
 
 -- Function to get the list of existing songs in the songs folder
