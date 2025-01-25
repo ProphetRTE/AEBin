@@ -48,19 +48,20 @@ function render()
             break
         end
 
-        local caret = selectedEntry == i and ">> " or "   "
-        term.setTextColor(selectedEntry == i and colors.magenta or colors.white)
+        local highlighted = i == selectedEntry and true or false
+        local caret = highlighted and ">> " or "   "
+        term.setTextColor(highlighted and colors.magenta or colors.white)
 
         -- Center the text visually
         local entryLine = caret .. menu.entries[entryIndex].label
-        local padded = string.format("%-" .. (w - 6) .. "s", entryLine)  -- Adjust padding to fit within width
+        local padded = string.format("%-" .. (w - 6) .. "s", entryLine)  
         print(padded)
     end
 
     -- Construct the bottom border with page indicators, ensuring it fits within the width of the terminal
     local pageIndicator = string.format("[%d|%d]", currentPage, maxPages)
-    local paddingLength = w - #pageIndicator - 2  -- Two dashes on each side
-    local bottomLine = string.rep("-", paddingLength / 2) .. pageIndicator .. string.rep("-", math.ceil(paddingLength / 2))
+    local paddingLength = w - #pageIndicator - 2 
+    local bottomLine = string.rep("-", math.floor(paddingLength / 2)) .. pageIndicator .. string.rep("-", math.ceil(paddingLength / 2))
     print(bottomLine) -- Print the bottom line with the page information
 
     -- Reset the text color for future prints
