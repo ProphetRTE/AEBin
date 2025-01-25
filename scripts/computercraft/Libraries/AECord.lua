@@ -22,7 +22,7 @@ local function send(url, data, headers)
   return true
 end
 
-function DiscordHook.createWebhook(url)
+function AECord.createWebhook(url)
   expect("createWebhook", url, 1, "string")
   local success, message = http.checkURL(url)
   if not success then
@@ -104,4 +104,4 @@ function DiscordHook.createWebhook(url)
   end
 end
 
-return DiscordHook
+return AECord
