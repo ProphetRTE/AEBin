@@ -1,0 +1,32 @@
+local AECord = require("AECord")
+
+
+local success, hook = DiscordHook.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
+ if not success then
+  error("Webhook connection failed! Reason: " .. hook)
+ end
+
+-- Function to ask for user input
+function readInput(prompt)
+    write(prompt)
+    return read()
+end
+
+-- Main function for the song request command
+function songrequest()
+    print("Welcome to the Song Request System")
+
+    -- Ask for the author
+    local author = readInput("Enter the author: ")
+    
+    -- Ask for the song name
+    local songName = readInput("Enter the song name: ")
+
+    -- Print the formatted message
+    print()
+    hook.sendEmbed(string.format("%s - %s", author, songName), "New Song Request", "Someone just requested a song!", nil, 0xFF00FF, nil, nil, nil, nil)
+    print("Your song request has been sent to the server!")
+end
+
+-- Execute the song request command
+songrequest()
