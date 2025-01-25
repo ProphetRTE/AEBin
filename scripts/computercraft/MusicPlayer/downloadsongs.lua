@@ -46,9 +46,9 @@ local function saveToDevice(songName)
     local filePath = songsFolder .. songName .. ".txt"  -- Define the file path
 
     if fs.exists(filePath) then
-        print(songName .. " already exists. Skipping download.")
+        --print(songName .. " already exists. Skipping download.")
     else    
-        print("Downloading " .. songName .. "...")  -- Inform the user
+        print("Downloading " .. songName .. "\n")  -- Inform the user
         local command = "savetodevice " .. "\"" .. songName .. "\" " .. rootUrl .. formattedName .. ".dfpwm"  -- Construct the command with the formatted name
         shell.run(command)  -- Execute the command
     end
@@ -62,6 +62,7 @@ if #serverSongs == 0 then
     print("No songs found on the server.")
     return
 end
+print("[" .. #serverSongs .. "]" .. " songs found on the server.")
 print("[" .. #localSongs .. "]" .. " songs found locally.")
 
 -- Compare and save new songs
