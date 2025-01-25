@@ -64,6 +64,10 @@ if #serverSongs == 0 then
 end
 print("[" .. #serverSongs .. "]" .. " songs found on the server.")
 print("[" .. #localSongs .. "]" .. " songs found locally.")
+if #serverSongs == #localSongs then
+    print("All songs are up to date.")
+    return
+end
 
 -- Compare and save new songs
 for _, songName in ipairs(serverSongs) do
@@ -74,8 +78,6 @@ for _, songName in ipairs(serverSongs) do
     end
 end
 
-if #serverSongs == #localSongs then
-    
-else
+if #serverSongs ~= #localSongs then
     print("All songs have downloaded successfully.")
 end
