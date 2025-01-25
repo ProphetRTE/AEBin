@@ -114,49 +114,42 @@ end
 
 
 function play()
-    songs = fs.list("songs/") -- List songs initially
-
     while true do
-        if #songs == 0 then
-            print("No songs available. Stopping playback.")
-            break -- Exit loop if no songs left
+        
+        songs = fs.list("songs/")
+        if isShuffleEnabled then
+            shuffleSongs() -- Shuffle the songs
         end
-
-        updateURI() -- Update the URI and selected song
 
         if not selectedSong then
             print("No song selected to play.")
             break -- Exit loop if there's no song selected
         end
+        
+        updateURI()
+
+        
 
         print("Now playing: " .. selectedSong)
         local response = http.get(uri, nil, true)
 
-        if not response then
-            print("Failed to get response for: " .. selectedSong)
-            songs = fs.list("songs/") -- Refresh song list
-        end
-
-        local chunkSize = 4 * 1024 -- Size of each chunk
+        local chunkSize = 4 * 1024
         local chunk
-        
         while true do
             if isPaused then
                 -- Wait for a signal to continue playing
                 os.pullEvent("resume")
             end
-
-            chunk = response.read(chunkSize) -- Read a chunk from the response
             
+            chunk = response.read(chunkSize)
             if not chunk then
                 print("Song ended: " .. selectedSong)
-                table.remove(songs, 1) -- Remove the played song from the list
-                break -- Exit the inner loop if the song has ended
+                break
             end
 
-            local buffer = decoder(chunk) -- Decode the chunk
+            local buffer = decoder(chunk)
             while not playChunk(buffer) do
-                os.pullEvent("speaker_audio_empty") -- Wait for the speaker to be ready
+                os.pullEvent("speaker_audio_empty")
             end
         end
     end
