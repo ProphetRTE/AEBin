@@ -13,7 +13,7 @@ if arg[1] == "saving" then
 		term.clear()
 
 		print("Step 2 - Convert your audio file to the DFPWMA file format.")
-		print("Step 2B - To do this, open your web browser and navigate to https://music.madefor.cc/ and simply drag your audio file onto the box.")
+		print("Step 2B - To do this, open your web browser and navigate to https://cc.prophecypixel.com/ and simply drag your audio file onto the box.")
 		print("Step 2C - Once it finishes, download it to your PC.")
 	end
 
