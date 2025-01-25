@@ -70,7 +70,7 @@ for _, songName in ipairs(serverSongs) do
     if not table.contains(localSongs, songName) then
         saveToDevice(songName)  -- Save the new song
     else
-        print(songName .. " already exists in the songs folder. Skipping.")
+        --print(songName .. " already exists in the songs folder. Skipping.")
     end
 end
 
