@@ -141,10 +141,10 @@ function play()
             break -- Exit the loop if there's no song to play
         end
         
-        selectedSong = selectedSong or songs[1] -- Default to the first song if nothing is selected
+        selectedSong = songs[1] -- Default to the first song if nothing is selected
         updateURI() -- Assume this updates `uri` based on `selectedSong`
         
-        print("Now playing: " .. (selectedSong or "Unknown song"))
+        print("Now playing: " .. (selectedSong or "No song selected"))
         
         local response = http.get(uri, nil, true) -- Fetch the new response
         
@@ -175,7 +175,7 @@ function play()
             end
         end
         
-        selectedSong = nil -- Reset selection for the next iteration
+        --selectedSong = nil -- Reset selection for the next iteration
     end
 end
 
