@@ -48,7 +48,7 @@ local function saveToDevice(songName)
     if fs.exists(filePath) then
         --print(songName .. " already exists. Skipping download.")
     else    
-        print("Downloading " .. songName .. "\n")  -- Inform the user
+        --print("Downloading " .. songName .. "\n")  -- Inform the user
         local command = "savetodevice " .. "\"" .. songName .. "\" " .. rootUrl .. formattedName .. ".dfpwm"  -- Construct the command with the formatted name
         shell.run(command)  -- Execute the command
     end
@@ -67,6 +67,8 @@ print("[" .. #localSongs .. "]" .. " songs found locally.")
 if #serverSongs == #localSongs then
     print("All songs are up to date.")
     return
+else
+    print("Downloading new songs...")
 end
 
 -- Compare and save new songs
