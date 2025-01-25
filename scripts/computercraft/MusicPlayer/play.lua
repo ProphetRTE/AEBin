@@ -134,10 +134,16 @@ function play()
         if isShuffleEnabled then
             songs = fs.list("songs/")
             shuffleSongs() -- Shuffle the songs
+            selectedSong = songs[1] -- Assume selecting the first shuffled song
             updateURI()
         end
 
-        print("Now playing: " .. selectedSong)
+        if not selectedSong then
+            print("No song selected to play.")
+            break -- Exit loop if there's no song selected
+        end
+
+        print("Now playing: " .. (selectedSong or "No song selected"))
         local response = http.get(uri, nil, true)
 
         local chunkSize = 4 * 1024
@@ -150,7 +156,7 @@ function play()
             
             chunk = response.read(chunkSize)
             if not chunk then
-                print("Song ended: " .. selectedSong)
+                print("Song ended: " .. (selectedSong or "Unknown song"))
                 break
             end
 
