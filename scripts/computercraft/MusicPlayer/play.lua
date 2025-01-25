@@ -12,6 +12,7 @@ local selectedSong = nil
 local isShuffleEnabled = false
 local isPaused = false
 local quit = false
+local isLoopEnabled = false
 
 if drive == nil or not drive.isDiskPresent() then
     local savedSongs = fs.list("songs/")
@@ -103,23 +104,28 @@ end
 function updateURI()
     if isShuffleEnabled then
         if #songs == 0 then
-            print("No more songs available to play. Exiting shuffle.")
-            isShuffleEnabled = false
-            return
+            print("No more songs available to play. Reshuffling...")
+            songs = fs.list("songs/")
+            shuffleSongs() -- Reshuffle the songs
         end
         selectedSong = songs[1] -- Get the next song
         uri = "songs/" .. selectedSong
     else
-        -- Move to the next song in the playlist (sequential)
-        selectedSong = songs[1]
-        table.remove(songs, 1) -- Remove the played song from the list
-        if #songs == 0 then
-            print("No more songs in the playlist.")
-            isShuffleEnabled = false
-            return
+        -- If looping is enabled
+        if isLoopEnabled then
+            uri = "songs/" .. selectedSong -- Looping the same song
+        else
+            selectedSong = songs[1] -- Get the next song
+            table.remove(songs, 1) -- Remove the played song from the list
+            if #songs == 0 then
+                print("No more songs in the playlist. Reshuffling...")
+                songs = fs.list("songs/")
+                shuffleSongs() -- Reshuffle the songs
+            else
+                selectedSong = songs[1] -- Get the next song
+                uri = "songs/" .. selectedSong
+            end
         end
-        selectedSong = songs[1] -- Get the next song
-        uri = "songs/" .. selectedSong
     end
 end
 
@@ -180,6 +186,10 @@ function readUserInput()
         ["skip"] = function()
             print("Skipping to the next song.")
             updateURI() -- Update the URI to the next song
+        end,
+        ["loop"] = function()
+            isLoopEnabled = not isLoopEnabled
+            print("Loop is now " .. (isLoopEnabled and "enabled" or "disabled"))
         end
     }
 
