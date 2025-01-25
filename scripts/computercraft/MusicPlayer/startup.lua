@@ -54,6 +54,9 @@ else
 			print("NOTE - There is an update available! To get the latest version, type 'download' into the console.")
 		end
 	end
+
+	shell.run("downloadsongs.lua")
+	
 end
 
 print("")
