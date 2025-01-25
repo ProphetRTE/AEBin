@@ -37,6 +37,10 @@ function render()
         })
     end
 
+    -- Print the top border
+    term.setTextColor(colors.white)
+    print(string.rep("-", w)) -- Create a line across the width of the terminal
+
     -- Render menu entries for the current page
     for i = 1, entriesPerPage do
         local entryIndex = pageOffset + i
@@ -53,9 +57,12 @@ function render()
         print(padded)
     end
 
-    -- Page indicators
+    -- Construct the bottom border with page indicators
+    local bottomLine = string.rep("-", w - 14) .. string.format("[%d|%d]", currentPage, maxPages) .. string.rep("-", w - 14 - 8)
+    print(bottomLine) -- Print the bottom line with the page information
+
+    -- Reset the text color for any future prints
     term.setTextColor(colors.white)
-    print(string.format("Page %d of %d", currentPage, maxPages))
 end
 
 function onKeyPress(key)
