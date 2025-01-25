@@ -109,47 +109,55 @@ function updateURI()
             shuffleSongs() -- Reshuffle the songs
         end
         selectedSong = songs[1] -- Get the next song
-        uri = "songs/" .. selectedSong
     else
         -- If looping is enabled
         if isLoopEnabled then
-            uri = "songs/" .. selectedSong -- Looping the same song
+            -- Reuse the current selectedSong
+            -- Defined outside of this function
         else
-            selectedSong = songs[1] -- Get the next song
-            table.remove(songs, 1) -- Remove the played song from the list
+            -- Normal play, remove the played song
+            if #songs > 0 then
+                selectedSong = songs[1]
+                uri = "songs/" .. selectedSong
+                table.remove(songs, 1) -- Remove the played song from the list
+            end
+            
+            -- Check for empty songs list and reshuffle
             if #songs == 0 then
                 print("No more songs in the playlist. Reshuffling...")
                 songs = fs.list("songs/")
                 shuffleSongs() -- Reshuffle the songs
-            else
-                selectedSong = songs[1] -- Get the next song
-                uri = "songs/" .. selectedSong
             end
         end
+    end
+
+    -- At the end of the function, ensure the URI is established
+    if selectedSong then
+        uri = "songs/" .. selectedSong
     end
 end
 
 function play()
-    local songs = fs.list("songs/") -- List songs before entering the loop
+    songs = fs.list("songs/") -- List songs before entering the loop
     while true do
         if isShuffleEnabled then
             shuffleSongs() -- Shuffle the songs
         end
-        
+
+        -- Ensure we have selected a song before moving on
+        updateURI()  -- This updates selectedSong and uri based on your logic
+
         if not selectedSong or #songs == 0 then
             print("No song selected to play.")
             break -- Exit the loop if there's no song to play
         end
-        
-        selectedSong = songs[1] -- Default to the first song if nothing is selected
-        updateURI() -- Assume this updates `uri` based on `selectedSong`
-        
-        print("Now playing: " .. (selectedSong))
+
+        print("Now playing: " .. (selectedSong or "Unknown song")) -- This should now properly show the selected song
         
         local response = http.get(uri, nil, true) -- Fetch the new response
-        
+
         if not response then
-            print("Failed to get response for: " .. selectedSong)
+            print("Failed to get response for: " .. (selectedSong or "Unknown song"))
             break -- Exit if the response is nil
         end
 
@@ -165,7 +173,7 @@ function play()
             chunk = response.read(chunkSize) -- Attempt to read a chunk
             
             if not chunk then
-                print("Song ended: " .. (selectedSong))
+                print("Song ended: " .. (selectedSong or "Unknown song")) -- This should report the correct song name
                 break -- Exit the inner loop if the song has ended
             end
 
@@ -174,8 +182,6 @@ function play()
                 os.pullEvent("speaker_audio_empty") -- Wait for the speaker to be ready
             end
         end
-        
-        --selectedSong = nil -- Reset selection for the next iteration
     end
 end
 
