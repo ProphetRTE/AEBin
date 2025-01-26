@@ -1,7 +1,7 @@
 os.loadAPI("lib/aecord")
 os.loadAPI("lib/aeprint")
 
-local success, hook = AECord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
+local success, hook = aecord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
  if not success then
   error("Webhook connection failed! Reason: " .. hook)
  end
