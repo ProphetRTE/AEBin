@@ -25,7 +25,7 @@ function modSuggestion()
     local modRequestee = readInput("Who is requesting the mod: ")
 
     -- Construct and send the embed message
-    hook.sendEmbed(nill, "New Mod Suggestion", string.format("%s - %s", author, modName), nil, 0x00FF00, nil, nil, modRequestee, nil)
+    hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, modName), nil, 0x00FF00, nil, nil, modRequestee, nil)
     aeprint.aeprint("Your mod suggestion has been sent to the server!")
 end
 
