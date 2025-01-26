@@ -28,7 +28,7 @@ append([[
 local tasks = {}
 for i, path in ipairs(files) do
   tasks[i] = function()
-    local req, err = http.get("https://raw.githubusercontent.com/SquidDev-CC/artist/HEAD/src/" .. path)
+    local req, err = http.get("https://cc.prophecypixel.com/scripst/computercraft/ME/src/" .. path)
     if not req then error("Failed to download " .. path .. ": " .. err, 0) end
 
     local file = fs.open(".artist.d/src/" .. path, "w")
