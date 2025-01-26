@@ -1,4 +1,4 @@
-local AECord = require("/AECord")
+local AECord = require("/libs/AECord")
 
 local success, hook = AECord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
 if not success then
