@@ -22,9 +22,12 @@ function songrequest()
     -- Ask for the song name
     local songName = readInput("Enter the song name: ")
 
+    
+    local songRequestee = readInput("Who is requesting the song: ")
+
     -- Print the formatted message
     print()
-    hook.sendEmbed(string.format("%s - %s", author, songName), "New Song Request", "Someone just requested a song!", nil, 0xFF00FF, nil, nil, nil, nil)
+    hook.sendEmbed(string.format("%s - %s", author, songName), "New Song Request", "Someone just requested a song!", nil, 0xFF00FF, nil, nil, songRequestee, nil)
     print("Your song request has been sent to the server!")
 end
 

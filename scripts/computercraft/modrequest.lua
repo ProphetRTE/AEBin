@@ -21,8 +21,10 @@ function modSuggestion()
     -- Ask for the name of the mod
     local modName = readInput("Enter the name of the mod: ")
 
+    local modRequestee = readInput("Who is requesting the mod: ")
+
     -- Construct and send the embed message
-    hook.sendEmbed(string.format("%s - %s", author, modName), "New Mod Suggestion", "Someone just suggested a new mod!", nil, 0x00FF00, nil, nil, nil, nil)
+    hook.sendEmbed("Someone just suggested a new mod!", "New Mod Suggestion", string.format("%s - %s", author, modName), nil, 0x00FF00, nil, nil, modRequestee, nil)
     print("Your mod suggestion has been sent to the server!")
 end
 
