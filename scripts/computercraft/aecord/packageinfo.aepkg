@@ -1,0 +1,14 @@
+{
+    name = "AECord",
+    id = "aepkg",
+    comment = "A discord hooking api",
+    author = "AEV1ridis",
+    website = "https://cc.prophecypixel.com/scripts/computercraft/aecord",
+    newestversion = "1.0",
+    dependencies = {
+    },
+    install = {
+        type = "script",
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/aecord.lua"
+    }
+}

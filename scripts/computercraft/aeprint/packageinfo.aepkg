@@ -1,5 +1,5 @@
 {   
-	name = "AEPrint",
+	name = "aeprint",
 	comment = "Printing Library to print in console",
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aeprint/",

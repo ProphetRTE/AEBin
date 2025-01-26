@@ -120,12 +120,12 @@ if (args[1]=="install") or (args[1]==nil) then
 	print("[Installer] Well, hello there!")
 	print("[Installer] Thank you for downloading the ComputerCraft Package Tool! Installing...")
 	print("[Installer] Installing 'aeprint' library...")
-	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint")== false then
+	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint/")== false then
 		return false
 	end
 	print("[Installer] Successfully installed 'properprint'!")
 	print("[Installer] Installing 'aepkg'...")
-	if downloadfile("aepkg","cc.prophecypixel.com/scripts/computercraft/aepkg/main/aepkg")==false then
+	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/main/aepkg/")==false then
 		return false
 	end
 	print("[Installer] Successfully installed 'aepkg'!")
@@ -136,12 +136,12 @@ if (args[1]=="install") or (args[1]==nil) then
 	print("[Installer] Storing installed packages...")
 	storeData("/.aepkg/installedpackages",{
 		aepkg = packagedata["aepkg"]["newestversion"],
-		pprint = packagedata["pprint"]["newestversion"]
+		aeprint = packagedata["aeprint"]["newestversion"]
 	})
 	print("[Installer] 'aepkg' successfully installed!")
 elseif args[1]=="update" then
 	print("[Installer] Updating 'aepkg'...")
-	if downloadfile("aepkg","cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
+	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
 		return false
 	end
 elseif args[1]=="remove" then
