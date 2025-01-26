@@ -123,7 +123,7 @@ if (args[1]=="install") or (args[1]==nil) then
 	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint/")== false then
 		return false
 	end
-	print("[Installer] Successfully installed 'properprint'!")
+	print("[Installer] Successfully installed 'aeprint'!")
 	print("[Installer] Installing 'aepkg'...")
 	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/main/aepkg/")==false then
 		return false
