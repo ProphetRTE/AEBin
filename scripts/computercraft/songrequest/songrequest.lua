@@ -1,5 +1,5 @@
 local AECord = require("lib/aecord")
-
+local aeprint = require("lib/aeprint")
 
 local success, hook = AECord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
  if not success then
@@ -14,7 +14,7 @@ end
 
 -- Main function for the song request command
 function songrequest()
-    print("Welcome to the Song Request System")
+    aeprint.aeprint("Welcome to the Song Request System")
 
     -- Ask for the author
     local author = readInput("Enter the author: ")
@@ -26,9 +26,8 @@ function songrequest()
     local songRequestee = readInput("Who is requesting the song: ")
 
     -- Print the formatted message
-    print()
     hook.sendEmbed(string.format("%s - %s", author, songName), "New Song Request", "Someone just requested a song!", nil, 0xFF00FF, nil, nil, songRequestee, nil)
-    print("Your song request has been sent to the server!")
+    aeprint.aeprint("Your song request has been sent to the server!")
 end
 
 -- Execute the song request command
