@@ -26,7 +26,7 @@ function songrequest()
     local songRequestee = readInput("Who is requesting the song: ")
 
     -- Print the formatted message
-    hook.sendEmbed(string.format("%s - %s", author, songName), "New Song Request", "Someone just requested a song!", nil, 0xFF00FF, nil, nil, songRequestee, nil)
+    hook.sendEmbed(nil, "New Mod Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, songRequestee, nil)
     aeprint.aeprint("Your song request has been sent to the server!")
 end
 
