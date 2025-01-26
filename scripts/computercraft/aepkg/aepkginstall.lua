@@ -120,12 +120,12 @@ if (args[1]=="install") or (args[1]==nil) then
 	print("[Installer] Well, hello there!")
 	print("[Installer] Thank you for downloading the ComputerCraft Package Tool! Installing...")
 	print("[Installer] Installing 'aeprint' library...")
-	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint/")== false then
+	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint/aeprint")== false then
 		return false
 	end
 	print("[Installer] Successfully installed 'aeprint'!")
 	print("[Installer] Installing 'aepkg'...")
-	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/main/aepkg/")==false then
+	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
 		return false
 	end
 	print("[Installer] Successfully installed 'aepkg'!")
