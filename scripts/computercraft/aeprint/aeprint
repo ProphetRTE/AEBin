@@ -1,5 +1,5 @@
 -- AEPrint 1.0; Still alpha version! Bugs may occur!
-function print(text,incl)
+function aeprint(text,incl)
     xsize,ysize = term.getSize()
     incl = incl or 0
     inclstring = ""
