@@ -1,17 +1,17 @@
 --[[ 
 	ComputerCraft Package Tool
-	Author: PentagonLP
+	Author: AEV1ridis
 	Version: 1.0
 ]]
 
 -- Load properprint library
-os.loadAPI("lib/properprint")
+os.loadAPI("lib/aeprint")
 
 -- Read arguments
 args = {...}
 
 -- Link to a list of packages that are present by default (used in 'update()')
-defaultpackageurl = "https://raw.githubusercontent.com/PentagonLP/ccpt/main/defaultpackages.aepkgt"
+defaultpackageurl = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/defaultpackages.aepkg"
 
 -- Counters to print out at the very end
 installed = 0
@@ -135,29 +135,29 @@ end
 	@return boolean installed: Is the package installed?
 ]]--
 function isinstalled(packageid)
-	return not (readData("/.aepkgt/installedpackages",true)[packageid] == nil)
+	return not (readData("/.aepkg/installedpackages",true)[packageid] == nil)
 end
 
 --[[ Checks wether a package is installed
 	@param String packageid: The ID of the package
-	@return Table|boolean packagedata|error: Read the data of the package from '/.aepkgt/packagedata'; If package is not found return false
+	@return Table|boolean packagedata|error: Read the data of the package from '/.aepkg/packagedata'; If package is not found return false
 ]]--
 function getpackagedata(packageid)
 	-- Read package data
-	allpackagedata = readData("/.aepkgt/packagedata",false)
+	allpackagedata = readData("/.aepkg/packagedata",false)
 	-- Is the package data built yet?
 	if allpackagedata==false then
-		properprint.pprint("Package Date is not yet built. Please execute 'ccpt update' first. If this message still apears, thats a bug, please report.")
+		properprint.pprint("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
 		return false
 	end
 	packagedata = allpackagedata[packageid]
 	-- Does the package exist?
 	if packagedata==nil then
-		properprint.pprint("No data about package '" .. packageid .. "' availible. If you've spelled everything correctly, try executing 'ccpt update'")
+		properprint.pprint("No data about package '" .. packageid .. "' availible. If you've spelled everything correctly, try executing 'aepkg update'")
 		return false
 	end
 	-- Is the package installed?
-	installedversion = readData("/.aepkgt/installedpackages",true)[packageid]
+	installedversion = readData("/.aepkg/installedpackages",true)[packageid]
 	if not (installedversion==nil) then
 		packagedata["status"] = "installed"
 		packagedata["installedversion"] = installedversion
@@ -175,7 +175,7 @@ end
 function checkforupdates(installedpackages,reducedprint)
 	-- If parameters are nil, load defaults
 	reducedprint = reducedprint or false
-	installedpackages = installedpackages or readData("/.aepkgt/installedpackages",true)
+	installedpackages = installedpackages or readData("/.aepkg/installedpackages",true)
 	
 	bprint("Checking for updates...",reducedprint)
 	
@@ -270,7 +270,7 @@ function update(startup)
 	end
 	-- Load custom packages
 	bprint("Reading Custom packages...",startup)
-	custompackages = readData("/.aepkgt/custompackages",true)
+	custompackages = readData("/.aepkg/custompackages",true)
 	-- Add Custom Packages to overall package list
 	for k,v in pairs(custompackages) do
 		packages[k] = v
@@ -288,10 +288,10 @@ function update(startup)
 		end
 	end
 	bprint("Storing package data of all packages...",startup)
-	storeData("/.aepkgt/packagedata",packagedata)
+	storeData("/.aepkg/packagedata",packagedata)
 	-- Read installed packages
 	bprint("Reading Installed Packages...",startup)
-	installedpackages = readData("/.aepkgt/installedpackages",true)
+	installedpackages = readData("/.aepkg/installedpackages",true)
 	installedpackagesnew = {}
 	for k,v in pairs(installedpackages) do
 		if packagedata[k]==nil then
@@ -300,7 +300,7 @@ function update(startup)
 			installedpackagesnew[k] = v
 		end
 	end
-	storeData("/.aepkgt/installedpackages",installedpackagesnew)
+	storeData("/.aepkg/installedpackages",installedpackagesnew)
 	bprint("Data update complete!",startup)
 	
 	-- Check for updates
@@ -312,7 +312,7 @@ end
 ]]--
 function install()
 	if args[2] == nil then
-		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'ccpt install <PackageID>'")
+		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg install <PackageID>'")
 		return
 	end
 	packageinfo = getpackagedata(args[2])
@@ -347,7 +347,7 @@ function installpackage(packageid,packageinfo)
 	-- Install dependencies
 	properprint.pprint("Installing dependencies of '" .. packageid .. "', if there are any...")
 	for k,v in pairs(packageinfo["dependencies"]) do
-		installedpackages = readData("/.aepkgt/installedpackages",true)
+		installedpackages = readData("/.aepkg/installedpackages",true)
 		if installedpackages[k] == nil then
 			if installpackage(k,nil)==false then
 				return false
@@ -366,9 +366,9 @@ function installpackage(packageid,packageinfo)
 	if result==false then
 		return false
 	end
-	installedpackages = readData("/.aepkgt/installedpackages",true)
+	installedpackages = readData("/.aepkg/installedpackages",true)
 	installedpackages[packageid] = packageinfo["newestversion"]
-	storeData("/.aepkgt/installedpackages",installedpackages)
+	storeData("/.aepkg/installedpackages",installedpackages)
 	print("'" .. packageid .. "' successfully installed!")
 	installed = installed+1
 end
@@ -383,19 +383,19 @@ function installlibrary(installdata)
 end
 
 function installscript(installdata)
-	result = downloadfile("/.aepkgt/tempinstaller",installdata["scripturl"])
+	result = downloadfile("/.aepkg/tempinstaller",installdata["scripturl"])
 	if result==false then
 		return false
 	end
-	shell.run("/.aepkgt/tempinstaller","install")
-	fs.delete("/.aepkgt/tempinstaller")
+	shell.run("/.aepkg/tempinstaller","install")
+	fs.delete("/.aepkg/tempinstaller")
 end
 
 -- Upgrade
 -- Upgrade installed Packages
 -- TODO: Single package updates
 function upgrade()
-	packageswithupdates = checkforupdates(readData("/.aepkgt/installedpackages",true),false)
+	packageswithupdates = checkforupdates(readData("/.aepkg/installedpackages",true),false)
 	if packageswithupdates==false then
 		return
 	end
@@ -423,7 +423,7 @@ function upgradepackage(packageid,packageinfo)
 		end
 	end
 	
-	installedpackages = readData("/.aepkgt/installedpackages",true)
+	installedpackages = readData("/.aepkg/installedpackages",true)
 	if installedpackages[packageid]==packageinfo["newestversion"] then
 		properprint.pprint("'" .. packageid .. "' already updated! Skipping... (This is NOT an error)")
 		return true
@@ -434,7 +434,7 @@ function upgradepackage(packageid,packageinfo)
 	-- Install/Update dependencies
 	properprint.pprint("Updating or installing new dependencies of '" .. packageid .. "', if there are any...")
 	for k,v in pairs(packageinfo["dependencies"]) do
-		installedpackages = readData("/.aepkgt/installedpackages",true)
+		installedpackages = readData("/.aepkg/installedpackages",true)
 		if installedpackages[k] == nil then
 			if installpackage(k,nil)==false then
 				return false
@@ -453,9 +453,9 @@ function upgradepackage(packageid,packageinfo)
 	if result==false then
 		return false
 	end
-	installedpackages = readData("/.aepkgt/installedpackages",true)
+	installedpackages = readData("/.aepkg/installedpackages",true)
 	installedpackages[packageid] = packageinfo["newestversion"]
-	storeData("/.aepkgt/installedpackages",installedpackages)
+	storeData("/.aepkg/installedpackages",installedpackages)
 	print("'" .. packageid .. "' successfully updated!")
 	updated = updated+1
 end
@@ -463,12 +463,12 @@ end
 --[[ Different install methodes require different update methodes
 ]]--
 function updatescript(installdata)
-	result = downloadfile("/.aepkgt/tempinstaller",installdata["scripturl"])
+	result = downloadfile("/.aepkg/tempinstaller",installdata["scripturl"])
 	if result==false then
 		return false
 	end
-	shell.run("/.aepkgt/tempinstaller","update")
-	fs.delete("/.aepkgt/tempinstaller")
+	shell.run("/.aepkg/tempinstaller","update")
+	fs.delete("/.aepkg/tempinstaller")
 end
 
 -- Uninstall
@@ -476,7 +476,7 @@ end
 function uninstall()
 	-- Check input
 	if args[2] == nil then
-		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'ccpt uninstall <PackageID>'")
+		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg uninstall <PackageID>'")
 		return
 	end
 	packageinfo = getpackagedata(args[2])
@@ -489,7 +489,7 @@ function uninstall()
 	end
 	
 	-- Check witch package(s) to remove (A package dependend on a package that's about to get removed is also removed)
-	packagestoremove = getpackagestoremove(args[2],packageinfo,readData("/.aepkgt/installedpackages",true),{})
+	packagestoremove = getpackagestoremove(args[2],packageinfo,readData("/.aepkg/installedpackages",true),{})
 	packagestoremovestring = ""
 	for k,v in pairs(packagestoremove) do
 		if not (k==args[2]) then
@@ -514,8 +514,8 @@ function uninstall()
 	
 	-- If cctp would be removed in the process, tell the user that that's a dump idea. But I mean, who am I to stop him, I guess...
 	for k,v in pairs(packagestoremove) do
-		if k=="ccpt" then
-			if args[2] == "ccpt" then
+		if k=="aepkg" then
+			if args[2] == "aepkg" then
 				properprint.pprint("You are about to uninstall the package tool itself. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
 			else
 				properprint.pprint("You are about to uninstall the package tool itself, because it depends one or more package that is removed. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
@@ -536,9 +536,9 @@ function uninstall()
 		if result==false then
 			return false
 		end
-		installedpackages = readData("/.aepkgt/installedpackages",true)
+		installedpackages = readData("/.aepkg/installedpackages",true)
 		installedpackages[k] = nil
-		storeData("/.aepkgt/installedpackages",installedpackages)
+		storeData("/.aepkg/installedpackages",installedpackages)
 		print("'" .. k .. "' successfully uninstalled!")
 		removed = removed+1
 	end
@@ -577,12 +577,12 @@ function removelibrary(installdata)
 end
 
 function removescript(installdata)
-	result = downloadfile("/.aepkgt/tempinstaller",installdata["scripturl"])
+	result = downloadfile("/.aepkg/tempinstaller",installdata["scripturl"])
 	if result==false then
 		return false
 	end
-	shell.run("/.aepkgt/tempinstaller","remove")
-	fs.delete("/.aepkgt/tempinstaller")
+	shell.run("/.aepkg/tempinstaller","remove")
+	fs.delete("/.aepkg/tempinstaller")
 end
 
 -- Add
@@ -591,23 +591,23 @@ end
 function add()
 	-- Check input
 	if args[2] == nil then
-		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'ccpt add <PackageID> <PackageinfoURL>'")
+		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
 		return
 	end
 	if args[3] == nil then
-		properprint.pprint("Incomplete command, missing: 'Packageinfo URL'; Syntax: 'ccpt add <PackageID> <PackageinfoURL>'")
+		properprint.pprint("Incomplete command, missing: 'Packageinfo URL'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
 		return
 	end
-	custompackages = readData("/.aepkgt/custompackages",true)
+	custompackages = readData("/.aepkg/custompackages",true)
 	if not (custompackages[args[2]]==nil) then
 		properprint.pprint("A custom package with the id '" .. args[2] .. "' already exists! Please choose a different one.")
 		return
 	end
-	if not file_exists("/.aepkgt/packagedata") then
-		properprint.pprint("Package Date is not yet built. Please execute 'ccpt update' first. If this message still apears, thats a bug, please report.")
+	if not file_exists("/.aepkg/packagedata") then
+		properprint.pprint("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
 	end
 	-- Overwrite default packages?
-	if not (readData("/.aepkgt/packagedata",true)[args[2]]==nil) then
+	if not (readData("/.aepkg/packagedata",true)[args[2]]==nil) then
 		properprint.pprint("A package with the id '" .. args[2] .. "' already exists! This package will be overwritten if you proceed. Do you want to proceed? [y/n]:")
 		if not ynchoice() then
 			return
@@ -615,7 +615,7 @@ function add()
 	end
 	-- Add entry in custompackages file
 	custompackages[args[2]] = args[3]
-	storeData("/.aepkgt/custompackages",custompackages)
+	storeData("/.aepkg/custompackages",custompackages)
 	properprint.pprint("Custom package successfully added!")
 	-- Update packagedata?
 	properprint.pprint("Do you want to update the package data ('cctp update')? Your custom package won't be able to be installed until updating. [y/n]:")
@@ -630,10 +630,10 @@ end
 function remove()
 	-- Check input
 	if args[2] == nil then
-		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'ccpt remove <PackageID>'")
+		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg remove <PackageID>'")
 		return
 	end
-	custompackages = readData("/.aepkgt/custompackages",true)
+	custompackages = readData("/.aepkg/custompackages",true)
 	if custompackages[args[2]]==nil then
 		properprint.pprint("A custom package with the id '" .. args[2] .. "' does not exist!")
 		return
@@ -646,7 +646,7 @@ function remove()
 	end
 	-- Remove entry from custompackages file
 	custompackages[args[2]] = nil
-	storeData("/.aepkgt/custompackages",custompackages)
+	storeData("/.aepkg/custompackages",custompackages)
 	properprint.pprint("Custom package successfully removed!")
 	-- Update packagedata?
 	properprint.pprint("Do you want to update the package data ('cctp update')? Your custom package will still be able to be installed/updated/uninstalled until updating. [y/n]:")
@@ -661,7 +661,7 @@ end
 function info()
 	-- Check input
 	if args[2] == nil then
-		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'ccpt info <PackageID>'")
+		properprint.pprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg info <PackageID>'")
 		return
 	end
 	-- Get packagedata
@@ -689,13 +689,13 @@ end
 function list()
 	-- Read data
 	print("Reading all packages data...")
-	if not file_exists("/.aepkgt/packagedata") then
+	if not file_exists("/.aepkg/packagedata") then
 		properprint.pprint("No Packages found. Please run 'cctp update' first.'")
 		return
 	end
-	packagedata = readData("/.aepkgt/packagedata",true)
+	packagedata = readData("/.aepkg/packagedata",true)
 	print("Reading Installed packages...")
-	installedpackages = readData("/.aepkgt/installedpackages",true)
+	installedpackages = readData("/.aepkg/installedpackages",true)
 	-- Print list
 	properprint.pprint("List of all known Packages:")
 	for k,v in pairs(installedpackages) do
@@ -725,7 +725,7 @@ end
 --[[ Print help
 ]]--
 function help()
-	print("Syntax: ccpt")
+	print("Syntax: aepkg")
 	for i,v in pairs(actions) do
 		if (not (v["comment"] == nil)) then
 			properprint.pprint(i .. ": " .. v["comment"],5)
@@ -741,14 +741,14 @@ end
 function version()
 	-- Count lines
 	linecount = 0
-	for _ in io.lines'ccpt' do
+	for _ in io.lines'aepkg' do
 		linecount = linecount + 1
 	end
 	-- Print version
 	properprint.pprint("ComputerCraft Package Tool")
-	properprint.pprint("by PentagonLP")
+	properprint.pprint("by AEV1ridis")
 	properprint.pprint("Version: 1.0")
-	properprint.pprint(linecount .. " lines of code containing " .. #readFile("ccpt",nil) .. " Characters.")
+	properprint.pprint(linecount .. " lines of code containing " .. #readFile("aepkg",nil) .. " Characters.")
 end
 
 -- Idk randomly appeared one day
@@ -803,14 +803,14 @@ autocompletepackagecache = {}
 function completepackageid(curText,filterstate)
 	result = {}
 	if curText=="" or curText==nil then
-		packagedata = readData("/.aepkgt/packagedata",false)
+		packagedata = readData("/.aepkg/packagedata",false)
 		if not packagedata then
 			return {}
 		end
 		autocompletepackagecache = packagedata
 	end
 	if not (filterstate==nil) then
-		installedversion = readData("/.aepkgt/installedpackages",true)
+		installedversion = readData("/.aepkg/installedpackages",true)
 	end
 	for i,v in pairs(autocompletepackagecache) do
 		if filterstate=="installed" then
@@ -831,7 +831,7 @@ end
 -- Complete packageid, but only for custom packages, which is much simpler
 function completecustompackageid(curText)
 	result = {}
-	custompackages = readData("/.aepkgt/custompackages",true)
+	custompackages = readData("/.aepkg/custompackages",true)
 	for i,v in pairs(custompackages) do
 		result = addtoresultifitfits(i,curText,result)
 	end
@@ -903,7 +903,7 @@ actions = {
 	},
 	version = {
 		func = version,
-		comment = "Print CCPT Version"
+		comment = "Print aepkg Version"
 	},
 	zzzzzz = {
 		func = zzzzzz
@@ -960,7 +960,7 @@ function tabcomplete(shell, parNumber, curText, lastText)
 	result = {}
 	tabcompletehelper(
 		{
-			ccpt = autocomplete
+			aepkg = autocomplete
 		},
 	lastText,curText or "",1)
 	return result
@@ -968,21 +968,21 @@ end
 
 -- MAIN PROGRAM --
 -- Register autocomplete function
-shell.setCompletionFunction("ccpt", tabcomplete)
+shell.setCompletionFunction("aepkg", tabcomplete)
 
 -- Add to startup file to run at startup
 startup = readFile("startup","") or ""
-if not startsWith(startup,"-- ccpt: Seach for updates\nshell.run(\"ccpt\",\"startup\")") then
-	startup = "-- ccpt: Seach for updates\nshell.run(\"ccpt\",\"startup\")\n\n" .. startup
+if not startsWith(startup,"-- aepkg: Seach for updates\nshell.run(\"aepkg\",\"startup\")") then
+	startup = "-- aepkg: Seach for updates\nshell.run(\"aepkg\",\"startup\")\n\n" .. startup
 	storeFile("startup",startup)
 	print("[Installer] Startup entry created!")
 end
 
 -- Call required function
 if #args==0 then
-	properprint.pprint("Incomplete command, missing: 'Action'; Type 'ccpt help' for syntax.")
+	properprint.pprint("Incomplete command, missing: 'Action'; Type 'aepkg help' for syntax.")
 else if actions[args[1]]==nil then
-		properprint.pprint("Action '" .. args[1] .. "' is unknown. Type 'ccpt help' for syntax.")
+		properprint.pprint("Action '" .. args[1] .. "' is unknown. Type 'aepkg help' for syntax.")
 	else
 		actions[args[1]]["func"]()
 	end

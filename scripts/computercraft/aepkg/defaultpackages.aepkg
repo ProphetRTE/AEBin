@@ -3,7 +3,7 @@
         aepkg = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/packageinfo.aepkg",
         aeprint = "https://cc.prophecypixel.com/scripts/computercraft/aeprint/packageinfo.aepkg",
 		fileutils = "https://cc.prophecypixel.com/scripts/computercraft/fileinfo/packageinfo.aepkg",
-		httputils = "https://cc.prophecypixel.com/scripts/computercraft/httputil/packageinfo.ccpt"
+		httputils = "https://cc.prophecypixel.com/scripts/computercraft/httputil/packageinfo.aepkg"
     },
     ccptversion = "1.0"
 }

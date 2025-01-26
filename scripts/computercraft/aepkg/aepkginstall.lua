@@ -1,6 +1,6 @@
 --[[ 
 	ComputerCraft Package Tool Installer
-	Author: PentagonLP
+	Author: AEV1ridis
 	Version: 1.0
 	Lines of Code: 161; Characters: 5541
 ]]
@@ -119,38 +119,38 @@ end
 if (args[1]=="install") or (args[1]==nil) then
 	print("[Installer] Well, hello there!")
 	print("[Installer] Thank you for downloading the ComputerCraft Package Tool! Installing...")
-	print("[Installer] Installing 'properprint' library...")
-	if downloadfile("lib/properprint","https://raw.githubusercontent.com/PentagonLP/properprint/main/properprint")== false then
+	print("[Installer] Installing 'aeprint' library...")
+	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint")== false then
 		return false
 	end
 	print("[Installer] Successfully installed 'properprint'!")
-	print("[Installer] Installing 'ccpt'...")
-	if downloadfile("ccpt","https://raw.githubusercontent.com/PentagonLP/ccpt/main/ccpt")==false then
+	print("[Installer] Installing 'aepkg'...")
+	if downloadfile("aepkg","cc.prophecypixel.com/scripts/computercraft/aepkg/main/aepkg")==false then
 		return false
 	end
-	print("[Installer] Successfully installed 'ccpt'!")
-	print("[Installer] Running 'ccpt update'...")
-	shell.run("ccpt","update")
+	print("[Installer] Successfully installed 'aepkg'!")
+	print("[Installer] Running 'aepkg update'...")
+	shell.run("aepkg","update")
 	print("[Installer] Reading package data...")
-	packagedata = readData("/.ccpt/packagedata")
+	packagedata = readData("/.aepkg/packagedata")
 	print("[Installer] Storing installed packages...")
-	storeData("/.ccpt/installedpackages",{
-		ccpt = packagedata["ccpt"]["newestversion"],
+	storeData("/.aepkg/installedpackages",{
+		aepkg = packagedata["aepkg"]["newestversion"],
 		pprint = packagedata["pprint"]["newestversion"]
 	})
-	print("[Installer] 'ccpt' successfully installed!")
+	print("[Installer] 'aepkg' successfully installed!")
 elseif args[1]=="update" then
-	print("[Installer] Updating 'ccpt'...")
-	if downloadfile("ccpt","https://raw.githubusercontent.com/PentagonLP/ccpt/main/ccpt")==false then
+	print("[Installer] Updating 'aepkg'...")
+	if downloadfile("aepkg","cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
 		return false
 	end
 elseif args[1]=="remove" then
-	print("[Installer] Uninstalling 'ccpt'...")
-	fs.delete("/ccpt")
-	fs.delete("/.ccpt")
-	shell.setCompletionFunction("ccpt", nil)
-	if file_exists("startup") and startsWith(startup,"-- ccpt: Seach for updates\nshell.run(\"ccpt\",\"startup\")") then
-		print("[Installer] Removing 'ccpt' from startup...")
+	print("[Installer] Uninstalling 'aepkg'...")
+	fs.delete("/aepkg")
+	fs.delete("/.aepkg")
+	shell.setCompletionFunction("aepkg", nil)
+	if file_exists("startup") and startsWith(startup,"-- aepkg Seach for updates\nshell.run(\"aepkg\",\"startup\")") then
+		print("[Installer] Removing 'aepkg' from startup...")
 		startup = readFile("startup","")
 		storeFile("startup",string.sub(startup,56))
 	end
