@@ -1,0 +1,16 @@
+{   
+	name = "HttpUtils",
+	comment = "Library to recieve data and files via http(s)",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/httputils/",
+	newestversion = "1.0",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/httputils//httputils.lua",
+		filename = "httputils",
+		type = "library",
+	},
+	dependencies = {
+		fileutils = "1.0",
+		pprint = "1.0"
+	},
+}
