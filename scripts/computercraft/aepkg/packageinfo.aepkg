@@ -1,0 +1,15 @@
+{
+    name = "ComputerCraft Package Tool",
+    id = "ccpt",
+    comment = "Package tool for ComputerCraft/CC: Tweaked",
+    author = "PentagonLP",
+    website = "https://github.com/PentagonLP/ccpt",
+    newestversion = "1.0",
+    dependencies = {
+        pprint = "1.0"
+    },
+    install = {
+        type = "script",
+        scripturl = "https://raw.githubusercontent.com/PentagonLP/ccpt/main/ccptinstall.lua"
+    }
+}

@@ -1,0 +1,13 @@
+{   
+	name = "AEPrint",
+	comment = "Printing Library to print in console",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/AEPrint/",
+	newestversion = "1.0",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/AEPrint/",
+		filename = "aeprint",
+		type = "library",
+	},
+	dependencies = {},
+}
