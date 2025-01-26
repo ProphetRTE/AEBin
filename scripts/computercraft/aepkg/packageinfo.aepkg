@@ -1,15 +1,15 @@
 {
     name = "ComputerCraft Package Tool",
-    id = "ccpt",
+    id = "aepkg",
     comment = "Package tool for ComputerCraft/CC: Tweaked",
-    author = "PentagonLP",
-    website = "https://github.com/PentagonLP/ccpt",
+    author = "AEV1ridis",
+    website = "https://cc.prophecypixel.com/scripts/computercraft/aepkg",
     newestversion = "1.0",
     dependencies = {
         pprint = "1.0"
     },
     install = {
         type = "script",
-        scripturl = "https://raw.githubusercontent.com/PentagonLP/ccpt/main/ccptinstall.lua"
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/aepkginstall.lua"
     }
 }

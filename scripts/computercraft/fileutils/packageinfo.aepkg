@@ -1,0 +1,13 @@
+{   
+	name = "Fileutils",
+	comment = "Library to read/write files",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/fileutils/",
+	newestversion = "1.0",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/fileutils/",
+		filename = "fileutils",
+		type = "library",
+	},
+	dependencies = {},
+}
