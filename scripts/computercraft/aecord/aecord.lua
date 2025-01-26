@@ -1,13 +1,3 @@
-
-local AECord = {
-  ["name"] = "AECord",
-  ["author"] = "ProphetRTE",
-  ["description"] = "A simple library for sending messages to Discord webhooks.",
-  ["date"] = "2025-01-25",
-  ["version"] = 1,
-  ["url"] = "cc.prophecypixel.com/scripts/computercraft/Libraries/"
-}
-
 local function expect(func, arg, n, expected)
   if type(arg) ~= expected then
     return error(("%s: bad argument #%d (expected %s, got %s)"):format(func, n, expected, type(arg)), 2)
@@ -22,7 +12,7 @@ local function send(url, data, headers)
   return true
 end
 
-function AECord.createWebhook(url)
+function createWebhook(url)
   expect("createWebhook", url, 1, "string")
   local success, message = http.checkURL(url)
   if not success then
