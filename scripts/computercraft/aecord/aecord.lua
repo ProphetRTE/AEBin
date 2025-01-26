@@ -1,10 +1,10 @@
-function expect(func, arg, n, expected)
+local function expect(func, arg, n, expected)
   if type(arg) ~= expected then
     return error(("%s: bad argument #%d (expected %s, got %s)"):format(func, n, expected, type(arg)), 2)
   end
 end
 
-function send(url, data, headers)
+local function send(url, data, headers)
   local request, message = http.post(url, data, headers)
   if not request then
     return false
