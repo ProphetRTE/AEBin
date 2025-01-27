@@ -25,8 +25,14 @@ function songrequest()
     
     local songRequestee = readInput("Who is requesting the song: ")
 
+    local songLink = readInput("Enter the song link(Type N/A if you don't want to find it.): ")
+
     -- Print the formatted message
-    hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, songRequestee, nil)
+    if songLink == "N/A" then
+        hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, songRequestee, nil)
+    else
+        hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, songRequestee, nil)
+    end
     aeprint.aeprint("Your song request has been sent to the server!")
 end
 

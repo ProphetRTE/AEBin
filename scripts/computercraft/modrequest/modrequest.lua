@@ -24,8 +24,14 @@ function modSuggestion()
 
     local modRequestee = readInput("Who is requesting the mod: ")
 
-    -- Construct and send the embed message
-    hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, modName), nil, 0x00FF00, nil, nil, modRequestee, nil)
+    local modLink = readInput("Enter the mod link(Type N/A if you don't want to find it.): ")
+
+    -- Print the formatted message
+    if modLink == "N/A" then
+        hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, modRequestee, nil)
+    else
+        hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, modRequestee, nil)
+    end
     aeprint.aeprint("Your mod suggestion has been sent to the server!")
 end
 
