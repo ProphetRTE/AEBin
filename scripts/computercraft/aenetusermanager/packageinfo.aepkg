@@ -9,5 +9,7 @@
 		filename = "aenetusermanager",
 		type = "library",
 	},
-	dependencies = {},
+	dependencies = {
+		aenet = "1.4",
+	},
 }
