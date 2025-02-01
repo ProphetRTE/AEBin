@@ -1,6 +1,6 @@
 -- main.lua
 local UserManager = require("lib/aenetusermanager")
-local aeprint = require("lib/aeprint")
+os.loadAPI("lib/aeprint")
 
 -- Start the server
 aeprint.aeprint("Enter the servername you want to use:")
