@@ -1,5 +1,5 @@
 -- main.lua
-local UserManager = require("userManager")
+local UserManager = require("lib/aenet-usermanager")
 local aeprint = require("lib/aeprint")
 
 -- Start the server
