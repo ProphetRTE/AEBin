@@ -5,7 +5,7 @@
         aeprint = "https://cc.prophecypixel.com/scripts/computercraft/aeprint/packageinfo.aepkg",
         aeprogress = "https://cc.prophecypixel.com/scripts/computercraft/aeprogress/packageinfo.aepkg",
         aenet = "https://cc.prophecypixel.com/scripts/computercraft/aenet/packageinfo.aepkg",
-        aenet-usermanager = "https://cc.prophecypixel.com/scripts/computercraft/aenet-usermanager/packageinfo.aepkg",
+        aenetusermanager = "https://cc.prophecypixel.com/scripts/computercraft/aenetusermanager/packageinfo.aepkg",
         aecord = "https://cc.prophecypixel.com/scripts/computercraft/aecord/packageinfo.aepkg",
 		fileutils = "https://cc.prophecypixel.com/scripts/computercraft/fileutils/packageinfo.aepkg",
 		httputils = "https://cc.prophecypixel.com/scripts/computercraft/httputils/packageinfo.aepkg",

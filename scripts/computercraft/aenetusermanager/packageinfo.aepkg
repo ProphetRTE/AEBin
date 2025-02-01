@@ -1,0 +1,13 @@
+{   
+	name = "AENetUsermanager",
+	comment = "User Library for my aenet login system.",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/aenetusermanager/",
+	newestversion = "1.7",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/aenetusermanager/aenet-usermanager",
+		filename = "aenetusermanager",
+		type = "library",
+	},
+	dependencies = {},
+}
