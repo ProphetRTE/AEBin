@@ -1,79 +1,78 @@
-local fluidTypes = {"Water", "Lava", "Other"}
-local fluidLevels = {0, 0, 0} -- Levels for Water, Lava, Other
-local currentFluidIndex = 1
-local maxLevel = 1000 -- Max level for the fluid tanks
+-- Require the aeprogress library
+local aeprogress = require("lib/aeprogress")
 
--- Function to initialize Rednet
-local function initRednet()
-    rednet.open("top")  -- Change "top" to your connected side (e.g., "left", "right", etc.)
-    print("Ready to send requests...")
+-- Function to check if a peripheral has the required functions
+local function hasRequiredFunctions(peripheralName)
+    return peripheral.hasType(peripheralName, "tank") or peripheral.hasType(peripheralName, "fluid")
 end
 
--- Function to request fluid info
-local function requestFluidInfo()
-    rednet.broadcast({request = "fluid_info"})
-end
-
--- Function to display the fluid levels
-local function displayFluidLevels()
-    term.clear() -- Clear the terminal
-    term.setCursorPos(1, 1)
-    print("Fluid Levels:")
-    for i, fluid in ipairs(fluidTypes) do
-        local level = fluidLevels[i]
-        -- Calculate length of the bar based on the level (adjust multiplier based on your needs)
-        local barLength = (level / maxLevel) * 20
-        local bar = string.rep("=", barLength) .. string.rep(" ", 20 - barLength) -- 20 character width
-        if i == currentFluidIndex then
-            print("[" .. fluid .. "] " .. bar .. " " .. level .. " mB <==")
-        else
-            print("[" .. fluid .. "] " .. bar .. " " .. level .. " mB")
-        end
+-- Function to calculate the percentage of a tank
+local function calculatePercentage(tankSize, fluidAmount)
+    if tankSize == 0 then
+        return 0
+    else
+        return math.floor((fluidAmount / tankSize) * 100)
     end
 end
 
--- Function to handle received fluid info
-local function handleFluidInfo(message)
-    if type(message) == "table" and message.fluidLevels then
-        for i, level in ipairs(message.fluidLevels) do
-            fluidLevels[i] = level
+-- Function to format the tank information
+local function formatTank(peripheralName, tankName, tankSize, fluidAmount)
+    local percentage = calculatePercentage(tankSize, fluidAmount)
+    local bar = ""
+    for i = 1, percentage do
+        bar = bar .. "="
+    end
+    for i = 1, 100 - percentage do
+        bar = bar .. "-"
+    end
+    
+    return {
+        name = peripheralName .. ": " .. tankName,
+        size = tankSize,
+        fullnessBar = bar,
+        percentage = percentage
+    }
+end
+
+-- Function to process the tank peripherals
+local function processTank(peripheralName)
+    local fluidPeripheral = peripheral.wrap(peripheralName)
+    
+    -- Check for the required functions
+    if fluidPeripheral.pullFluid and fluidPeripheral.tanks and fluidPeripheral.pushFluid then
+        local tanks = fluidPeripheral.tanks()
+        local tankInfo = {}
+        
+        for _, tank in ipairs(tanks) do
+            -- Assume each tank has a `getFluid` method that returns the amount of fluid (this can vary by mod)
+            local fluidAmount = fluidPeripheral.getFluid(tank)
+            local tankDetails = formatTank(peripheralName, tank, fluidPeripheral.getTankInfo(tank).capacity, fluidAmount)
+
+            -- Store tank information for progress display
+            table.insert(tankInfo, function()
+                print(tankDetails.name .. "\n  Size: " .. tankDetails.size .. "mB\n  Fullness: " .. tankDetails.fullnessBar .. " (" .. tankDetails.percentage .. "%)\n")
+            end)
         end
+        
+        -- Display progress
+        aeprogress(tankInfo, false)
+    else
+        print("Peripheral " .. peripheralName .. " does not support required functions.")
     end
 end
 
--- Function to scroll through fluid types
-local function scrollFluids(key)
-    if key == keys.up then
-        currentFluidIndex = currentFluidIndex - 1
-        if currentFluidIndex < 1 then
-            currentFluidIndex = #fluidTypes
-        end
-    elseif key == keys.down then
-        currentFluidIndex = currentFluidIndex + 1
-        if currentFluidIndex > #fluidTypes then
-            currentFluidIndex = 1
-        end
+-- Initialize Rednet
+rednet.open("top")  -- Change "top" to your connected side (e.g., "left", "right", etc.)
+
+-- Get a list of all connected peripherals
+local peripherals = peripheral.getNames()
+
+-- Check each peripheral for required functions
+for _, peripheralName in ipairs(peripherals) do
+    if hasRequiredFunctions(peripheralName) then
+        processTank(peripheralName)
     end
 end
 
--- Main function to run the client
-local function main()
-    initRednet()
-
-    -- Initial request for fluid info
-    requestFluidInfo()
-
-    while true do
-        displayFluidLevels()
-
-        local event, key = os.pullEvent("key")
-        scrollFluids(key)
-
-        -- Look for response from server
-        local senderId, message = rednet.receive()
-        handleFluidInfo(message)
-    end
-end
-
--- Start the fluid reporter
-main()
+-- Close Rednet when done
+rednet.close("top")
