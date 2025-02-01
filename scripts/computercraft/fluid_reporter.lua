@@ -1,5 +1,6 @@
 -- Require the aeprogress library
-local aeprogress = require("lib/aeprogress")
+os.loadAPI("lib/aeprogress")
+os.loadAPI("lib/aeprint")
 
 -- Function to check if a peripheral has the required functions
 local function hasRequiredFunctions(peripheralName)
@@ -50,14 +51,14 @@ local function processTank(peripheralName)
 
             -- Store tank information for progress display
             table.insert(tankInfo, function()
-                print(tankDetails.name .. "\n  Size: " .. tankDetails.size .. "mB\n  Fullness: " .. tankDetails.fullnessBar .. " (" .. tankDetails.percentage .. "%)\n")
+                aeprint.aeprint(tankDetails.name .. "\n  Size: " .. tankDetails.size .. "mB\n  Fullness: " .. tankDetails.fullnessBar .. " (" .. tankDetails.percentage .. "%)\n")
             end)
         end
         
         -- Display progress
-        aeprogress(tankInfo, false)
+        aeprogress.aeprogress(tankInfo, false)
     else
-        print("Peripheral " .. peripheralName .. " does not support required functions.")
+        aeprint.aeprint("Peripheral " .. peripheralName .. " does not support required functions.")
     end
 end
 
