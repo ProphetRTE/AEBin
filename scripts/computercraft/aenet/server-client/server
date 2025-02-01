@@ -1,0 +1,33 @@
+local aeNet = require("aeNet")
+-- aeNet.setLoggingEnabled(false)
+
+-- Runs when the event loop starts
+function onStart()
+  -- Start the server
+  aeNet.host("DemoServer")
+end
+
+-- Runs every time an event occurs
+function onEvent(event)
+  -- When a client opens a connection
+  if event[1] == "connection_opened" then
+    -- The socket used to send messages to the client
+    local socket = event[2]
+    -- Send some encypted messages back to the client
+    aeNet.send(socket, "Welcome to the server!")
+    aeNet.send(socket, "Please wait while I show off AENet...")
+    -- Each call to onEvent is run in a different thread, so you can use
+    -- blocking calls like sleep() and pullEvent() without freezing the whole server
+    os.sleep(5)
+    aeNet.send(socket, "Done!")
+  -- Received a message from the client
+  elseif event[1] == "encrypted_message" then
+    print("Client says: "..event[2])
+  -- Even works with non-AENet events!
+  elseif event[1] == "redstone" then
+    print("Something redstoney happened!")
+  end
+end
+
+-- Let AENet handle messages in the background
+aeNet.startEventLoop(onStart, onEvent)

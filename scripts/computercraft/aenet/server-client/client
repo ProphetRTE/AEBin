@@ -1,0 +1,21 @@
+local aeNet = require("aeNet")
+-- aeNet.setLoggingEnabled(false)
+
+-- Runs when the event loop starts
+function onStart()
+  -- Connect to the server
+  local socket = aeNet.connect("DemoServer")
+  -- Send an encrypted message
+  aeNet.send(socket, "Hello server!")
+end
+
+-- Runs every time an event occurs
+function onEvent(event)
+  -- Received a message from the server
+  if event[1] == "encrypted_message" then
+    print("Server said: "..event[2])
+  end
+end
+
+-- Let AENet handle messages in the background
+aeNet.startEventLoop(onStart, onEvent)
