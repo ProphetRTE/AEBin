@@ -1,5 +1,5 @@
 -- main.lua
-os.loadAPI("lib/aenetusermanager")
+local UserManager = require("lib/aenetusermanager")
 os.loadAPI("lib/aeprint")
 
 -- Start the server
