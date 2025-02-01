@@ -1,5 +1,6 @@
 os.loadAPI("lib/aecord")
 os.loadAPI("lib/aeprint")
+os.loadAPI("lib/aeprogress")
 
 local success, hook = aecord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
  if not success then
@@ -28,12 +29,19 @@ function songrequest()
     local songLink = readInput("Enter the song link(Type N/A if you don't want to find it.): ")
 
     -- Print the formatted message
-    if songLink == "N/A" then
-        hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, songRequestee, nil)
-    else
-        hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, songRequestee, nil)
+    actionTable = {}
+    actionTable[1] = function()
+        if songLink == "N/A" then
+            hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), nil, 0xFF00FF, nil, nil, songRequestee, nil)
+        else
+            hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, songRequestee, nil)
+        end
     end
-    aeprint.aeprint("Your song request has been sent to the server!")
+    actionTable[2] = function()
+        aeprint.aeprint("Your song request has been sent to the server!")
+    end
+    
+    aeprogress.bar(actionTable, false)
 end
 
 -- Execute the song request command

@@ -124,6 +124,11 @@ if (args[1]=="install") or (args[1]==nil) then
 		return false
 	end
 	print("[Installer] Successfully installed 'aeprint'!")
+	print("[Installer] Installing 'aeprogress' library...")
+	if downloadfile("lib/aeprogress","https://cc.prophecypixel.com/scripts/computercraft/aeprogress/aeprogress.lua")== false then
+		return false
+	end
+	print("[Installer] Successfully installed 'aeprogress'!")
 	print("[Installer] Installing 'aecord' library...")
 	if downloadfile("lib/aecord","https://cc.prophecypixel.com/scripts/computercraft/aecord/aecord.lua")== false then
 		return false
