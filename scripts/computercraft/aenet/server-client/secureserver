@@ -1,0 +1,29 @@
+local aeNet = require("lib/aenet")
+-- aeNet.setLoggingEnabled(false)
+
+function onStart()
+  -- Start the server
+  aeNet.host("LoginDemoServer")
+end
+
+function onEvent(event)
+  -- When a client logs in
+  if event[1] == "login" then
+    local username = event[2]
+    -- The socket of the client that just logged in
+    local socket = event[3]
+    -- The logged-in username is also stored in the socket
+    print(socket.username.." just logged in.")
+  -- Received a message from the client
+  elseif event[1] == "encrypted_message" then
+    local socket = event[3]
+    -- Check the username to see if the client is logged in
+    if socket.username ~= nil then
+      print(socket.username.." says: "..event[2])
+    else
+      aeNet.send(socket, "Sorry, I only talk to logged in users.")
+    end
+  end
+end
+
+aeNet.startEventLoop(onStart, onEvent)

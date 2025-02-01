@@ -20,24 +20,12 @@ function onEvent(event)
     -- blocking calls like sleep() and pullEvent() without freezing the whole server
     os.sleep(5)
     aeNet.send(socket, "Done!")
+  -- Received a message from the client
+  elseif event[1] == "encrypted_message" then
+    print("Client says: "..event[2])
   -- Even works with non-AENet events!
   elseif event[1] == "redstone" then
     print("Something redstoney happened!")
-    -- When a client logs in
-  elseif event[1] == "login" then
-    local username = event[2]
-    -- The socket of the client that just logged in
-    local socket = event[3]
-    -- The logged-in username is also stored in the socket
-    print(socket.username.." just logged in.")
-  -- Received a message from the client
-  elseif event[1] == "encrypted_message" then
-    local socket = event[3]
-    -- Check the username to see if the client is logged in
-    if socket.username ~= nil then
-    print(socket.username.." says: "..event[2])
-    else
-    cryptoNet.send(socket, "Sorry, I only talk to logged in users.")
   end
 end
 
