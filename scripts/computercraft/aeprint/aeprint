@@ -1,5 +1,7 @@
 -- AEPrint 1.0; Still alpha version! Bugs may occur!
-function print(text,incl)
+local aeprint = {}
+
+function aeprint.print(text,incl)
     xsize,ysize = term.getSize()
     incl = incl or 0
     inclstring = ""
@@ -9,7 +11,7 @@ function print(text,incl)
     printWithoutLinebreakHelper(text,inclstring,xsize,true)
 end
  
-function printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
+function aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
     
     -- Remaining text fits in one line?
     if #inclstring+#text<=xsize then 
@@ -40,7 +42,7 @@ function printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
 end
  
 -- Helper function to get the last position of a character in a string
-function getLastCharPosition(string,char)
+function aeprint.getLastCharPosition(string,char)
     index = string.find(string, char .. "[^" .. char .. "]*$")
     return index
 end
