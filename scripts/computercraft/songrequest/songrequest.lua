@@ -37,11 +37,9 @@ function songrequest()
             hook.sendEmbed("", "New Song Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, songRequestee, nil)
         end
     end
-    actionTable[2] = function()
-        aeprint.aeprint("Your song request has been sent to the server!")
-    end
     
     aeprogress.bar(actionTable, false)
+    aeprint.aeprint("Your song request has been sent to the server!")
 end
 
 -- Execute the song request command
