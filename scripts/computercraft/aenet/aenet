@@ -2957,8 +2957,12 @@ end
 function resolveModemSide(modemSide)
 	-- If no modem side argument is provided, search for a modem and use that side.
   if modemSide == nil then
-    local modem = peripheral.find("modem", function(name, wrapped) return wrapped.isWireless() end)
-	local modemSide = modem.side or nil
+    for _,side in pairs(peripheral.getNames()) do
+      if peripheral.getType(side) == "modem" && peripheral.isWireless(side) then
+        modemSide = side
+        break
+      end
+    end
     if modemSide == nil then
       error("Could not find a modem.", 3)
     end
