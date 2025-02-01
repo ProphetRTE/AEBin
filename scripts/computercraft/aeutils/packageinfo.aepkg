@@ -1,0 +1,13 @@
+{   
+	name = "AEUtils",
+	comment = "All useful coding functions",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/",
+	newestversion = "1.0",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/aeutils",
+		filename = "aeutils",
+		type = "library",
+	},
+	dependencies = {},
+}

@@ -9,6 +9,6 @@
     },
     install = {
         type = "script",
-        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/aecord.lua"
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/aepkg/aecord"
     }
 }
