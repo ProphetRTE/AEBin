@@ -15,7 +15,7 @@ end
 
 -- Main function for the song request command
 function songrequest()
-    aeprint.print("Welcome to the Song Request System")
+    aeprint.aeprint("Welcome to the Song Request System")
 
     -- Ask for the author
     local author = readInput("Enter the author: ")
@@ -39,7 +39,7 @@ function songrequest()
     end
     
     aeprogress.bar(actionTable, false)
-    aeprint.print("Your song request has been sent to the server!")
+    aeprint.aeprint("Your song request has been sent to the server!")
 end
 
 -- Execute the song request command
