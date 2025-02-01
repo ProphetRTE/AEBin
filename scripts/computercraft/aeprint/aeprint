@@ -8,7 +8,7 @@ function aeprint.print(text,incl)
     for i=1,incl,1 do
         inclstring = " " .. inclstring
     end
-    printWithoutLinebreakHelper(text,inclstring,xsize,true)
+    aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,true)
 end
  
 function aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
