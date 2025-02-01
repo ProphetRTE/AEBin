@@ -1,24 +1,24 @@
 -- main.lua
-local UserManager = require("lib/aenet-usermanager")
+local UserManager = require("lib/aenetusermanager")
 local aeprint = require("lib/aeprint")
 
 -- Start the server
-aeprint.aeprint("Enter the servername you want to use:")
+aeprint.print("Enter the servername you want to use:")
 local serverName = read() -- Use read() in the interactive prompt, or io.read() in a script
 UserManager.startServer(serverName)
-aeprint.aeprint("Server started: " .. serverName)
+aeprint.print("Server started: " .. serverName)
 
 -- Ask for user input
-aeprint.aeprint("Enter the username you want to add:")
+aeprint.print("Enter the username you want to add:")
 local username = read() -- Use read() in the interactive prompt, or io.read() in a script
 
-aeprint.aeprint("Enter the password for the user:")
+aeprint.print("Enter the password for the user:")
 local password = read() -- Use read() in the interactive prompt, or io.read() in a script
 
 -- Add the user with the provided credentials
 UserManager.addUser(username, password)
-aeprint.aeprint("User added: " .. username)
+aeprint.print("User added: " .. username)
 
 -- Close the server once we are done with it
 UserManager.closeServer()
-aeprint.aeprint("Server closed.")
+aeprint.print("Server closed.")
