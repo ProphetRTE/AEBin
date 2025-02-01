@@ -4,16 +4,28 @@ local function initRednet()
     print("Listening for requests...")
 end
 
+-- Simulated fluid levels (in millibuckets for example)
+local fluidLevels = {
+    Water = 500,  -- Example level for Water
+    Lava = 300,   -- Example level for Lava
+    Other = 150   -- Example level for other fluids (if applicable)
+}
+
 -- Function to handle received messages
 local function handleMessage(senderId, message)
     if type(message) == "table" and message.request then
         if message.request == "fluid_info" then
-            -- Here, you would call a function to gather fluid info
-            local fluidInfo = "Sample fluid info"  -- Replace with actual fluid info retrieval logic
-            rednet.send(senderId, {response = fluidInfo})
+            -- Gather fluid info and send it back
+            rednet.send(senderId, {
+                fluidLevels = {
+                    fluidLevels.Water,
+                    fluidLevels.Lava,
+                    fluidLevels.Other
+                }
+            })
         elseif message.request == "player_status" then
-            -- Here, you would gather player status
-            local playerStatus = "Player status data"  -- Replace with actual player status retrieval logic
+            -- Example player status; replace with actual logic to gather player status
+            local playerStatus = "Player is online and healthy"  -- Example status
             rednet.send(senderId, {response = playerStatus})
         else
             print("Unknown request from ID " .. senderId)
