@@ -14,7 +14,7 @@ end
 
 -- Main function for the mod suggestion command
 function modSuggestion()
-    aeprint.aeprint("Welcome to the Mod Suggestion System")
+    aeprint.print("Welcome to the Mod Suggestion System")
 
     -- Ask for the author of the mod
     local author = readInput("Enter the author of the mod: ")
@@ -32,7 +32,7 @@ function modSuggestion()
     else
         hook.sendEmbed("", "New Mod Suggestion", string.format("%s - %s", author, songName), songLink, 0xFF00FF, nil, nil, modRequestee, nil)
     end
-    aeprint.aeprint("Your mod suggestion has been sent to the server!")
+    aeprint.print("Your mod suggestion has been sent to the server!")
 end
 
 -- Execute the mod suggestion command
