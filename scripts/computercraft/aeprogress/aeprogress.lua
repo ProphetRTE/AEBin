@@ -1,4 +1,4 @@
-function aeprogress(pTable, hidden)
+function bar(pTable, hidden)
 	local termWidth, termHeight = term.getSize()
 	local ogTerm = term.current()
 	local bgWindow = window.create(ogTerm, 1, 1, termWidth, termHeight, false)
