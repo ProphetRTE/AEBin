@@ -1,5 +1,5 @@
 os.loadAPI("lib/aecord")
-os.loadAPI("lib/aeprint")
+local aeprint = require("lib/aeprint")
 os.loadAPI("lib/aeprogress")
 
 local success, hook = aecord.createWebhook("https://discordapp.com/api/webhooks/... (THE URL YOU GOT FROM DISCORD)")
