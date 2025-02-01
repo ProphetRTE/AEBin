@@ -24,7 +24,7 @@ function onEvent(event)
   elseif event[1] == "redstone" then
     print("Something redstoney happened!")
     -- When a client logs in
-  if event[1] == "login" then
+  elseif event[1] == "login" then
     local username = event[2]
     -- The socket of the client that just logged in
     local socket = event[3]
@@ -38,8 +38,7 @@ function onEvent(event)
     print(socket.username.." says: "..event[2])
     else
     cryptoNet.send(socket, "Sorry, I only talk to logged in users.")
-    end
-    end
+  end
 end
 
 -- Let AENet handle messages in the background
