@@ -91,12 +91,12 @@ end
 --]]
 function gethttpresult(url)
 	if not http.checkURL(defaultpackageurl) then
-		aeprint.aeprint("ERROR: Url '" .. url .. "' is blocked in config. Unable to fetch data.")
+		aeprint.print("ERROR: Url '" .. url .. "' is blocked in config. Unable to fetch data.")
 		return false
 	end
 	result = http.get(url)
 	if result == nil then
-		aeprint.aeprint("ERROR: Unable to reach '" .. url .. "'")
+		aeprint.print("ERROR: Unable to reach '" .. url .. "'")
 		return false
 	end
 	return result
@@ -147,13 +147,13 @@ function getpackagedata(packageid)
 	allpackagedata = readData("/.aepkg/packagedata",false)
 	-- Is the package data built yet?
 	if allpackagedata==false then
-		aeprint.aeprint("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
+		aeprint.print("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
 		return false
 	end
 	packagedata = allpackagedata[packageid]
 	-- Does the package exist?
 	if packagedata==nil then
-		aeprint.aeprint("No data about package '" .. packageid .. "' availible. If you've spelled everything correctly, try executing 'aepkg update'")
+		aeprint.print("No data about package '" .. packageid .. "' availible. If you've spelled everything correctly, try executing 'aepkg update'")
 		return false
 	end
 	-- Is the package installed?
@@ -231,7 +231,7 @@ end
 ]]--
 function bprint(text, booleantocheck)
 	if not booleantocheck then
-		aeprint.aeprint(text)
+		aeprint.print(text)
 	end
 end
 
@@ -284,7 +284,7 @@ function update(startup)
 		if not (packageinfo==false) then
 			packagedata[k] = packageinfo
 		else
-			aeprint.aeprint("Failed to retrieve data about '" .. k .. "' via '" .. v .. "'. Skipping this package.")
+			aeprint.print("Failed to retrieve data about '" .. k .. "' via '" .. v .. "'. Skipping this package.")
 		end
 	end
 	bprint("Storing package data of all packages...",startup)
@@ -295,7 +295,7 @@ function update(startup)
 	installedpackagesnew = {}
 	for k,v in pairs(installedpackages) do
 		if packagedata[k]==nil then
-			aeprint.aeprint("Package '" .. k .. "' was removed from the packagelist, but is installed. It will no longer be marked as 'installed', but its files won't be deleted.")
+			aeprint.print("Package '" .. k .. "' was removed from the packagelist, but is installed. It will no longer be marked as 'installed', but its files won't be deleted.")
 		else
 			installedpackagesnew[k] = v
 		end
@@ -312,7 +312,7 @@ end
 ]]--
 function install()
 	if args[2] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg install <PackageID>'")
+		aeprint.print("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg install <PackageID>'")
 		return
 	end
 	packageinfo = getpackagedata(args[2])
@@ -320,7 +320,7 @@ function install()
 		return
 	end
 	if packageinfo["status"] == "installed" then
-		aeprint.aeprint("Package '" .. args[2] .. "' is already installed.")
+		aeprint.print("Package '" .. args[2] .. "' is already installed.")
 		return
 	end
 	-- Ok, all clear, lets get installing!
@@ -334,7 +334,7 @@ end
 --[[ Recursive function to install Packages and dependencies
 ]]--
 function installpackage(packageid,packageinfo)
-	aeprint.aeprint("Installing '" .. packageid .. "'...")
+	aeprint.print("Installing '" .. packageid .. "'...")
 	-- Get Packageinfo
 	if (packageinfo==nil) then
 		print("Reading packageinfo of '" .. packageid .. "'...")
@@ -345,7 +345,7 @@ function installpackage(packageid,packageinfo)
 	end
 	
 	-- Install dependencies
-	aeprint.aeprint("Installing dependencies of '" .. packageid .. "', if there are any...")
+	aeprint.print("Installing dependencies of '" .. packageid .. "', if there are any...")
 	for k,v in pairs(packageinfo["dependencies"]) do
 		installedpackages = readData("/.aepkg/installedpackages",true)
 		if installedpackages[k] == nil then
@@ -402,7 +402,7 @@ function upgrade()
 	if #packageswithupdates==0 then
 		return
 	end
-	aeprint.aeprint("Do you want to update these packages? [y/n]:")
+	aeprint.print("Do you want to update these packages? [y/n]:")
 	if not ynchoice() then
 		return
 	end
@@ -425,14 +425,14 @@ function upgradepackage(packageid,packageinfo)
 	
 	installedpackages = readData("/.aepkg/installedpackages",true)
 	if installedpackages[packageid]==packageinfo["newestversion"] then
-		aeprint.aeprint("'" .. packageid .. "' already updated! Skipping... (This is NOT an error)")
+		aeprint.print("'" .. packageid .. "' already updated! Skipping... (This is NOT an error)")
 		return true
 	else
-		aeprint.aeprint("Updating '" .. packageid .. "' (" .. installedpackages[packageid] .. "->" .. packageinfo["newestversion"] .. ")...")
+		aeprint.print("Updating '" .. packageid .. "' (" .. installedpackages[packageid] .. "->" .. packageinfo["newestversion"] .. ")...")
 	end
 	
 	-- Install/Update dependencies
-	aeprint.aeprint("Updating or installing new dependencies of '" .. packageid .. "', if there are any...")
+	aeprint.print("Updating or installing new dependencies of '" .. packageid .. "', if there are any...")
 	for k,v in pairs(packageinfo["dependencies"]) do
 		installedpackages = readData("/.aepkg/installedpackages",true)
 		if installedpackages[k] == nil then
@@ -476,7 +476,7 @@ end
 function uninstall()
 	-- Check input
 	if args[2] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg uninstall <PackageID>'")
+		aeprint.print("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg uninstall <PackageID>'")
 		return
 	end
 	packageinfo = getpackagedata(args[2])
@@ -484,7 +484,7 @@ function uninstall()
 		return
 	end
 	if packageinfo["status"] == "not installed" then
-		aeprint.aeprint("Package '" .. args[2] .. "' is not installed.")
+		aeprint.print("Package '" .. args[2] .. "' is not installed.")
 		return
 	end
 	
@@ -499,14 +499,14 @@ function uninstall()
 	
 	-- Are you really really REALLY sure to remove these packages?
 	if not (#packagestoremovestring==0) then
-		aeprint.aeprint("There are installed packages that depend on the package you want to uninstall: " .. packagestoremovestring)
-		aeprint.aeprint("These packages will be removed if you proceed. Are you sure you want to continue? [y/n]:")
+		aeprint.print("There are installed packages that depend on the package you want to uninstall: " .. packagestoremovestring)
+		aeprint.print("These packages will be removed if you proceed. Are you sure you want to continue? [y/n]:")
 		if ynchoice() == false then
 			return
 		end
 	else
-		aeprint.aeprint("There are no installed packages that depend on the package you want to uninstall.")
-		aeprint.aeprint("'" .. args[2] .. "' will be removed if you proceed. Are you sure you want to continue? [y/n]:")
+		aeprint.print("There are no installed packages that depend on the package you want to uninstall.")
+		aeprint.print("'" .. args[2] .. "' will be removed if you proceed. Are you sure you want to continue? [y/n]:")
 		if ynchoice() == false then
 			return
 		end
@@ -516,9 +516,9 @@ function uninstall()
 	for k,v in pairs(packagestoremove) do
 		if k=="aepkg" then
 			if args[2] == "aepkg" then
-				aeprint.aeprint("You are about to uninstall the package tool itself. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
+				aeprint.print("You are about to uninstall the package tool itself. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
 			else
-				aeprint.aeprint("You are about to uninstall the package tool itself, because it depends one or more package that is removed. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
+				aeprint.print("You are about to uninstall the package tool itself, because it depends one or more package that is removed. You won't be able to install or uninstall stuff using the tool afterwords (obviously). Are you sure you want to continue? [y/n]:")
 			end
 			
 			if ynchoice() == false then
@@ -591,24 +591,24 @@ end
 function add()
 	-- Check input
 	if args[2] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
+		aeprint.print("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
 		return
 	end
 	if args[3] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Packageinfo URL'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
+		aeprint.print("Incomplete command, missing: 'Packageinfo URL'; Syntax: 'aepkg add <PackageID> <PackageinfoURL>'")
 		return
 	end
 	custompackages = readData("/.aepkg/custompackages",true)
 	if not (custompackages[args[2]]==nil) then
-		aeprint.aeprint("A custom package with the id '" .. args[2] .. "' already exists! Please choose a different one.")
+		aeprint.print("A custom package with the id '" .. args[2] .. "' already exists! Please choose a different one.")
 		return
 	end
 	if not file_exists("/.aepkg/packagedata") then
-		aeprint.aeprint("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
+		aeprint.print("Package Date is not yet built. Please execute 'aepkg update' first. If this message still apears, thats a bug, please report.")
 	end
 	-- Overwrite default packages?
 	if not (readData("/.aepkg/packagedata",true)[args[2]]==nil) then
-		aeprint.aeprint("A package with the id '" .. args[2] .. "' already exists! This package will be overwritten if you proceed. Do you want to proceed? [y/n]:")
+		aeprint.print("A package with the id '" .. args[2] .. "' already exists! This package will be overwritten if you proceed. Do you want to proceed? [y/n]:")
 		if not ynchoice() then
 			return
 		end
@@ -616,9 +616,9 @@ function add()
 	-- Add entry in custompackages file
 	custompackages[args[2]] = args[3]
 	storeData("/.aepkg/custompackages",custompackages)
-	aeprint.aeprint("Custom package successfully added!")
+	aeprint.print("Custom package successfully added!")
 	-- Update packagedata?
-	aeprint.aeprint("Do you want to update the package data ('cctp update')? Your custom package won't be able to be installed until updating. [y/n]:")
+	aeprint.print("Do you want to update the package data ('cctp update')? Your custom package won't be able to be installed until updating. [y/n]:")
 	if ynchoice() then
 		update()
 	end
@@ -630,26 +630,26 @@ end
 function remove()
 	-- Check input
 	if args[2] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg remove <PackageID>'")
+		aeprint.print("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg remove <PackageID>'")
 		return
 	end
 	custompackages = readData("/.aepkg/custompackages",true)
 	if custompackages[args[2]]==nil then
-		aeprint.aeprint("A custom package with the id '" .. args[2] .. "' does not exist!")
+		aeprint.print("A custom package with the id '" .. args[2] .. "' does not exist!")
 		return
 	end
 	-- Really wanna do that?
-	aeprint.aeprint("Do you want to remove the custom package '" .. args[2] .. "'? There is no undo. [y/n]:")
+	aeprint.print("Do you want to remove the custom package '" .. args[2] .. "'? There is no undo. [y/n]:")
 	if not ynchoice() then
-		aeprint.aeprint("Canceled. No action was taken.")
+		aeprint.print("Canceled. No action was taken.")
 		return
 	end
 	-- Remove entry from custompackages file
 	custompackages[args[2]] = nil
 	storeData("/.aepkg/custompackages",custompackages)
-	aeprint.aeprint("Custom package successfully removed!")
+	aeprint.print("Custom package successfully removed!")
 	-- Update packagedata?
-	aeprint.aeprint("Do you want to update the package data ('cctp update')? Your custom package will still be able to be installed/updated/uninstalled until updating. [y/n]:")
+	aeprint.print("Do you want to update the package data ('cctp update')? Your custom package will still be able to be installed/updated/uninstalled until updating. [y/n]:")
 	if ynchoice() then
 		update()
 	end
@@ -661,7 +661,7 @@ end
 function info()
 	-- Check input
 	if args[2] == nil then
-		aeprint.aeprint("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg info <PackageID>'")
+		aeprint.print("Incomplete command, missing: 'Package ID'; Syntax: 'aepkg info <PackageID>'")
 		return
 	end
 	-- Get packagedata
@@ -670,16 +670,16 @@ function info()
 		return
 	end
 	-- Print packagedata
-	aeprint.aeprint(packageinfo["name"] .. " by " .. packageinfo["author"])
-	aeprint.aeprint(packageinfo["comment"])
+	aeprint.print(packageinfo["name"] .. " by " .. packageinfo["author"])
+	aeprint.print(packageinfo["comment"])
 	if not (packageinfo["website"]==nil) then
-		aeprint.aeprint("Website: " .. packageinfo["website"])
+		aeprint.print("Website: " .. packageinfo["website"])
 	end
-	aeprint.aeprint("Installation Type: " .. installtypes[packageinfo["install"]["type"]]["desc"])
+	aeprint.print("Installation Type: " .. installtypes[packageinfo["install"]["type"]]["desc"])
 	if packageinfo["status"]=="installed" then
-		aeprint.aeprint("Installed, Version: " .. packageinfo["installedversion"] .. "; Newest Version is " .. packageinfo["newestversion"])
+		aeprint.print("Installed, Version: " .. packageinfo["installedversion"] .. "; Newest Version is " .. packageinfo["newestversion"])
 	else
-		aeprint.aeprint("Not installed; Newest Version is " .. packageinfo["newestversion"])
+		aeprint.print("Not installed; Newest Version is " .. packageinfo["newestversion"])
 	end
 end
 
@@ -690,25 +690,25 @@ function list()
 	-- Read data
 	print("Reading all packages data...")
 	if not file_exists("/.aepkg/packagedata") then
-		aeprint.aeprint("No Packages found. Please run 'cctp update' first.'")
+		aeprint.print("No Packages found. Please run 'cctp update' first.'")
 		return
 	end
 	packagedata = readData("/.aepkg/packagedata",true)
 	print("Reading Installed packages...")
 	installedpackages = readData("/.aepkg/installedpackages",true)
 	-- Print list
-	aeprint.aeprint("List of all known Packages:")
+	aeprint.print("List of all known Packages:")
 	for k,v in pairs(installedpackages) do
 		if packagedata[k]["newestversion"] > v then
 			updateinfo = "outdated"
 		else
 			updateinfo = "up to date"
 		end
-		aeprint.aeprint(k .. " (installed, " .. updateinfo .. ")",2)
+		aeprint.print(k .. " (installed, " .. updateinfo .. ")",2)
 	end
 	for k,v in pairs(packagedata) do
 		if installedpackages[k] == nil then
-			aeprint.aeprint(k .. " (not installed)",2)
+			aeprint.print(k .. " (not installed)",2)
 		end
 	end
 end
@@ -728,7 +728,7 @@ function help()
 	print("Syntax: aepkg")
 	for i,v in pairs(actions) do
 		if (not (v["comment"] == nil)) then
-			aeprint.aeprint(i .. ": " .. v["comment"],5)
+			aeprint.print(i .. ": " .. v["comment"],5)
 		end
 	end
 	print("")
@@ -745,19 +745,19 @@ function version()
 		linecount = linecount + 1
 	end
 	-- Print version
-	aeprint.aeprint("ComputerCraft Package Tool")
-	aeprint.aeprint("by AEV1ridis")
-	aeprint.aeprint("Version: 1.0")
-	aeprint.aeprint(linecount .. " lines of code containing " .. #readFile("aepkg",nil) .. " Characters.")
+	aeprint.print("ComputerCraft Package Tool")
+	aeprint.print("by AEV1ridis")
+	aeprint.print("Version: 1.0")
+	aeprint.print(linecount .. " lines of code containing " .. #readFile("aepkg",nil) .. " Characters.")
 end
 
 -- Idk randomly appeared one day
 --[[ Fuse
 ]]--
 function zzzzzz()
-	aeprint.aeprint("The 'ohnosecond':")
-	aeprint.aeprint("The 'ohnosecond' is the fraction of time between making a mistake and realizing it.")
-	aeprint.aeprint("(Oh, and please fix the hole you've created)")
+	aeprint.print("The 'ohnosecond':")
+	aeprint.print("The 'ohnosecond' is the fraction of time between making a mistake and realizing it.")
+	aeprint.print("(Oh, and please fix the hole you've created)")
 end
 
 --[[ Explode
@@ -980,9 +980,9 @@ end
 
 -- Call required function
 if #args==0 then
-	aeprint.aeprint("Incomplete command, missing: 'Action'; Type 'aepkg help' for syntax.")
+	aeprint.print("Incomplete command, missing: 'Action'; Type 'aepkg help' for syntax.")
 else if actions[args[1]]==nil then
-		aeprint.aeprint("Action '" .. args[1] .. "' is unknown. Type 'aepkg help' for syntax.")
+		aeprint.print("Action '" .. args[1] .. "' is unknown. Type 'aepkg help' for syntax.")
 	else
 		actions[args[1]]["func"]()
 	end
@@ -1005,5 +1005,5 @@ if not (installed+updated+removed==0) then
 	else
 		actionmessage = actionmessage .. removed .. " packages removed."
 	end
-	aeprint.aeprint(actionmessage)
+	aeprint.print(actionmessage)
 end

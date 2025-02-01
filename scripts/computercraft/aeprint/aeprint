@@ -1,5 +1,5 @@
 -- AEPrint 1.0; Still alpha version! Bugs may occur!
-function aeprint(text,incl)
+function print(text,incl)
     xsize,ysize = term.getSize()
     incl = incl or 0
     inclstring = ""
@@ -44,3 +44,6 @@ function getLastCharPosition(string,char)
     index = string.find(string, char .. "[^" .. char .. "]*$")
     return index
 end
+
+
+return aeprint
