@@ -5,7 +5,7 @@
 ]]
 
 -- Load aeprint library
-local aeprint = require("lib/aeprint")
+os.loadAPI("lib/aeprint")
 
 -- Read arguments
 args = {...}

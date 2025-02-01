@@ -1,17 +1,15 @@
 -- AEPrint 1.0; Still alpha version! Bugs may occur!
-local aeprint = {}
-
-function aeprint.print(text,incl)
+function print(text,incl)
     xsize,ysize = term.getSize()
     incl = incl or 0
     inclstring = ""
     for i=1,incl,1 do
         inclstring = " " .. inclstring
     end
-    aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,true)
+    printWithoutLinebreakHelper(text,inclstring,xsize,true)
 end
  
-function aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
+function printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
     
     -- Remaining text fits in one line?
     if #inclstring+#text<=xsize then 
@@ -38,14 +36,13 @@ function aeprint.printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
     end
     
     -- Recursive call to handle remaining Text
-    aeprint.printWithoutLinebreakHelper(string.sub(text,cutposition+1-#inclstring),inclstringnew,xsize,false)
+    printWithoutLinebreakHelper(string.sub(text,cutposition+1-#inclstring),inclstringnew,xsize,false)
 end
  
 -- Helper function to get the last position of a character in a string
-function aeprint.getLastCharPosition(string,char)
+function getLastCharPosition(string,char)
     index = string.find(string, char .. "[^" .. char .. "]*$")
     return index
 end
-
 
 return aeprint
