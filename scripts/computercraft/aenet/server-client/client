@@ -1,4 +1,4 @@
-local aeNet = require("aeNet")
+local aeNet = require("lib/aenet")
 -- aeNet.setLoggingEnabled(false)
 
 -- Runs when the event loop starts
