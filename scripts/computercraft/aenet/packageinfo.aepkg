@@ -3,7 +3,7 @@
 	comment = "secure and simple-to-use encrypted networking framework with login system",
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aenet/",
-	newestversion = "1.4",
+	newestversion = "1.5",
 	install = {
 		url = "https://cc.prophecypixel.com/scripts/computercraft/aenet/aenet",
 		filename = "aenet",
