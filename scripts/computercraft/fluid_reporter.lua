@@ -1,8 +1,23 @@
-local drain = peripheral.wrap("tconstruct:drain_0")
+-- Valve, Monitor & Wireless Modem
+local val = peripheral.wrap("tconstruct:drain_0")
+local mon = peripheral.find("monitor")
+local wmod = peripheral.wrap(resolveModemSide())
 
-local previousTankInfo = {}
-local modemside = nil
-local _modem = nil
+local warning = 20       -- Warning level in %
+local cap                -- Tank capacity
+local amount             -- Amount liquid in tank
+local percentfull        -- Percent liquid in tank
+local lastpercent = 1000 -- Percent last loop
+local sendmsg            -- Message to send
+local sleeptime          -- How long to sleep
+local sendFreq = 3       -- Modem Frequency
+local content = "Water"  -- What is in tank?
+-- Make sure frequency match the main computer
+
+-- Set warning lamp to off
+redstone.setOutput("right", false)
+
+
 -- Used to process modem side arguments passed to functions.
 function resolveModemSide(modemSide)
 	-- If no modem side argument is provided, search for a modem and use that side.
@@ -12,7 +27,6 @@ function resolveModemSide(modemSide)
 			local modem = peripheral.wrap(side)
 			if modem.isWireless() then
 				modemSide = side
-                _modem = modem
 				break
 			end
 		end
@@ -37,64 +51,68 @@ function resolveModemSide(modemSide)
     error("No modem on side "..modemSide..".", 3)
   end
 
-  print("Using modem "..modemSide..".")
+  log("Using modem "..modemSide..".")
   return modemSide
 end
 
--- Function to separate modname and the actual name
-local function formatName(name)
-    local modName, actualName = name:match("([^:]+):(.+)")
-    if actualName then
-        local formattedName = actualName:gsub("_", " ") -- Replace underscores with spaces
-        return string.format("%s (%s)", formattedName, modName)
-    else
-        return name -- Return the original name if no match
-    end
-end
-
--- Function to format and check tank contents
-local function checkTankInfo(modemside)
-    rednet.open(modemside) -- Open the modem side for rednet communication
-
-    local tankInfo = drain.tanks()
-
-    if not tankInfo or #tankInfo == 0 then
-        return
-    end
-
-    local isChanged = false
-    local formattedOutput = {}
-
-    for i, tank in ipairs(tankInfo) do
-        if tank and tank.name and tank.amount then
-            local formattedName = formatName(tank.name)
-            table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d", i, formattedName, tank.amount))
-
-            -- Check for changes
-            if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
-                isChanged = true
-            end
-
-            -- Save current tank information for next comparison
-            previousTankInfo[i] = { name = tank.name, amount = tank.amount }
-        else
-            table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
-            previousTankInfo[i] = nil -- Clear previous info if undefined
-        end
-    end
-
-    -- If values have changed, broadcast the message
-    if isChanged then
-        local message = table.concat(formattedOutput, "\n")
-        rednet.broadcast(message) -- Use a specific message header if desired
-        print("Broadcasting tank information change:\n" .. message)
-    end
-end
-
-modemside = resolveModemSide() -- Resolve modem side if not provided
-
--- Main loop to continually check tank information
+-- Main prog loop, never stop
 while true do
-    checkTankInfo(modemside)
-    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
+  mon.clear()
+  mon.setCursorPos(1,1)
+
+  -- Fill table with data from tank valve
+  tanksTable = val.getTanks("WhatIsThis")
+  maintank = tanksTable[1]
+
+  -- Get values for tank capacity and amount
+  cap = maintank.capacity / 1000   -- in buckets
+  amount = maintank.amount    -- in millibuckets
+  
+  -- If tank is empty, to avoid math issues with 0
+  if amount == nil then
+    amount = 0
+    percentfull = 0
+  else
+    -- Use math.floor to convert to integers
+    amount = math.floor(amount / 1000)
+    percentfull = math.floor(100 * amount / cap)
+  end
+
+  -- Self explanatory :)
+  mon.write(content)
+  mon.setCursorPos(1,2)
+  mon.write("Amount: " ..amount .."/"..cap .." B.")
+  mon.setCursorPos(1,3)
+  mon.write("Amount: " ..percentfull .."%  ")
+
+  -- Check for change since last loop  
+  if percentfull == lastpercent then
+    print("Still " ..percentfull .. "%, nothing sent.")
+  else
+    -- If value changed, send to main!
+    sendmsg = content ..": " ..percentfull .." %"
+    --wmod.transmit(sendFreq,0,sendmsg)
+    print("Sent: " ..sendmsg)
+  end
+
+  -- Save for next loop
+  lastpercent = percentfull
+
+  -- Warning control, local lamp
+  mon.setCursorPos(1,5)
+  
+  if percentfull < warning then
+    redstone.setOutput("right", true)
+    mon.write("Less than " ..warning .."% full")
+    sleep(1)
+    redstone.setOutput("right", false)
+    sleeptime = 1 
+  else
+    -- Above warning level, sleep longer
+    mon.write("More than " ..warning .."% full")
+    sleeptime = 10
+  end
+
+  -- Sleep either 1 or 10 seconds
+  sleep(sleeptime)    
 end
