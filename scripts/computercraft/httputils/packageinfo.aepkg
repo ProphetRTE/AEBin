@@ -11,6 +11,6 @@
 	},
 	dependencies = {
 		fileutils = "1.0",
-		aeprint = "1.4"
+		aeprint = "1.5"
 	},
 }

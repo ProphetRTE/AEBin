@@ -13,7 +13,7 @@ function aeprintColor(txt, color)
     local oldColor = term.getTextColor()
     if term.isColor() then
         term.setTextColor(color)
-        print(txt)
+        printWithoutLinebreakHelper(txt,inclstring,xsize,true)
         term.setTextColor(oldColor)
     end
 end
