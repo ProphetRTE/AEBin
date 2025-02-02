@@ -141,7 +141,7 @@ local worker = coroutine.create(function()
   term.setCursorPos(1, 1)
   term.setBackgroundColor(bgColour)
   term.setTextColour(promptColour)
-  print(os.version() .. " (+MBS)")
+  print(os.version() .. " (+AES)")
   term.setTextColour(textColour)
 
   if shell.getRunningProgram() == get_first_startup() then

@@ -163,13 +163,13 @@ elseif arg[1] == "install" then
     fs.move("startup.lua", "startup/31_startup.lua")
   end
 
-  if fs.exists("startup/99_mbs.lua") then
-    write_coloured(colours.cyan, "Deleting the old startup/99_mbs.lua file. We now run before other startup files.\n")
-    fs.delete("startup/99_mbs.lua")
+  if fs.exists("startup/99_aes.lua") then
+    write_coloured(colours.cyan, "Deleting the old startup/99_aes.lua file. We now run before other startup files.\n")
+    fs.delete("startup/99_aes.lua")
   end
 
   -- We'll run at the first possible position to ensure
-  local handle = fs.open("startup/00_mbs.lua", "w")
+  local handle = fs.open("startup/00_aes.lua", "w")
   local current = shell.getRunningProgram()
   handle.writeLine(("assert(loadfile(%q, _ENV))('startup', %q)"):format(current, current))
   handle.close()
