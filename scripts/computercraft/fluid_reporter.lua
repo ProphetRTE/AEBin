@@ -1,12 +1,43 @@
 local drain = peripheral.wrap("tconstruct:drain_0")
 
--- Rednet setup (you may need to specify the modem side)
-local wirelessModem = peripheral.wrap("modem") -- Change this to the side your modem is connected to
-if wirelessModem.isWireless() then
-    wirelessModem.open(wirelessModem.getName())
-end
-
 local previousTankInfo = {}
+
+-- Used to process modem side arguments passed to functions.
+function resolveModemSide(modemSide)
+	-- If no modem side argument is provided, search for a modem and use that side.
+  if modemSide == nil then
+    for _,side in pairs(peripheral.getNames()) do
+		if peripheral.getType(side) == "modem" then
+			local modem = peripheral.wrap(side)
+			if modem.isWireless() then
+				modemSide = side
+				break
+			end
+		end
+    end
+    if modemSide == nil then
+      error("Could not find a modem.", 3)
+    end
+  else
+		-- If an argument was provided, check that it is a valid side.
+    local found = false
+    for _,side in pairs(redstone.getSides()) do
+      if side == modemSide then
+        found = true
+        break
+      end
+    end
+    if not found then
+      error(tostring(modemSide).." is not a valid side.", 3)
+    end
+  end
+  if peripheral.getType(modemSide) ~= "modem" then
+    error("No modem on side "..modemSide..".", 3)
+  end
+
+  log("Using modem "..modemSide..".")
+  return modemSide
+end
 
 -- Function to separate modname and the actual name
 local function formatName(name)
@@ -24,7 +55,6 @@ local function checkTankInfo()
     local tankInfo = drain.tanks()
 
     if not tankInfo or #tankInfo == 0 then
-        print("No tanks found.")
         return
     end
 
@@ -52,10 +82,12 @@ local function checkTankInfo()
     -- If values have changed, broadcast the message
     if isChanged then
         local message = table.concat(formattedOutput, "\n")
-        rednet.broadcast(message, "tankUpdate") -- Use a specific message header if desired
+        rednet.broadcast(message) -- Use a specific message header if desired
         print("Broadcasting tank information change:\n" .. message)
     end
 end
+
+resolveModemSide(nil) -- Resolve modem side if not provided
 
 -- Main loop to continually check tank information
 while true do
