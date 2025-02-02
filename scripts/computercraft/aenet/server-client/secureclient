@@ -1,28 +1,69 @@
 local aeNet = require("lib/aenet")
 -- aeNet.setLoggingEnabled(false)
 
+-- Function to send messages or commands to the server
+function handleCommands(socket)
+    while true do
+        write("Enter command to send (or 'exit' to quit): ")
+        local command = read()
+
+        if command == "exit" then
+            print("Exiting...")
+            break
+        end
+
+        -- Send the command to the server
+        aeNet.send(socket, command)
+    end
+end
+
+-- Function to retrieve available commands or applications from the server
+function retrieveAvailableCommands(socket)
+    print("Retrieving available commands from the server...")
+    aeNet.send(socket, "get_commands") -- Assuming a "get_commands" command is defined on the server
+end
+
 function onStart()
-  -- Connect to the server
-  local socket = aeNet.connect("LoginDemoServer")
-  -- Log in with a username and password
-  aeNet.login(socket, "Bobby", "mypass123")
+    -- Connect to the server
+    local socket = aeNet.connect("LoginDemoServer")
+    -- Log in with a username and password
+    aeNet.login(socket, "Bobby", "mypass123")
+
+    -- Retrieve available commands after logging in
+    retrieveAvailableCommands(socket)
 end
 
 function onEvent(event)
-  -- Logged in successfully
-  if event[1] == "login" then
-    -- The username logged in
-    local username = event[2]
-    -- The socket that was logged in
-    local socket = event[3]
-    print("Logged in as "..username)
-    aeNet.send(socket, "Hello server!")
-  -- Login failed (wrong username or password)
-  elseif event[1] == "login_failed" then
-    print("Didn't manage to log in. :(")
-  elseif event[1] == "encrypted_message" then
-    print("Server said: "..event[2])
-  end
+    -- Logged in successfully
+    if event[1] == "login" then
+        -- The username logged in
+        local username = event[2]
+        -- The socket that was logged in
+        local socket = event[3]
+        print("Logged in as " .. username)
+        aeNet.send(socket, "Hello server!")
+        
+        -- Start handling user commands
+        handleCommands(socket)
+        
+    -- Login failed (wrong username or password)
+    elseif event[1] == "login_failed" then
+        print("Didn't manage to log in. :(")
+        
+    -- Received available commands from the server
+    elseif event[1] == "available_commands" then
+        print("Available commands:")
+        for _, cmd in ipairs(event[2]) do
+            print("- " .. cmd)
+        end
+
+    -- Respond to server commands
+    elseif event[1] == "command_response" then
+        print("Server response: " .. event[2])
+        
+    elseif event[1] == "encrypted_message" then
+        print("Server said: " .. event[2])
+    end
 end
 
 aeNet.startEventLoop(onStart, onEvent)
