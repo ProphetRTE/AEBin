@@ -9,6 +9,15 @@ function aeprint(text,incl)
     printWithoutLinebreakHelper(text,inclstring,xsize,true)
 end
  
+function aeprintColor(txt, color)
+    local oldColor = term.getTextColor()
+    if term.isColor()
+        term.setTextColor(color)
+        print(txt)
+        term.setTextColor(oldColor)
+    end
+end
+
 function printWithoutLinebreakHelper(text,inclstring,xsize,firstline)
     
     -- Remaining text fits in one line?
