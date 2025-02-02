@@ -1,13 +1,16 @@
 local drain = peripheral.wrap("tconstruct:drain_0")
 
-local tankInfo = drain.tanks()
+-- Rednet setup (you may need to specify the modem side)
+local wirelessModem = peripheral.wrap("modem") -- Change this to the side your modem is connected to
+if wirelessModem.isWireless() then
+    wirelessModem.open(wirelessModem.getName())
+end
+
+local previousTankInfo = {}
 
 -- Function to separate modname and the actual name
 local function formatName(name)
-    -- Split by the colon and take the second part
     local modName, actualName = name:match("([^:]+):(.+)")
-    
-    -- If modName is not nil, format the actual name by splitting on underscores
     if actualName then
         local formattedName = actualName:gsub("_", " ") -- Replace underscores with spaces
         return string.format("%s (%s)", formattedName, modName)
@@ -16,22 +19,46 @@ local function formatName(name)
     end
 end
 
--- Function to format and print tank contents
-local function formatTankInfo(tanks)
-    if not tanks or #tanks == 0 then
+-- Function to format and check tank contents
+local function checkTankInfo()
+    local tankInfo = drain.tanks()
+
+    if not tankInfo or #tankInfo == 0 then
         print("No tanks found.")
         return
     end
-    
-    for i, tank in ipairs(tanks) do
+
+    local isChanged = false
+    local formattedOutput = {}
+
+    for i, tank in ipairs(tankInfo) do
         if tank and tank.name and tank.amount then
             local formattedName = formatName(tank.name)
-            print(string.format("Tank %d: %s - Amount: %d", i, formattedName, tank.amount))
+            table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d", i, formattedName, tank.amount))
+
+            -- Check for changes
+            if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
+                isChanged = true
+            end
+
+            -- Save current tank information for next comparison
+            previousTankInfo[i] = { name = tank.name, amount = tank.amount }
         else
-            print(string.format("Tank %d: Empty or undefined", i))
+            table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
+            previousTankInfo[i] = nil -- Clear previous info if undefined
         end
+    end
+
+    -- If values have changed, broadcast the message
+    if isChanged then
+        local message = table.concat(formattedOutput, "\n")
+        rednet.broadcast(message, "tankUpdate") -- Use a specific message header if desired
+        print("Broadcasting tank information change:\n" .. message)
     end
 end
 
--- Call the function to format and print the tank information
-formatTankInfo(tankInfo)
+-- Main loop to continually check tank information
+while true do
+    checkTankInfo()
+    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
+end
