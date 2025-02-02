@@ -4,7 +4,7 @@ local drain = peripheral.wrap("tconstruct:drain_0")
 -- We're going to find the side of the drain needed to get our info when calling getTankInfo and cache it.
 
 local tankSide = (function()
-      for _, direction in ipairs({'top', 'bottom', 'right', 'left'}) do
+      for _, direction in ipairs({'north', 'south', 'east', 'west'}) do
         local info = drain.getTankInfo(direction)
         if info and info[1] and info[1].contents then
           return direction -- we found the direction of the smeltery internal tanks relative to the drain...
