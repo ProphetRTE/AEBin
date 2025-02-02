@@ -1,17 +1,17 @@
 -- userManager.lua
-local aeNet = require("lib/aenet")
+os.loadAPI("lib/aenet")
 
 -- Start the server
 function startServer(serverName)
-    return aeNet.host(serverName)
+    return aenet.host(serverName)
 end
 
 -- Add a user
 function addUser(username, password)
-    return aeNet.addUser(username, password)
+    return aenet.addUser(username, password)
 end
 
 -- Close the server
 function closeServer()
-    return aeNet.closeAll()
+    return aenet.closeAll()
 end

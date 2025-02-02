@@ -1,0 +1,16 @@
+{   
+	name = "AddUser",
+	comment = "Add a user into a aenet server",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/adduser/",
+	newestversion = "1.2",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/adduser/",
+		filename = "adduser",
+		type = "script",
+	},
+	dependencies = {
+		aenetusermanager = "1.7",
+		aeprint = "1.2"
+	},
+}

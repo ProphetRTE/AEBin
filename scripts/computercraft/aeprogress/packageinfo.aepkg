@@ -5,7 +5,7 @@
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aeprogress/",
 	newestversion = "1.0",
 	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/aeprogress/aeprogress",
+		url = "https://cc.prophecypixel.com/scripts/computercraft/aeprogress/",
 		filename = "aeprogress",
 		type = "library",
 	},

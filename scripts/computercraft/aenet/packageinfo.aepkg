@@ -5,7 +5,7 @@
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aenet/",
 	newestversion = "1.7",
 	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/aenet/aenet",
+		url = "https://cc.prophecypixel.com/scripts/computercraft/aenet/",
 		filename = "aenet",
 		type = "library",
 	},

@@ -6,6 +6,7 @@
         aeprogress = "https://cc.prophecypixel.com/scripts/computercraft/aeprogress/packageinfo.aepkg",
         aenet = "https://cc.prophecypixel.com/scripts/computercraft/aenet/packageinfo.aepkg",
         aenetusermanager = "https://cc.prophecypixel.com/scripts/computercraft/aenetusermanager/packageinfo.aepkg",
+        adduser = "https://cc.prophecypixel.com/scripts/computercraft/adduser/packageinfo.aepkg",
         aecord = "https://cc.prophecypixel.com/scripts/computercraft/aecord/packageinfo.aepkg",
 		fileutils = "https://cc.prophecypixel.com/scripts/computercraft/fileutils/packageinfo.aepkg",
 		httputils = "https://cc.prophecypixel.com/scripts/computercraft/httputils/packageinfo.aepkg",
