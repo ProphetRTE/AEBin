@@ -6,7 +6,7 @@
     website = "https://cc.prophecypixel.com/scripts/computercraft/aepkg",
     newestversion = "1.0",
     dependencies = {
-        aeprint = "1.3"
+        aeprint = "1.4"
     },
     install = {
         type = "script",

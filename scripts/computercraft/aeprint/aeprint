@@ -11,7 +11,7 @@ end
  
 function aeprintColor(txt, color)
     local oldColor = term.getTextColor()
-    if term.isColor()
+    if term.isColor() then
         term.setTextColor(color)
         print(txt)
         term.setTextColor(oldColor)
