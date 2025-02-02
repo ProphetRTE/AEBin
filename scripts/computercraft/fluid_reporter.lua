@@ -35,7 +35,7 @@ function resolveModemSide(modemSide)
     error("No modem on side "..modemSide..".", 3)
   end
 
-  log("Using modem "..modemSide..".")
+  print("Using modem "..modemSide..".")
   return modemSide
 end
 
@@ -54,6 +54,10 @@ end
 local function checkTankInfo()
     local tankInfo = drain.tanks()
 
+    if modemSide then
+        rednet.open(modemSide)
+    end
+    
     if not tankInfo or #tankInfo == 0 then
         return
     end
