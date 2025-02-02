@@ -1,7 +1,8 @@
 local drain = peripheral.wrap("tconstruct:drain_0")
 
 local previousTankInfo = {}
-
+local modemside = nil
+local _modem = nil
 -- Used to process modem side arguments passed to functions.
 function resolveModemSide(modemSide)
 	-- If no modem side argument is provided, search for a modem and use that side.
@@ -11,6 +12,7 @@ function resolveModemSide(modemSide)
 			local modem = peripheral.wrap(side)
 			if modem.isWireless() then
 				modemSide = side
+                _modem = modem
 				break
 			end
 		end
@@ -51,13 +53,11 @@ local function formatName(name)
 end
 
 -- Function to format and check tank contents
-local function checkTankInfo()
+local function checkTankInfo(modemside)
+    rednet.open(modemside) -- Open the modem side for rednet communication
+
     local tankInfo = drain.tanks()
 
-    if modemSide then
-        rednet.open(modemSide)
-    end
-    
     if not tankInfo or #tankInfo == 0 then
         return
     end
@@ -91,10 +91,10 @@ local function checkTankInfo()
     end
 end
 
-resolveModemSide(nil) -- Resolve modem side if not provided
+modemside = resolveModemSide() -- Resolve modem side if not provided
 
 -- Main loop to continually check tank information
 while true do
-    checkTankInfo()
+    checkTankInfo(modemside)
     sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
 end
