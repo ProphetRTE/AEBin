@@ -1,4 +1,4 @@
-local drain = peripheral.wrap("tconstruct_smelterydrain_0")
+local drain = peripheral.wrap("tconstruct:drain_0")
 
 -- This is very important! From my testing calling drain.getTankInfo("unknown") will not work!
 -- We're going to find the side of the drain needed to get our info when calling getTankInfo and cache it.
