@@ -11,6 +11,6 @@
 	},
 	dependencies = {
 		aenetusermanager = "1.7",
-		aeprint = "1.5"
+		aeprint = "1.6"
 	},
 }

@@ -50,15 +50,17 @@ local function processTank(peripheralName)
             local tankDetails = formatTank(peripheralName, tank, fluidPeripheral.getTankInfo(tank).capacity, fluidAmount)
 
             -- Store tank information for progress display
-            table.insert(tankInfo, function()
-                aeprint.aeprint(tankDetails.name .. "\n  Size: " .. tankDetails.size .. "mB\n  Fullness: " .. tankDetails.fullnessBar .. " (" .. tankDetails.percentage .. "%)\n")
-            end)
+            actionTable = {}
+            actionTable[1] = function()
+                aeprint.aeprint(tankDetails.name .. "\n  Size: " .. tankDetails.size .. "mB\n  Fullness: " .. tankDetails.fullnessBar .. " (" .. tankDetails.percentage .. "%)\n", 0)
+            end
+            -- Add entries to this table as necessary.
         end
         
         -- Display progress
-        aeprogress.aeprogress(tankInfo, false)
+        aeprogress.aeprogress(actionTable, false)
     else
-        aeprint.aeprint("Peripheral " .. peripheralName .. " does not support required functions.")
+        aeprint.aeprint("Peripheral " .. peripheralName .. " does not support required functions.", 0)
     end
 end
 

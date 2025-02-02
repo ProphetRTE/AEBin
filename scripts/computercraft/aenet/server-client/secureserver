@@ -60,7 +60,6 @@ function onEvent(event)
     local socket = event[3]
     if socket.username ~= nil then
       print(socket.username .. " requested to start the application.")
-      -- Application start logic here
       aeNet.send(socket, "Application started!")
     else
       aeNet.send(socket, "You must be logged in to execute this command.")
