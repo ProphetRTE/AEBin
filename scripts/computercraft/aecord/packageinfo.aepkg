@@ -8,7 +8,7 @@
     dependencies = {
     },
     install = {
-        url = "https://cc.prophecypixel.com/scripts/computercraft/aecord/",
+        url = "https://cc.prophecypixel.com/scripts/computercraft/aecord/aecord",
 		filename = "aecord",
 		type = "library",
     }

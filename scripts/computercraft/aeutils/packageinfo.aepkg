@@ -5,7 +5,7 @@
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/",
 	newestversion = "1.6",
 	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/",
+		url = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/aeutils",
 		filename = "aeutils",
 		type = "library",
 	},
