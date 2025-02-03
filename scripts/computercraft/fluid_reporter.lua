@@ -110,18 +110,18 @@ local function checkTankInfo()
       else
           print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
-  end
 
-  -- Footer
-  if mon then
-      mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
-      mon.write("========================")
-      lineOffset = lineOffset + 1
+      -- Footer
+      if mon then
+        mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
+        mon.write("========================")
+        lineOffset = lineOffset + 1
 
-      -- Display current status indication
-      mon.setCursorPos(1, lineOffset)
-      local totalTanks = #tankInfo
-      mon.write(string.format("==========[1/%d]==========", totalTanks))
+        -- Display current status indication
+        mon.setCursorPos(1, lineOffset)
+        local totalTanks = #tankInfo
+        mon.write(string.format("==========[1/%d]==========", totalTanks))
+      end
   end
 
   -- If values have changed, broadcast the message
