@@ -174,4 +174,30 @@ function formatName(name)
   end
 end
 
+function getPeripheralsWithTanks()
+  local peripherals = peripheral.getPeripherals()
+  local peripheralsWithTanks = {}
+
+  for _, name in ipairs(peripherals) do
+      local peripheral = peripheral.wrap(name)
+      if peripheral.tanks then
+          table.insert(peripheralsWithTanks, peripheral)
+      else
+          for _, peripheralType in ipairs(peripheral.all) do
+              if peripheralType == "tanks" then
+                  local info = peripheral.getPeripherals() -- Get the peripherals of the tanks object
+                  for _, periph in ipairs(info) do
+                      local actualPeriph = peripheral.wrap(periph)
+                      if actualPeriph.tanks then
+                          table.insert(peripheralsWithTanks, actualPeriph)
+                      end
+                  end
+              end
+          end
+      end
+  end
+
+  return peripheralsWithTanks
+end
+
 return aeutils

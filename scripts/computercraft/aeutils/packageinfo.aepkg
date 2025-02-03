@@ -3,7 +3,7 @@
 	comment = "All useful coding functions",
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/",
-	newestversion = "2.2",
+	newestversion = "2.3",
 	install = {
 		url = "https://cc.prophecypixel.com/scripts/computercraft/aeutils/aeutils",
 		filename = "aeutils",

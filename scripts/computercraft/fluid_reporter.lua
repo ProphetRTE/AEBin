@@ -1,7 +1,6 @@
 os.loadAPI("lib/aeutils")
 
 -- Valve, Monitor & Wireless Modem
-local val = peripheral.wrap("tconstruct:drain_0")
 local mon = peripheral.find("monitor")
 local wmod = aeutils.resolveModemSide(nil)
 local previousTankInfo = {}
@@ -14,21 +13,20 @@ local tanksTable    -- Table to hold tank information
 -- Set warning lamp to off
 redstone.setOutput("right", false)
 
-if not modemSide then
+if not wmod then
   print("No modem found!")
   sleep(1)
 else
   -- Set modem frequency
-  wmod.open(sendFreq)
+  rednet.open(wmod)
   print("Modem found, frequency set to " .. sendFreq)
 end
 
--- Main prog loop, never stop
--- Function to format and check tank contents
+-- Main function to check tank information
 local function checkTankInfo()
-  local tankInfo = drain.tanks()
+  local peripheralsWithTanks = aeutils.getPeripheralsWithTanks()
 
-  if not tankInfo or #tankInfo == 0 then
+  if #peripheralsWithTanks == 0 then
       print("No tanks found.")
       if mon then
           mon.clear()
@@ -46,32 +44,36 @@ local function checkTankInfo()
       mon.setCursorPos(1, 1)
   end
 
-  for i, tank in ipairs(tankInfo) do
-      if tank and tank.name and tank.amount then
-          local formattedName = aeutils.formatName(tank.name)
-          local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-          table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
+  for _, tankPeripheral in ipairs(peripheralsWithTanks) do
+      local tankInfo = tankPeripheral.tanks()  -- Get the tanks from the current peripheral
 
-          -- Display on monitor
-          if mon then
-              mon.setCursorPos(1, i)
-              mon.write(string.format("Tank %d: %s - %d B", i, formattedName, tank.amount))
-          end
+      for i, tank in ipairs(tankInfo) do
+          if tank and tank.name and tank.amount then
+              local formattedName = aeutils.formatName(tank.name)
+              local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
+              table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
 
-          -- Check for changes
-          if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
-              isChanged = true
-          end
+              -- Display on monitor
+              if mon then
+                  mon.setCursorPos(1, i)
+                  mon.write(string.format("Tank %d: %s - %d B", i, formattedName, tank.amount))
+              end
 
-          -- Save current tank information for the next comparison
-          previousTankInfo[i] = { name = tank.name, amount = tank.amount }
-      else
-          table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
-          if mon then
-              mon.setCursorPos(1, i)
-              mon.write(string.format("Tank %d: Empty", i))
+              -- Check for changes
+              if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
+                  isChanged = true
+              end
+
+              -- Save current tank information for the next comparison
+              previousTankInfo[i] = { name = tank.name, amount = tank.amount }
+          else
+              table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
+              if mon then
+                  mon.setCursorPos(1, i)
+                  mon.write(string.format("Tank %d: Empty", i))
+              end
+              previousTankInfo[i] = nil -- Clear previous info if undefined
           end
-          previousTankInfo[i] = nil -- Clear previous info if undefined
       end
   end
 
