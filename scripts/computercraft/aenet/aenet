@@ -91,7 +91,7 @@
 ------ You can adjust the number of "iter" to control the speed of the algorithm, higher "iter" means slower hashing, as well as slower to crack.
 ------ DO NOT TOUCH "dklen" if you're using it for passwords, simply pass nil or nothing at all (defaults to 32).
 ------ Passing a dklen higher than 32 will multiply the number of iterations with no additional security whatsoever.
-local utils = require("lib/aeutils")
+os.loadAPI("lib/aeutils")
 
 sha256 = {}
 
