@@ -79,7 +79,7 @@ end
 
 -- Check if any servers or sockets on this machine are using the specified channel
 -- on the specified modem.
-function channelInUse(channel, modemSide)
+function channelInUse(allClientSockets, channel, modemSide)
 	-- Check the client sockets.
 	for _,socket in pairs(allClientSockets) do
 		if socket.channel == channel and socket.modemSide == modemSide then
