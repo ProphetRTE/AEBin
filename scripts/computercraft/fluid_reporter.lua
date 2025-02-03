@@ -3,7 +3,7 @@ os.loadAPI("lib/aeutils")
 -- Valve, Monitor & Wireless Modem
 local val = peripheral.wrap("tconstruct:drain_0")
 local mon = peripheral.find("monitor")
-local wmod = peripheral.wrap(aeutils.resolveModemSide(nil))
+local wmod = aeutils.resolveModemSide(nil)
 
 local cap                -- Tank capacity
 local amount             -- Amount liquid in tank
@@ -17,18 +17,19 @@ local content = "Water"  -- What is in tank?
 -- Set warning lamp to off
 redstone.setOutput("right", false)
 
+if not modemSide then
+  print("No modem found!")
+  sleep(1)
+else
+  -- Set modem frequency
+  wmod.open(sendFreq)
+  print("Modem found, frequency set to " ..sendFreq)
+end
+
 -- Main prog loop, never stop
 while true do
   mon.clear()
   mon.setCursorPos(1,1)
-  if not modemSide then
-    print("No modem found!")
-    sleep(1)
-  else
-    -- Set modem frequency
-    wmod.open(sendFreq)
-    print("Modem found, frequency set to " ..sendFreq)
-  end
   
 
   -- Fill table with data from tank valve
