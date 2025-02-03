@@ -32,6 +32,38 @@ else
   aeprint.aeprint("Modem found, frequency set to " .. sendFreq)
 end
 
+-- Function to send messages or commands to the server
+function handleCommands(socket)
+    while true do
+        write("Enter command to send (or 'exit' to quit): ")
+        local command = read()
+
+        if command == "exit" then
+            print("Exiting...")
+            break
+        end
+
+        -- Send the command to the server
+        aenet.send(socket, command)
+    end
+end
+
+-- Function to retrieve available commands or applications from the server
+function retrieveAvailableCommands(socket)
+    print("Retrieving available commands from the server...")
+    aenet.send(socket, "get_commands") -- Assuming a "get_commands" command is defined on the server
+end
+
+function onStart()
+    -- Connect to the server
+    local socket = aenet.connect("LoginDemoServer")
+    -- Log in with a username and password
+    aenet.login(socket, "Bobby", "mypass123")
+
+    -- Retrieve available commands after logging in
+    retrieveAvailableCommands(socket)
+end
+
 -- Function to check if the peripheral type is accepted
 local function isAcceptedTankType(type)
   for _, acceptedType in ipairs(acceptedTankTypes) do
