@@ -4,6 +4,10 @@ os.loadAPI("lib/aeutils")
 local mon = peripheral.find("monitor")
 local wmod = aeutils.resolveModemSide(nil)
 local previousTankInfo = {}
+local acceptedTankTypes = {
+  "tank",                   -- Original tank type
+  "enderstorage:ender_tank", -- Ender Tank type from your list
+}
 local tankData = {} -- To store data for each tank
 local sendFreq = 3  -- Modem Frequency
 local content       -- What is in tank?
@@ -20,6 +24,16 @@ else
   -- Set modem frequency
   rednet.open(wmod)
   print("Modem found, frequency set to " .. sendFreq)
+end
+
+-- Function to check if the peripheral type is accepted
+local function isAcceptedTankType(type)
+  for _, acceptedType in ipairs(acceptedTankTypes) do
+      if type == acceptedType then
+          return true
+      end
+  end
+  return false
 end
 
 -- Main function to check tank information
@@ -47,9 +61,10 @@ local function checkTankInfo()
   -- Iterate through each peripheral to get tank info
   for _, peripheralName in pairs(peripherals) do
       local peripheralType = aeutils.getPeripheralType(peripheralName)
+      print(string.format("Checking peripheral: %s, Type: %s", peripheralName, peripheralType)) -- Debug log
 
-      -- Assuming you only want to gather information from tank peripherals
-      if peripheralType == "tank" then  -- Adjust this according to the actual type name
+      -- Check if the peripheral type is in the accepted list
+      if isAcceptedTankType(peripheralType) then
           local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
           local tankInfo = tankPeripheral.getTanks()  -- Adjust method name if needed
 
@@ -82,7 +97,7 @@ local function checkTankInfo()
               end
           end
       else
-          print(string.format("Peripheral %s is not a tank.", peripheralName))
+          print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
   end
 
