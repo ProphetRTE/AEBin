@@ -10,6 +10,6 @@
 		type = "library",
 	},
 	dependencies = {
-		aenet = "1.7",
+		aenet = "1.9",
 	},
 }

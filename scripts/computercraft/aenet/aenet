@@ -3199,7 +3199,7 @@ function send(socket, message)
   end
 	-- Convert the message to a string before sending, so it can be encrypted.
 	-- It will be deserialized at the other end.
-  sendEncryptedInternal(socket, utils.serializeAny(message))
+  sendEncryptedInternal(socket, aeutils.serializeAny(message))
 end
 
 
@@ -3872,7 +3872,7 @@ function host(serverName, discoverable, hideCertificate, modemSide, certificate,
     end
   end
 
-  modemSide = utils.resolveModemSide(modemSide)
+  modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
 
 	-- Generate default file names if none were provided, then get the paths
@@ -3967,7 +3967,7 @@ function host(serverName, discoverable, hideCertificate, modemSide, certificate,
 
 	-- Open the server's channel (derived from the server name) so it can be used
 	-- for communication.
-  local channel = utils.getChannel(serverName)
+  local channel = aeutils.getChannel(serverName)
   modem.open(channel)
   log("Hosting on channel "..channel..".")
 
@@ -4044,7 +4044,7 @@ function close(socket)
 
 		-- If this was the only socket communicating on its channel, close the channel
 		-- on the modem. Don't close the channel if another socket is still using it.
-    if not utils.channelInUse(socket.channel, socket.modemSide) then
+    if not aeutils.channelInUse(socket.channel, socket.modemSide) then
       peripheral.wrap(socket.modemSide).close(socket.channel)
       log("Closed socket channel "..socket.channel.." on modem "..socket.modemSide..".")
     end
@@ -4076,7 +4076,7 @@ function close(socket)
 
 		-- If this was the only server/socket communicating on its channel, close the channel
 		-- on the modem. Don't close the channel if another socket is still using it.
-    if not utils.channelInUse(server.channel, server.modemSide) then
+    if not aeutils.channelInUse(server.channel, server.modemSide) then
       peripheral.wrap(server.modemSide).close(server.channel)
       log("Closed server channel "..server.channel.." on modem "..server.modemSide..".")
     end
@@ -4184,7 +4184,7 @@ local function handleDecryptedMessage(socket, message)
 		-- If the message had none of the above internal message types,
 		-- it must be a user-generated encrypted message, which will start with
 		-- a data type character. Attempt to deserialize the message as such.
-		ok, message = pcall(utils.deserializeAny, message)
+		ok, message = pcall(aeutils.deserializeAny, message)
 		if ok then
 			result = {"encrypted_message", message, socket, socket.server}
 		end
@@ -4252,7 +4252,7 @@ local function handleServerMessage(server, message, messageChannel)
 			-- If this is an encrypted message, try decrypting it with the session key
 			-- and handle the decrypted message as needed.
 			local socket = server.sockets[message.sender]
-			local encrypted = utils.bytesToString(message.message[1])
+			local encrypted = aeutils.bytesToString(message.message[1])
 			local iv = message.message[2]
 			if socket == nil then
 				log("Received a message from a sender who has yet to open a connection.")
@@ -4302,7 +4302,7 @@ local function handleClientMessage(socket, message, messageChannel)
 	if messageChannel == socket.channel and message.sender == socket.target and message.target == socket.sender then
 		if message.msgType == "encrypted_message" and type(message.message) == "table" and #message.message == 2
 		 and type(message.message[1]) == "table" and type(message.message[2]) == "table" then
-			local encrypted = utils.bytesToString(message.message[1])
+			local encrypted = aeutils.bytesToString(message.message[1])
 			local iv = message.message[2]
 			if encrypted == nil then
 				log("Received invalid message.")
@@ -4425,7 +4425,7 @@ function discover(timeout, certAuthKey, allowUnsigned, modemSide)
 	-- Load and validate the key.
   certAuthKey = loadCertAuthKey(certAuthKey)
 
-  modemSide = utils.resolveModemSide(modemSide)
+  modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
@@ -4552,9 +4552,9 @@ function requestCertificate(serverName, timeout, certAuthKey, allowUnsigned, mod
   end
   certAuthKey = loadCertAuthKey(certAuthKey)
 
-  modemSide = utils.resolveModemSide(modemSide)
+  modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = utils.getChannel(serverName)
+  local channel = aeutils.getChannel(serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)
@@ -4755,9 +4755,9 @@ function connect(serverName, timeout, certTimeout, certificate, modemSide, certA
     end
   end
 
-  modemSide = utils.resolveModemSide(modemSide)
+  modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = utils.getChannel(serverName)
+  local channel = aeutils.getChannel(serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)
@@ -4807,7 +4807,7 @@ function connect(serverName, timeout, certTimeout, certificate, modemSide, certA
       if message ~= nil and message.msgType == "connection_response" and message.target == encryptedKey and type(message.message) == "table"
 			 and #message.message == 2 and type(message.message[1]) == "table" and type(message.message[2]) == "table" then
 				 -- Decrypt using the session key.
-        local ok, actualResponse = pcall(aes.decrypt_str, utils.bytesToString(message.message[1]), sessKey, message.message[2])
+        local ok, actualResponse = pcall(aes.decrypt_str, aeutils.bytesToString(message.message[1]), sessKey, message.message[2])
 				-- Compare the response to what we know the response content is supposed
 				-- to be, to see if the session key was received correctly.
         if ok and actualResponse == expectedResponse then
