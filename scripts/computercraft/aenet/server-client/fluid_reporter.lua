@@ -31,6 +31,16 @@ else
   aeprint.aeprint("Modem found, frequency set to " .. sendFreq)
 end
 
+function onStart()
+    -- Connect to the server
+    socket = aenet.connect("LoginDemoServer")
+    -- Log in with a username and password
+    aenet.login(socket, "Bobby", "mypass123")
+    checkTankInfo()
+    retrieveAvailableCommands(socket)
+    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
+end
+
 -- Function to send messages or commands to the server
 function handleCommands(socket)
     while true do
@@ -168,17 +178,8 @@ local function checkTankInfo()
     print("Broadcasting tank information change:\n" .. message)
   end
 end
-function onStart()
-    -- Connect to the server
-    socket = aenet.connect("LoginDemoServer")
-    -- Log in with a username and password
-    aenet.login(socket, "Bobby", "mypass123")
-    checkTankInfo()
-    retrieveAvailableCommands(socket)
-    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
-  end
-  
-  function onEvent(event)
+
+function onEvent(event)
     -- Logged in successfully
     if event[1] == "login" then
         -- The username logged in
