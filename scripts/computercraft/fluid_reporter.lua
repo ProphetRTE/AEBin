@@ -29,7 +29,7 @@ while true do
   -- Get values for tank capacity and amount
   cap = maintank.amount / 1000   -- in buckets
   amount = maintank.amount    -- in millibuckets
-  
+
   -- If tank is empty, to avoid math issues with 0
   if amount == nil then
     amount = 0
@@ -69,6 +69,15 @@ while true do
     -- Above warning level, sleep longer
     mon.write("More than 20 B full")
     sleeptime = 10
+  end
+
+  while not maintank then
+    mon.clear()
+    mon.setCursorPos(1,1)
+    mon.write("No tank found!")
+    sleep(1)
+    tanksTable = val.tanks()
+    maintank = tanksTable[1]
   end
 
   -- Sleep either 1 or 10 seconds
