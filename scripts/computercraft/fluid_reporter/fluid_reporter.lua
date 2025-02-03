@@ -10,6 +10,8 @@ local acceptedTankTypes = {
   "enderstorage:ender_tank", -- Ender Tank type from your list
   "tconstruct:drain",
 }
+
+local formattedOutput = {}
 local tankData = {} -- To store data for each tank
 local sendFreq = 3  -- Modem Frequency
 local content       -- What is in tank?
@@ -52,7 +54,7 @@ local function checkTankInfo()
   end
 
   local isChanged = false
-  local formattedOutput = {}
+  formattedOutput = {}
 
   -- Clear the monitor
   if mon then
@@ -86,7 +88,8 @@ local function checkTankInfo()
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
                   local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-                  displayText = string.format("[%d] %s - %dmB", i, formattedName, tank.amount)
+                  formattedOutput = string.format("[%d] %s - %dmB", i, formattedName, tank.amount)
+                  displayText = formattedOutput
               else
                   displayText = string.format("[%d] Empty", i)
               end
