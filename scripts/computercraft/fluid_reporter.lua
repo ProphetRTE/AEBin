@@ -7,6 +7,7 @@ local previousTankInfo = {}
 local acceptedTankTypes = {
   "tank",                   -- Original tank type
   "enderstorage:ender_tank", -- Ender Tank type from your list
+  "tconstruct:drain",
 }
 local tankData = {} -- To store data for each tank
 local sendFreq = 3  -- Modem Frequency
@@ -128,7 +129,7 @@ local function checkTankInfo()
   -- If values have changed, broadcast the message
   if isChanged then
       local message = table.concat(formattedOutput, "\n")
-      rednet.broadcast(message, "tankUpdate") -- Use a specific message header if desired
+      rednet.broadcast(message) -- Use a specific message header if desired
       print("Broadcasting tank information change:\n" .. message)
   end
 end
