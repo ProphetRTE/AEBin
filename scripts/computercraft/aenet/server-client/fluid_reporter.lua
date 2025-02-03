@@ -41,23 +41,6 @@ function onStart()
     sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
 end
 
--- Function to send messages or commands to the server
-function handleCommands(socket)
-    while true do
-        checkTankInfo()
-        write("Enter command to send (or 'exit' to quit): ")
-        local command = read()
-
-        if command == "exit" then
-            print("Exiting...")
-            break
-        end
-
-        -- Send the command to the server
-        aenet.send(socket, command)
-    end
-end
-
 -- Function to retrieve available commands or applications from the server
 function retrieveAvailableCommands(socket)
     print("Retrieving available commands from the server...")
@@ -75,7 +58,7 @@ local function isAcceptedTankType(type)
 end
 
 -- Main function to check tank information
-local function checkTankInfo()
+function checkTankInfo()
   local peripherals = aeutils.getPeripherals()
   
   if #peripherals == 0 then
@@ -178,6 +161,23 @@ local function checkTankInfo()
     aenet.send(socket, "encrypted_message") -- Use a specific message header if desired
     print("Broadcasting tank information change:\n" .. message)
   end
+end
+
+-- Function to send messages or commands to the server
+function handleCommands(socket)
+    while true do
+        checkTankInfo()
+        write("Enter command to send (or 'exit' to quit): ")
+        local command = read()
+
+        if command == "exit" then
+            print("Exiting...")
+            break
+        end
+
+        -- Send the command to the server
+        aenet.send(socket, command)
+    end
 end
 
 function onEvent(event)
