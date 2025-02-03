@@ -175,7 +175,7 @@ function formatName(name)
 end
 
 function getPeripheralsWithTanks()
-  local peripherals = peripheral.getPeripherals()
+  local peripherals = peripheral.getNames()
   local peripheralsWithTanks = {}
 
   for _, name in ipairs(peripherals) do
