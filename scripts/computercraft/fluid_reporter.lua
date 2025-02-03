@@ -43,7 +43,7 @@ local function checkTankInfo()
   local peripherals = aeutils.getPeripherals()
   
   if #peripherals == 0 then
-    aeprint.aeprint("No peripherals found.")
+      print("No peripherals found.")
       if mon then
           mon.clear()
           mon.write("No peripherals found.")
@@ -82,69 +82,65 @@ local function checkTankInfo()
           tankData[peripheralName] = tankInfo
           
           for i, tank in ipairs(tankInfo) do
+              local displayText
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
                   local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-                  local displayText = string.format("[%d] %s - %d B", i, formattedName, amountInBuckets)
-
-                  -- Ensure the display text fits within monitor width
-                  if #displayText > monitorWidth then
-                      displayText = displayText:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
-                  end
-
-                  -- Display on monitor
-                  if mon then
-                      mon.setCursorPos(1, lineOffset)  -- Set cursor position for each tank info
-                      mon.write(displayText)  -- Write the display text
-                      lineOffset = lineOffset + 1  -- Move to the next line for the next tank
-                  end
-
-                  -- Check for changes
-                  if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
-                      isChanged = true
-                  end
-
-                  -- Save current tank information for the next comparison
-                  previousTankInfo[i] = { name = tank.name, amount = tank.amount }
+                  displayText = string.format("[%d] %s - %d B", i, formattedName, amountInBuckets)
               else
-                  local emptyMessage = string.format("[%d] Empty", i)
-
-                  -- Ensure the empty message fits within monitor width
-                  if #emptyMessage > monitorWidth then
-                      emptyMessage = emptyMessage:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
-                  end
-
-                  if mon then
-                      mon.setCursorPos(1, lineOffset)
-                      mon.write(emptyMessage)
-                      lineOffset = lineOffset + 1
-                  end
-                  previousTankInfo[i] = nil -- Clear previous info if undefined
+                  displayText = string.format("[%d] Empty", i)
               end
+
+              -- Ensure the display text fits within monitor width
+              if #displayText > monitorWidth then
+                  displayText = displayText:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
+              end
+
+              -- Display on monitor
+              if mon then
+                  mon.setCursorPos(1, lineOffset)  -- Set cursor position for each tank info
+                  mon.write(displayText)  -- Write the display text
+                  lineOffset = lineOffset + 1  -- Move to the next line for the next tank
+              end
+
+              -- Check for changes
+              if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
+                  isChanged = true
+              end
+
+              -- Save current tank information for the next comparison
+              previousTankInfo[i] = { name = tank.name, amount = tank.amount }
           end
       else
-          aeprint.aeprint(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
+          print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
-
   end
 
   -- Footer
   if mon then
-      mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
+      -- Move to lineOffset to write the footer
+      mon.setCursorPos(1, lineOffset)  
       mon.write(string.rep("=", monitorWidth))  -- Adjust footer based on monitor width
-      lineOffset = lineOffset + 1
+      lineOffset = lineOffset + 1  -- Move to the next line for status indication
 
-      -- Display current status indication
-      mon.setCursorPos(1, lineOffset)
+      -- Display current status indication, ensuring it fits in width
       local totalTanks = #tankData or 0
-      mon.write(string.format("==========[1/%d]==========", totalTanks))
+      local statusText = string.format("==========[1/%d]==========", totalTanks)
+
+      -- Ensure footer text fits within monitor width
+      if #statusText > monitorWidth then
+          statusText = statusText:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
+      end
+
+      mon.setCursorPos(1, lineOffset)
+      mon.write(statusText)  -- Write the final status on the monitor
   end
 
   -- If values have changed, broadcast the message
   if isChanged then
       local message = table.concat(formattedOutput, "\n")
       rednet.broadcast(message) -- Use a specific message header if desired
-      aeprint.aeprint("Broadcasting tank information change:\n" .. message)
+      print("Broadcasting tank information change:\n" .. message)
   end
 end
 
