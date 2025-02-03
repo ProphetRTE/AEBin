@@ -20,12 +20,12 @@ local tanksTable    -- Table to hold tank information
 redstone.setOutput("right", false)
 
 if not wmod then
-  print("No modem found!")
+  aeprint.aeprint("No modem found!")
   sleep(1)
 else
   -- Set modem frequency
   rednet.open(wmod)
-  print("Modem found, frequency set to " .. sendFreq)
+  aeprint.aeprint("Modem found, frequency set to " .. sendFreq)
 end
 
 -- Function to check if the peripheral type is accepted
@@ -43,7 +43,7 @@ local function checkTankInfo()
   local peripherals = aeutils.getPeripherals()
   
   if #peripherals == 0 then
-      print("No peripherals found.")
+    aeprint.aeprint("No peripherals found.")
       if mon then
           mon.clear()
           mon.write("No peripherals found.")
@@ -123,7 +123,7 @@ local function checkTankInfo()
               end
           end
       else
-          print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
+          aeprint.aeprint(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
 
   end
@@ -144,7 +144,7 @@ local function checkTankInfo()
   if isChanged then
       local message = table.concat(formattedOutput, "\n")
       rednet.broadcast(message) -- Use a specific message header if desired
-      print("Broadcasting tank information change:\n" .. message)
+      aeprint.aeprint("Broadcasting tank information change:\n" .. message)
   end
 end
 
