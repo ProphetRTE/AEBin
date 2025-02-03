@@ -163,25 +163,6 @@ function checkTankInfo()
   end
 end
 
--- Function to send messages or commands to the server
-function handleCommands(socket)
-    while true do
-        write("Enter command to send (or 'exit' to quit): ")
-        local command = read()
-
-        if command == "exit" then
-            print("Exiting...")
-            break
-        end
-
-        -- Send the command to the server
-        aenet.send(socket, command)
-
-        
-        checkTankInfo()
-    end
-end
-
 function onEvent(event)
     -- Logged in successfully
     if event[1] == "login" then
@@ -191,8 +172,6 @@ function onEvent(event)
         local socket = event[3]
         print("Logged in as " .. username)
         aenet.send(socket, "Hello server!")
-
-        handleCommands(socket)
         
     -- Login failed (wrong username or password)
     elseif event[1] == "login_failed" then
@@ -216,3 +195,8 @@ end
 
   
   aenet.startEventLoop(onStart, onEvent)
+
+  while true do
+    checkTankInfo()
+    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
+  end
