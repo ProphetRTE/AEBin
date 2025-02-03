@@ -136,7 +136,7 @@ local function checkTankInfo()
 
       -- Display current status indication
       mon.setCursorPos(1, lineOffset)
-      local totalTanks = #tankData[peripheralName] or 0
+      local totalTanks = #tankData or 0
       mon.write(string.format("==========[1/%d]==========", totalTanks))
   end
 
