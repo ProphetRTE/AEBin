@@ -53,16 +53,6 @@ function retrieveAvailableCommands(socket)
     aenet.send(socket, "get_commands") -- Assuming a "get_commands" command is defined on the server
 end
 
-function onStart()
-    -- Connect to the server
-    local socket = aenet.connect("LoginDemoServer")
-    -- Log in with a username and password
-    aenet.login(socket, "Bobby", "mypass123")
-
-    -- Retrieve available commands after logging in
-    retrieveAvailableCommands(socket)
-end
-
 -- Function to check if the peripheral type is accepted
 local function isAcceptedTankType(type)
   for _, acceptedType in ipairs(acceptedTankTypes) do
@@ -186,6 +176,7 @@ function onStart()
     sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
     checkTankInfo()
     sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
+    retrieveAvailableCommands(socket)
   end
   
   function onEvent(event)
