@@ -61,7 +61,7 @@ local function checkTankInfo()
   -- Iterate through each peripheral to get tank info
   for _, peripheralName in pairs(peripherals) do
       local peripheralType = aeutils.getPeripheralType(peripheralName)
-      print(string.format("Checking peripheral: %s, Type: %s", peripheralName, peripheralType)) -- Debug log
+      --print(string.format("Checking peripheral: %s, Type: %s", peripheralName, peripheralType)) -- Debug log
 
       -- Check if the peripheral type is in the accepted list
       if isAcceptedTankType(peripheralType) then
@@ -77,7 +77,7 @@ local function checkTankInfo()
                   -- Display on monitor
                   if mon then
                       mon.setCursorPos(1, i)
-                      mon.write(string.format("Tank %d: %s - %d B", i, formattedName, tank.amount))
+                      mon.write(string.format("Tank %d: %s - %d B\n", i, formattedName, tank.amount))
                   end
 
                   -- Check for changes
@@ -97,7 +97,7 @@ local function checkTankInfo()
               end
           end
       else
-          print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
+          --print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
   end
 
