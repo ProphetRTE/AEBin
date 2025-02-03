@@ -1,5 +1,5 @@
-local aeNet = require("lib/aenet")
--- aeNet.setLoggingEnabled(false)
+local aenet = require("lib/aenet")
+-- aenet.setLoggingEnabled(false)
 
 -- Function to send messages or commands to the server
 function handleCommands(socket)
@@ -13,21 +13,21 @@ function handleCommands(socket)
         end
 
         -- Send the command to the server
-        aeNet.send(socket, command)
+        aenet.send(socket, command)
     end
 end
 
 -- Function to retrieve available commands or applications from the server
 function retrieveAvailableCommands(socket)
     print("Retrieving available commands from the server...")
-    aeNet.send(socket, "get_commands") -- Assuming a "get_commands" command is defined on the server
+    aenet.send(socket, "get_commands") -- Assuming a "get_commands" command is defined on the server
 end
 
 function onStart()
     -- Connect to the server
-    local socket = aeNet.connect("LoginDemoServer")
+    local socket = aenet.connect("LoginDemoServer")
     -- Log in with a username and password
-    aeNet.login(socket, "Bobby", "mypass123")
+    aenet.login(socket, "Bobby", "mypass123")
 
     -- Retrieve available commands after logging in
     retrieveAvailableCommands(socket)
@@ -41,7 +41,7 @@ function onEvent(event)
         -- The socket that was logged in
         local socket = event[3]
         print("Logged in as " .. username)
-        aeNet.send(socket, "Hello server!")
+        aenet.send(socket, "Hello server!")
         
         -- Start handling user commands
         handleCommands(socket)
@@ -66,4 +66,4 @@ function onEvent(event)
     end
 end
 
-aeNet.startEventLoop(onStart, onEvent)
+aenet.startEventLoop(onStart, onEvent)

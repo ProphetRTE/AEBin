@@ -165,7 +165,7 @@ function onStart()
         -- The socket that was logged in
         local socket = event[3]
         print("Logged in as " .. username)
-        aeNet.send(socket, "Hello server!")
+        aenet.send(socket, "Hello server!")
         
         -- Start handling user commands
         handleCommands(socket)

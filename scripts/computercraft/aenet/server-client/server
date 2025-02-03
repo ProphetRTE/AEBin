@@ -1,10 +1,10 @@
-local aeNet = require("lib/aenet")
--- aeNet.setLoggingEnabled(false)
+local aenet = require("lib/aenet")
+-- aenet.setLoggingEnabled(false)
 
 -- Runs when the event loop starts
 function onStart()
   -- Start the server
-  aeNet.host("DemoServer")
+  aenet.host("DemoServer")
 end
 
 -- Runs every time an event occurs
@@ -14,12 +14,12 @@ function onEvent(event)
     -- The socket used to send messages to the client
     local socket = event[2]
     -- Send some encypted messages back to the client
-    aeNet.send(socket, "Welcome to the server!")
-    aeNet.send(socket, "Please wait while I show off AENet...")
+    aenet.send(socket, "Welcome to the server!")
+    aenet.send(socket, "Please wait while I show off AENet...")
     -- Each call to onEvent is run in a different thread, so you can use
     -- blocking calls like sleep() and pullEvent() without freezing the whole server
     os.sleep(5)
-    aeNet.send(socket, "Done!")
+    aenet.send(socket, "Done!")
   -- Received a message from the client
   elseif event[1] == "encrypted_message" then
     print("Client says: "..event[2])
@@ -30,4 +30,4 @@ function onEvent(event)
 end
 
 -- Let AENet handle messages in the background
-aeNet.startEventLoop(onStart, onEvent)
+aenet.startEventLoop(onStart, onEvent)

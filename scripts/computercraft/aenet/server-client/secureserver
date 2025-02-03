@@ -1,5 +1,5 @@
-local aeNet = require("lib/aenet")
--- aeNet.setLoggingEnabled(false)
+local aenet = require("lib/aenet")
+-- aenet.setLoggingEnabled(false)
 
 -- Assuming a monitor is attached and the variable `mon` is used to reference it
 local mon = peripheral.find("monitor")  -- Find the monitor
@@ -22,7 +22,7 @@ end
 
 function onStart()
   -- Start the server
-  aeNet.host("LoginDemoServer")
+  aenet.host("LoginDemoServer")
 end
 
 function onEvent(event)
@@ -44,7 +44,7 @@ function onEvent(event)
     end
 
     -- Send available commands to the client
-    aeNet.send(socket, {"available_commands", availableCommands})
+    aenet.send(socket, {"available_commands", availableCommands})
 
    -- Received a message from the client
   elseif event[1] == "encrypted_message" then
@@ -59,15 +59,15 @@ function onEvent(event)
             mon.write(socket.username .. " says: " .. event[2])  -- Write to monitor
         end
     else
-        cryptoNet.send(socket, "Sorry, I only talk to logged in users.")
+        aenet.send(socket, "Sorry, I only talk to logged in users.")
     end
   -- Handle request for available commands
   elseif event[1] == "get_commands" then
     local socket = event[3]
     if socket.username ~= nil then
-      aeNet.send(socket, {"available_commands", availableCommands})
+      aenet.send(socket, {"available_commands", availableCommands})
     else
-      aeNet.send(socket, "You must be logged in to request commands.")
+      aenet.send(socket, "You must be logged in to request commands.")
     end
 
   -- Handle execution of individual commands
@@ -75,9 +75,9 @@ function onEvent(event)
     local socket = event[3]
     if socket.username ~= nil then
       print(socket.username .. " requested to start the application.")
-      aeNet.send(socket, "Application started!")
+      aenet.send(socket, "Application started!")
     else
-      aeNet.send(socket, "You must be logged in to execute this command.")
+      aenet.send(socket, "You must be logged in to execute this command.")
     end
   
   elseif event[1] == "stop_app" then
@@ -85,9 +85,9 @@ function onEvent(event)
     if socket.username ~= nil then
       print(socket.username .. " requested to stop the application.")
       -- Application stop logic here
-      aeNet.send(socket, "Application stopped!")
+      aenet.send(socket, "Application stopped!")
     else
-      aeNet.send(socket, "You must be logged in to execute this command.")
+      aenet.send(socket, "You must be logged in to execute this command.")
     end
 
   -- Handle status command to provide dynamic information
@@ -96,11 +96,11 @@ function onEvent(event)
     if socket.username ~= nil then
       print(socket.username .. " requested status.")
       local status = getServerStatus()  -- Get dynamic server status
-      aeNet.send(socket, status)
+      aenet.send(socket, status)
     else
-      aeNet.send(socket, "You must be logged in to execute this command.")
+      aenet.send(socket, "You must be logged in to execute this command.")
     end
   end
 end
 
-aeNet.startEventLoop(onStart, onEvent)
+aenet.startEventLoop(onStart, onEvent)
