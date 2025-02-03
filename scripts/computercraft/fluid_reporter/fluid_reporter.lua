@@ -45,7 +45,7 @@ local function checkTankInfo()
   local peripherals = aeutils.getPeripherals()
   
   if #peripherals == 0 then
-      print("No peripherals found.")
+    aeprint.aeprint("No peripherals found.")
       if mon then
           mon.clear()
           mon.write("No peripherals found.")
@@ -88,10 +88,11 @@ local function checkTankInfo()
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
                   local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-                  formattedOutput = string.format("[%d] %s - %dmB", i, formattedName, tank.amount)
-                  displayText = formattedOutput
+                  displayText = string.format("[%d] %s - %dmB", i, formattedName, tank.amount)
+                  table.insert(formattedOutput, displayText)  -- Add the display text to the formatted output for broadcasting
               else
                   displayText = string.format("[%d] Empty", i)
+                  table.insert(formattedOutput, displayText)  -- Add empty text as well 
               end
 
               -- Ensure the display text fits within monitor width
@@ -141,7 +142,7 @@ local function checkTankInfo()
 
   -- If values have changed, broadcast the message
   if isChanged then
-      local message = formattedOutput.."\n"
+    local message = table.concat(formattedOutput, "\n")
       rednet.broadcast(message) -- Use a specific message header if desired
       print("Broadcasting tank information change:\n" .. message)
   end
