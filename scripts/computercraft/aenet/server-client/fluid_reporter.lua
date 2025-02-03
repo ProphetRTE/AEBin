@@ -44,6 +44,7 @@ end
 -- Function to send messages or commands to the server
 function handleCommands(socket)
     while true do
+        checkTankInfo()
         write("Enter command to send (or 'exit' to quit): ")
         local command = read()
 
@@ -174,7 +175,7 @@ local function checkTankInfo()
   -- If values have changed, broadcast the message
   if isChanged then
     local message = table.concat(formattedOutput, "\n")
-    aenet.send(socket, message) -- Use a specific message header if desired
+    aenet.send(socket, "encrypted_message") -- Use a specific message header if desired
     print("Broadcasting tank information change:\n" .. message)
   end
 end
@@ -188,8 +189,7 @@ function onEvent(event)
         local socket = event[3]
         print("Logged in as " .. username)
         aenet.send(socket, "Hello server!")
-        
-        -- Start handling user commands
+
         handleCommands(socket)
         
     -- Login failed (wrong username or password)
