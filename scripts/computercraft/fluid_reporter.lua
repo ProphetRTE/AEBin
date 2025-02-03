@@ -4,7 +4,7 @@ os.loadAPI("lib/aeutils")
 local val = peripheral.wrap("tconstruct:drain_0")
 local mon = peripheral.find("monitor")
 local wmod = aeutils.resolveModemSide(nil)
-
+local previousTankInfo = {}
 local tankData = {} -- To store data for each tank
 local sendFreq = 3  -- Modem Frequency
 local content       -- What is in tank?
@@ -24,73 +24,67 @@ else
 end
 
 -- Main prog loop, never stop
+-- Function to format and check tank contents
+local function checkTankInfo()
+  local tankInfo = drain.tanks()
+
+  if not tankInfo or #tankInfo == 0 then
+      print("No tanks found.")
+      if mon then
+          mon.clear()
+          mon.write("No tanks found.")
+      end
+      return
+  end
+
+  local isChanged = false
+  local formattedOutput = {}
+
+  -- Clear monitor
+  if mon then
+      mon.clear()
+      mon.setCursorPos(1, 1)
+  end
+
+  for i, tank in ipairs(tankInfo) do
+      if tank and tank.name and tank.amount then
+          local formattedName = aeutils.formatName(tank.name)
+          local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
+          table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
+
+          -- Display on monitor
+          if mon then
+              mon.setCursorPos(1, i)
+              mon.write(string.format("Tank %d: %s - %d B", i, formattedName, tank.amount))
+          end
+
+          -- Check for changes
+          if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
+              isChanged = true
+          end
+
+          -- Save current tank information for the next comparison
+          previousTankInfo[i] = { name = tank.name, amount = tank.amount }
+      else
+          table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
+          if mon then
+              mon.setCursorPos(1, i)
+              mon.write(string.format("Tank %d: Empty", i))
+          end
+          previousTankInfo[i] = nil -- Clear previous info if undefined
+      end
+  end
+
+  -- If values have changed, broadcast the message
+  if isChanged then
+      local message = table.concat(formattedOutput, "\n")
+      rednet.broadcast(message, "tankUpdate") -- Use a specific message header if desired
+      print("Broadcasting tank information change:\n" .. message)
+  end
+end
+
+-- Main loop to continually check tank information
 while true do
-  mon.clear()
-  mon.setCursorPos(1, 1)
-  
-  -- Fill table with data from tank valve
-  tanksTable = val.tanks()
-
-  -- Check if tanks are available
-  if #tanksTable == 0 then
-    mon.write("No tanks found!")
-    sleep(1)
-    goto continue -- Skip the rest of the loop and go to the next iteration
-  end
-
-  -- Iterate through each tank
-  for i, tank in ipairs(tanksTable) do
-    local cap = tank.amount / 1000   -- Capacity in buckets
-    local amount = tank.amount        -- Amount in millibuckets
-    local tankContent = aeutils.formatName(tank.name) -- What is in tank?
-    
-    -- If tank amount is nil, prevent division errors
-    if amount == nil then
-      amount = 0
-    else
-      -- Use math.floor to convert to integers
-      amount = math.floor(amount / 1000)
-    end
-
-    -- Check for change and store the last amount for comparison
-    local lastAmount = tankData[i] and tankData[i].lastAmount or 0
-    tankData[i] = tankData[i] or {}
-    tankData[i].lastAmount = amount
-
-    -- Display tank information
-    mon.setCursorPos(1, i)
-    mon.write(tankContent)
-    mon.setCursorPos(1, i + 1)
-    mon.write("Amount: " .. amount .. "/" .. cap .. " B.")
-
-    -- Check for change since the last loop  
-    if amount ~= lastAmount then
-      -- If the value changed, send to main
-      local sendmsg = tankContent .. ": " .. amount .. " B"
-      rednet.broadcast(sendmsg)
-      print("Sent: " .. sendmsg)
-    else
-      print("Still " .. amount .. " B for " .. tankContent .. ", nothing sent.")
-    end
-
-    -- Warning control, local lamp
-    if amount < 20 then  -- Warning level set at 20 B for example
-      redstone.setOutput("right", true)
-      mon.setCursorPos(1, 5)
-      mon.write("Less than 20 B full")
-      sleep(1)
-      redstone.setOutput("right", false)
-    else
-      -- Display more than warning level message
-      mon.setCursorPos(1, 5)
-      mon.write("More than 20 B full")
-    end
-  end
-
-  -- Sleep duration logic can be adjusted if needed
-  sleeptime = 10 -- Default sleep time
-  print("Sleeping for " .. sleeptime .. " seconds.")
-  sleep(sleeptime)
-
-  ::continue::
+  checkTankInfo()
+  sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
 end
