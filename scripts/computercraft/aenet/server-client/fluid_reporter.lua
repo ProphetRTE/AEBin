@@ -28,7 +28,6 @@ if not wmod then
   sleep(1)
 else
   -- Set modem frequency
-  rednet.open(wmod)
   aeprint.aeprint("Modem found, frequency set to " .. sendFreq)
 end
 
