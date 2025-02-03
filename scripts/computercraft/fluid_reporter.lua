@@ -39,7 +39,7 @@ end
 -- Main function to check tank information
 local function checkTankInfo()
   local peripherals = aeutils.getPeripherals()
-
+  
   if #peripherals == 0 then
       print("No peripherals found.")
       if mon then
@@ -51,59 +51,78 @@ local function checkTankInfo()
 
   local isChanged = false
   local formattedOutput = {}
-
+  
   -- Clear the monitor
   if mon then
       mon.clear()
       mon.setCursorPos(1, 1)
   end
 
-  -- Iterate through each peripheral to get tank info
-for _, peripheralName in pairs(peripherals) do
-  local peripheralType = aeutils.getPeripheralType(peripheralName)
-  -- print(string.format("Checking peripheral: %s, Type: %s", peripheralName, peripheralType)) -- Debug log
-
-  -- Check if the peripheral type is in the accepted list
-  if isAcceptedTankType(peripheralType) then
-      local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
-      local tankInfo = tankPeripheral.tanks()  -- Adjust method name if needed
-
-      local lineOffset = 1  -- Track the current line offset for the monitor display
-      
-      for i, tank in ipairs(tankInfo) do
-          if tank and tank.name and tank.amount then
-              local formattedName = aeutils.formatName(tank.name)
-              local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-              table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
-
-              -- Display on monitor: Set cursor position for each tank info
-              if mon then
-                  mon.setCursorPos(1, lineOffset)  -- Use lineOffset for vertical spacing
-                  mon.write(string.format("Tank %d: %s - %d B", i, formattedName, tank.amount))
-                  lineOffset = lineOffset + 1  -- Move to the next line for the next tank
-              end
-
-              -- Check for changes
-              if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
-                  isChanged = true
-              end
-
-              -- Save current tank information for the next comparison
-              previousTankInfo[i] = { name = tank.name, amount = tank.amount }
-          else
-              table.insert(formattedOutput, string.format("Tank %d: Empty or undefined", i))
-              if mon then
-                  mon.setCursorPos(1, lineOffset)
-                  mon.write(string.format("Tank %d: Empty", i))
-                  lineOffset = lineOffset + 1  -- Increment lineOffset for empty tanks as well
-              end
-              previousTankInfo[i] = nil -- Clear previous info if undefined
-          end
-      end
-  else
-      print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
+  -- Header
+  if mon then
+      mon.setCursorPos(1, 1)
+      mon.write("========================")
   end
-end
+
+  local lineOffset = 2  -- Starting line for tank information display
+
+  -- Iterate through each peripheral to get tank info
+  for _, peripheralName in pairs(peripherals) do
+      local peripheralType = aeutils.getPeripheralType(peripheralName)
+
+      -- Check if the peripheral type is in the accepted list
+      if isAcceptedTankType(peripheralType) then
+          local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
+          local tankInfo = tankPeripheral.tanks()  -- Adjust method name if needed
+
+          for i, tank in ipairs(tankInfo) do
+              if tank and tank.name and tank.amount then
+                  local formattedName = aeutils.formatName(tank.name)
+                  local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
+                  table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
+
+                  -- Display on monitor
+                  if mon then
+                      mon.setCursorPos(1, lineOffset)  -- Set cursor position for each tank info
+                      mon.write(string.format("[%d] %s - %d B", i, formattedName, tank.amount))
+                      lineOffset = lineOffset + 1  -- Move to the next line for the next tank
+                  end
+
+                  -- Check for changes
+                  if previousTankInfo[i] and (previousTankInfo[i].amount ~= tank.amount) then
+                      isChanged = true
+                  end
+
+                  -- Save current tank information for the next comparison
+                  previousTankInfo[i] = { name = tank.name, amount = tank.amount }
+              else
+                  local emptyMessage = string.format("Tank %d: Empty", i)
+                  table.insert(formattedOutput, emptyMessage)
+
+                  if mon then
+                      mon.setCursorPos(1, lineOffset)
+                      mon.write(string.format("[%d] Empty", i))
+                      lineOffset = lineOffset + 1
+                  end
+                  previousTankInfo[i] = nil -- Clear previous info if undefined
+              end
+          end
+      else
+          print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
+      end
+  end
+
+  -- Footer
+  if mon then
+      mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
+      mon.write("========================")
+      lineOffset = lineOffset + 1
+
+      -- Display current status indication
+      mon.setCursorPos(1, lineOffset)
+      local totalTanks = #tankInfo
+      mon.write(string.format("==========[1/%d]==========", totalTanks))
+  end
 
   -- If values have changed, broadcast the message
   if isChanged then
