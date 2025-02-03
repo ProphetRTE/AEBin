@@ -193,10 +193,12 @@ function onEvent(event)
     end
 end
 
-  
-  aenet.startEventLoop(onStart, onEvent)
+function trigger_event()
+    while true do
+        checkTankInfo()
+        sleep(5)
+    end
+end
 
-  while true do
-    checkTankInfo()
-    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
-  end
+aenet.startEventLoop(onStart, onEvent)
+trigger_event()
