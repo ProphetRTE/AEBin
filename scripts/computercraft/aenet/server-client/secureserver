@@ -1,6 +1,9 @@
 local aeNet = require("lib/aenet")
 -- aeNet.setLoggingEnabled(false)
 
+-- Assuming a monitor is attached and the variable `mon` is used to reference it
+local mon = peripheral.find("monitor")  -- Find the monitor
+
 -- Placeholder for your current connected clients
 local connectedClients = {}
 
@@ -34,17 +37,31 @@ function onEvent(event)
     connectedClients[socket] = username  -- Add the socket to connected clients
     print(username .. " just logged in.")
 
+    -- Output to the monitor
+    if mon then
+      mon.setCursorPos(1, 1)  -- Set cursor at the top left
+      mon.write(socket.username .. " just logged in.")  -- Write to monitor
+    end
+
     -- Send available commands to the client
     aeNet.send(socket, {"available_commands", availableCommands})
 
   -- Received a message from the client
   elseif event[1] == "encrypted_message" then
     local socket = event[3]
+    -- Check the username to see if the client is logged in
     if socket.username ~= nil then
-      print(socket.username .. " says: " .. event[2])
+        print(socket.username.." says: "..event[2])
+        
+        -- Output to the monitor
+        if mon then
+            mon.setCursorPos(1, 2)  -- Move cursor down for the next message
+            mon.write(socket.username .. " says: " .. event[2])  -- Write to monitor
+        end
     else
-      aeNet.send(socket, "Sorry, I only talk to logged-in users.")
+        cryptoNet.send(socket, "Sorry, I only talk to logged in users.")
     end
+  end
 
   -- Handle request for available commands
   elseif event[1] == "get_commands" then
