@@ -1,0 +1,15 @@
+{   
+	name = "Fluid_Reporter",
+	comment = "Reports how much of each tank you have for all available tanks on the network.",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/",
+	newestversion = "1.3",
+	install = {
+        type = "script",
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporter.lua"
+    }
+	dependencies = {
+		aeutils = "2.5",
+		aeprint = "1.6"
+	},
+}
