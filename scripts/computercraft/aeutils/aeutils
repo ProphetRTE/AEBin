@@ -154,11 +154,21 @@ function deserializeAny(str)
 end
 
 -- Function to separate modname and the actual name
-function formatName(name)
+function formatNameMod(name)
   local modName, actualName = name:match("([^:]+):(.+)")
   if actualName then
       local formattedName = actualName:gsub("_", " ") -- Replace underscores with spaces
       return string.format("%s (%s)", formattedName, modName)
+  else
+      return name -- Return the original name if no match
+  end
+end
+
+function formatName(name)
+  local modName, actualName = name:match("([^:]+):(.+)")
+  if actualName then
+      -- Remove the modname and only use the actual tank name
+      return actualName:gsub("_", " ") -- Replace underscores with spaces
   else
       return name -- Return the original name if no match
   end
