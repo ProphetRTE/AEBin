@@ -15,4 +15,142 @@ function try(what)
   return result
 end
 
+-- Used to process modem side arguments passed to functions.
+function resolveModemSide(modemSide)
+	-- If no modem side argument is provided, search for a modem and use that side.
+  if modemSide == nil then
+    for _,side in pairs(peripheral.getNames()) do
+		if peripheral.getType(side) == "modem" then
+			local modem = peripheral.wrap(side)
+			if modem.isWireless() then
+				modemSide = side
+				break
+			end
+		end
+    end
+    if modemSide == nil then
+      error("Could not find a modem.", 3)
+    end
+  else
+		-- If an argument was provided, check that it is a valid side.
+    local found = false
+    for _,side in pairs(redstone.getSides()) do
+      if side == modemSide then
+        found = true
+        break
+      end
+    end
+    if not found then
+      error(tostring(modemSide).." is not a valid side.", 3)
+    end
+  end
+  if peripheral.getType(modemSide) ~= "modem" then
+    error("No modem on side "..modemSide..".", 3)
+  end
+
+  log("Using modem "..modemSide..".")
+  return modemSide
+end
+
+
+
+
+-- Decides which channel a server should communicate on, based on its name.
+-- This function will always return the same channel for a given server name,
+-- allowing clients to find out the channel of a server without any prior
+-- communications with it.
+function getChannel(serverName)
+  local nameHash = sha256.digest(serverName)
+	-- Use the first two bytes of the hash as the channel number, so that the full range
+	-- of acceptable channels can be used.
+  local channel = nameHash[1] + nameHash[2]*2^8
+	-- Avoid clashing with the lower channels, which are likely being used by
+	-- standard Rednet users.
+  if channel < 100 then
+    channel = channel + 100
+	-- Reserve the highest channels for Rednet and AENet's internal use.
+  elseif channel > 65530 then
+    channel = channel - 5
+  end
+
+  return channel
+end
+
+
+-- Check if any servers or sockets on this machine are using the specified channel
+-- on the specified modem.
+function channelInUse(channel, modemSide)
+	-- Check the client sockets.
+	for _,socket in pairs(allClientSockets) do
+		if socket.channel == channel and socket.modemSide == modemSide then
+			return true
+		end
+	end
+	-- Check the server channels.
+	for _,server in pairs(allServers) do
+		if server.channel == channel and server.modemSide == modemSide then
+			return true
+		end
+	end
+
+	return false
+end
+
+
+-- Convert a table of bytes into a string.
+function bytesToString(bytes)
+  local str = ""
+  for _,byte in pairs(bytes) do
+    local ok, char = pcall(string.char, byte)
+		-- If there are invalid bytes in the string, return nil without raising an error.
+		-- This is to prevent attackers from crashing the system by sending invalid characters
+		-- in encrypted messages.
+    if not ok then
+      return nil
+    end
+    str = str..char
+  end
+  return str
+end
+
+
+-- Serialize pretty much any Lua data type as a string so that it can be encrypted
+-- and sent over AENet.  The resulting string starts with a characer
+-- identifying the type of the data, followed by a string representation of the data.
+function serializeAny(value)
+  if type(value) == "nil" then
+    return "x"
+  elseif type(value) == "boolean" then
+    return value and "b1" or "b0"
+  elseif type(value) == "number" then
+    return "n"..tostring(value)
+  elseif type(value) == "string" then
+    return "s"..value
+  elseif type(value) == "table" then
+    return "t"..textutils.serialize(value)
+  else
+    error("Can't serialize "..type(value).."s.", 2)
+  end
+end
+
+
+-- Deserialize data serialized by serializeAny.
+function deserializeAny(str)
+  local typeChar = str:sub(1,1)
+  local valueStr = str:sub(2)
+  if typeChar == "x" then
+    return nil
+  elseif typeChar == "b" then
+    return valueStr == "1"
+  elseif typeChar == "n" then
+    return tonumber(valueStr)
+  elseif typeChar == "s" then
+    return valueStr
+  elseif typeChar == "t" then
+    return textutils.unserialize(valueStr)
+  else
+    error("Invalid type character: "..typeChar, 2)
+  end
+end
+
 return aeutils

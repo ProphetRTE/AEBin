@@ -91,6 +91,7 @@
 ------ You can adjust the number of "iter" to control the speed of the algorithm, higher "iter" means slower hashing, as well as slower to crack.
 ------ DO NOT TOUCH "dklen" if you're using it for passwords, simply pass nil or nothing at all (defaults to 32).
 ------ Passing a dklen higher than 32 will multiply the number of iterations with no additional security whatsoever.
+local utils = require("lib/aeutils")
 
 sha256 = {}
 
@@ -2952,144 +2953,6 @@ end
 --
 -- HELPERS
 --
-
--- Used to process modem side arguments passed to functions.
-function resolveModemSide(modemSide)
-	-- If no modem side argument is provided, search for a modem and use that side.
-  if modemSide == nil then
-    for _,side in pairs(peripheral.getNames()) do
-		if peripheral.getType(side) == "modem" then
-			local modem = peripheral.wrap(side)
-			if modem.isWireless() then
-				modemSide = side
-				break
-			end
-		end
-    end
-    if modemSide == nil then
-      error("Could not find a modem.", 3)
-    end
-  else
-		-- If an argument was provided, check that it is a valid side.
-    local found = false
-    for _,side in pairs(redstone.getSides()) do
-      if side == modemSide then
-        found = true
-        break
-      end
-    end
-    if not found then
-      error(tostring(modemSide).." is not a valid side.", 3)
-    end
-  end
-  if peripheral.getType(modemSide) ~= "modem" then
-    error("No modem on side "..modemSide..".", 3)
-  end
-
-  log("Using modem "..modemSide..".")
-  return modemSide
-end
-
-
--- Decides which channel a server should communicate on, based on its name.
--- This function will always return the same channel for a given server name,
--- allowing clients to find out the channel of a server without any prior
--- communications with it.
-function getChannel(serverName)
-  local nameHash = sha256.digest(serverName)
-	-- Use the first two bytes of the hash as the channel number, so that the full range
-	-- of acceptable channels can be used.
-  local channel = nameHash[1] + nameHash[2]*2^8
-	-- Avoid clashing with the lower channels, which are likely being used by
-	-- standard Rednet users.
-  if channel < 100 then
-    channel = channel + 100
-	-- Reserve the highest channels for Rednet and AENet's internal use.
-  elseif channel > 65530 then
-    channel = channel - 5
-  end
-
-  return channel
-end
-
-
--- Check if any servers or sockets on this machine are using the specified channel
--- on the specified modem.
-function channelInUse(channel, modemSide)
-	-- Check the client sockets.
-	for _,socket in pairs(allClientSockets) do
-		if socket.channel == channel and socket.modemSide == modemSide then
-			return true
-		end
-	end
-	-- Check the server channels.
-	for _,server in pairs(allServers) do
-		if server.channel == channel and server.modemSide == modemSide then
-			return true
-		end
-	end
-
-	return false
-end
-
-
--- Convert a table of bytes into a string.
-local function bytesToString(bytes)
-  local str = ""
-  for _,byte in pairs(bytes) do
-    local ok, char = pcall(string.char, byte)
-		-- If there are invalid bytes in the string, return nil without raising an error.
-		-- This is to prevent attackers from crashing the system by sending invalid characters
-		-- in encrypted messages.
-    if not ok then
-      return nil
-    end
-    str = str..char
-  end
-  return str
-end
-
-
--- Serialize pretty much any Lua data type as a string so that it can be encrypted
--- and sent over AENet.  The resulting string starts with a characer
--- identifying the type of the data, followed by a string representation of the data.
-local function serializeAny(value)
-  if type(value) == "nil" then
-    return "x"
-  elseif type(value) == "boolean" then
-    return value and "b1" or "b0"
-  elseif type(value) == "number" then
-    return "n"..tostring(value)
-  elseif type(value) == "string" then
-    return "s"..value
-  elseif type(value) == "table" then
-    return "t"..textutils.serialize(value)
-  else
-    error("Can't serialize "..type(value).."s.", 2)
-  end
-end
-
-
--- Deserialize data serialized by serializeAny.
-local function deserializeAny(str)
-  local typeChar = str:sub(1,1)
-  local valueStr = str:sub(2)
-  if typeChar == "x" then
-    return nil
-  elseif typeChar == "b" then
-    return valueStr == "1"
-  elseif typeChar == "n" then
-    return tonumber(valueStr)
-  elseif typeChar == "s" then
-    return valueStr
-  elseif typeChar == "t" then
-    return textutils.unserialize(valueStr)
-  else
-    error("Invalid type character: "..typeChar, 2)
-  end
-end
-
-
 -- Serialize a certificate or RSA key into a string, for saving to a file.
 -- The textutils functions don't seem to like the huge strings of numbers in
 -- the keys, so quotation marks must be added to them before serialization,
@@ -3336,7 +3199,7 @@ function send(socket, message)
   end
 	-- Convert the message to a string before sending, so it can be encrypted.
 	-- It will be deserialized at the other end.
-  sendEncryptedInternal(socket, serializeAny(message))
+  sendEncryptedInternal(socket, utils.serializeAny(message))
 end
 
 
@@ -4009,7 +3872,7 @@ function host(serverName, discoverable, hideCertificate, modemSide, certificate,
     end
   end
 
-  modemSide = resolveModemSide(modemSide)
+  modemSide = utils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
 
 	-- Generate default file names if none were provided, then get the paths
@@ -4104,7 +3967,7 @@ function host(serverName, discoverable, hideCertificate, modemSide, certificate,
 
 	-- Open the server's channel (derived from the server name) so it can be used
 	-- for communication.
-  local channel = getChannel(serverName)
+  local channel = utils.getChannel(serverName)
   modem.open(channel)
   log("Hosting on channel "..channel..".")
 
@@ -4181,7 +4044,7 @@ function close(socket)
 
 		-- If this was the only socket communicating on its channel, close the channel
 		-- on the modem. Don't close the channel if another socket is still using it.
-    if not channelInUse(socket.channel, socket.modemSide) then
+    if not utils.channelInUse(socket.channel, socket.modemSide) then
       peripheral.wrap(socket.modemSide).close(socket.channel)
       log("Closed socket channel "..socket.channel.." on modem "..socket.modemSide..".")
     end
@@ -4213,7 +4076,7 @@ function close(socket)
 
 		-- If this was the only server/socket communicating on its channel, close the channel
 		-- on the modem. Don't close the channel if another socket is still using it.
-    if not channelInUse(server.channel, server.modemSide) then
+    if not utils.channelInUse(server.channel, server.modemSide) then
       peripheral.wrap(server.modemSide).close(server.channel)
       log("Closed server channel "..server.channel.." on modem "..server.modemSide..".")
     end
@@ -4321,7 +4184,7 @@ local function handleDecryptedMessage(socket, message)
 		-- If the message had none of the above internal message types,
 		-- it must be a user-generated encrypted message, which will start with
 		-- a data type character. Attempt to deserialize the message as such.
-		ok, message = pcall(deserializeAny, message)
+		ok, message = pcall(utils.deserializeAny, message)
 		if ok then
 			result = {"encrypted_message", message, socket, socket.server}
 		end
@@ -4389,7 +4252,7 @@ local function handleServerMessage(server, message, messageChannel)
 			-- If this is an encrypted message, try decrypting it with the session key
 			-- and handle the decrypted message as needed.
 			local socket = server.sockets[message.sender]
-			local encrypted = bytesToString(message.message[1])
+			local encrypted = utils.bytesToString(message.message[1])
 			local iv = message.message[2]
 			if socket == nil then
 				log("Received a message from a sender who has yet to open a connection.")
@@ -4439,7 +4302,7 @@ local function handleClientMessage(socket, message, messageChannel)
 	if messageChannel == socket.channel and message.sender == socket.target and message.target == socket.sender then
 		if message.msgType == "encrypted_message" and type(message.message) == "table" and #message.message == 2
 		 and type(message.message[1]) == "table" and type(message.message[2]) == "table" then
-			local encrypted = bytesToString(message.message[1])
+			local encrypted = utils.bytesToString(message.message[1])
 			local iv = message.message[2]
 			if encrypted == nil then
 				log("Received invalid message.")
@@ -4562,7 +4425,7 @@ function discover(timeout, certAuthKey, allowUnsigned, modemSide)
 	-- Load and validate the key.
   certAuthKey = loadCertAuthKey(certAuthKey)
 
-  modemSide = resolveModemSide(modemSide)
+  modemSide = utils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
@@ -4689,9 +4552,9 @@ function requestCertificate(serverName, timeout, certAuthKey, allowUnsigned, mod
   end
   certAuthKey = loadCertAuthKey(certAuthKey)
 
-  modemSide = resolveModemSide(modemSide)
+  modemSide = utils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = getChannel(serverName)
+  local channel = utils.getChannel(serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)
@@ -4892,9 +4755,9 @@ function connect(serverName, timeout, certTimeout, certificate, modemSide, certA
     end
   end
 
-  modemSide = resolveModemSide(modemSide)
+  modemSide = utils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = getChannel(serverName)
+  local channel = utils.getChannel(serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)
@@ -4944,7 +4807,7 @@ function connect(serverName, timeout, certTimeout, certificate, modemSide, certA
       if message ~= nil and message.msgType == "connection_response" and message.target == encryptedKey and type(message.message) == "table"
 			 and #message.message == 2 and type(message.message[1]) == "table" and type(message.message[2]) == "table" then
 				 -- Decrypt using the session key.
-        local ok, actualResponse = pcall(aes.decrypt_str, bytesToString(message.message[1]), sessKey, message.message[2])
+        local ok, actualResponse = pcall(aes.decrypt_str, utils.bytesToString(message.message[1]), sessKey, message.message[2])
 				-- Compare the response to what we know the response content is supposed
 				-- to be, to see if the session key was received correctly.
         if ok and actualResponse == expectedResponse then

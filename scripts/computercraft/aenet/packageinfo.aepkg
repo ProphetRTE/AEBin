@@ -9,5 +9,7 @@
 		filename = "aenet",
 		type = "library",
 	},
-	dependencies = {},
+	dependencies = {
+		aeutils = "1.7"
+	},
 }
