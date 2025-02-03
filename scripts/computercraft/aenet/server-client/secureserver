@@ -46,7 +46,7 @@ function onEvent(event)
     -- Send available commands to the client
     aeNet.send(socket, {"available_commands", availableCommands})
 
-  -- Received a message from the client
+   -- Received a message from the client
   elseif event[1] == "encrypted_message" then
     local socket = event[3]
     -- Check the username to see if the client is logged in
@@ -61,8 +61,6 @@ function onEvent(event)
     else
         cryptoNet.send(socket, "Sorry, I only talk to logged in users.")
     end
-  end
-
   -- Handle request for available commands
   elseif event[1] == "get_commands" then
     local socket = event[3]
