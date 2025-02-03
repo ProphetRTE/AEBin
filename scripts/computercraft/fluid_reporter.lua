@@ -66,7 +66,7 @@ local function checkTankInfo()
       -- Check if the peripheral type is in the accepted list
       if isAcceptedTankType(peripheralType) then
           local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
-          local tankInfo = tankPeripheral.getTanks()  -- Adjust method name if needed
+          local tankInfo = tankPeripheral.tanks()  -- Adjust method name if needed
 
           for i, tank in ipairs(tankInfo) do
               if tank and tank.name and tank.amount then
