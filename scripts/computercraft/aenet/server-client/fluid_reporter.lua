@@ -173,10 +173,9 @@ function onStart()
     socket = aenet.connect("LoginDemoServer")
     -- Log in with a username and password
     aenet.login(socket, "Bobby", "mypass123")
-    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
     checkTankInfo()
-    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
     retrieveAvailableCommands(socket)
+    sleep(5) -- Wait for 5 seconds before checking again; adjust as needed
   end
   
   function onEvent(event)
