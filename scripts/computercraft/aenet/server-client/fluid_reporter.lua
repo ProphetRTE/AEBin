@@ -173,6 +173,7 @@ function onEvent(event)
         print("Logged in as " .. username)
         aenet.send(socket, "Hello server!")
         
+        trigger_event()
     -- Login failed (wrong username or password)
     elseif event[1] == "login_failed" then
         print("Didn't manage to log in. :(")
@@ -201,4 +202,3 @@ function trigger_event()
 end
 
 aenet.startEventLoop(onStart, onEvent)
-trigger_event()
