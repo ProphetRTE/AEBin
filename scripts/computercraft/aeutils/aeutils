@@ -153,4 +153,15 @@ function deserializeAny(str)
   end
 end
 
+-- Function to separate modname and the actual name
+local function formatName(name)
+  local modName, actualName = name:match("([^:]+):(.+)")
+  if actualName then
+      local formattedName = actualName:gsub("_", " ") -- Replace underscores with spaces
+      return string.format("%s (%s)", formattedName, modName)
+  else
+      return name -- Return the original name if no match
+  end
+end
+
 return aeutils

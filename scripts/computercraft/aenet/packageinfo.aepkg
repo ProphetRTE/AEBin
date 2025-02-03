@@ -10,6 +10,6 @@
 		type = "library",
 	},
 	dependencies = {
-		aeutils = "1.9"
+		aeutils = "2.0"
 	},
 }

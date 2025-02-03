@@ -38,7 +38,7 @@ while true do
   -- Get values for tank capacity and amount
   cap = maintank.amount / 1000   -- in buckets
   amount = maintank.amount    -- in millibuckets
-  content = maintank.name    -- What is in tank?
+  content = aeutils.formatName(maintank.name)    -- What is in tank?
   -- If tank is empty, to avoid math issues with 0
   if amount == nil then
     amount = 0
