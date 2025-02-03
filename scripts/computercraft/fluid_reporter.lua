@@ -86,7 +86,7 @@ local function checkTankInfo()
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
                   local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-                  displayText = string.format("[%d] %s - %d B", i, formattedName, amountInBuckets)
+                  displayText = string.format("[%d] %s - %dmB", i, formattedName, tank.amount)
               else
                   displayText = string.format("[%d] Empty", i)
               end
