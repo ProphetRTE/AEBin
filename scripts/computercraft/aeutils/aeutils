@@ -174,30 +174,33 @@ function formatName(name)
   end
 end
 
-function getPeripheralsWithTanks()
-  local peripherals = peripheral.getNames()
-  local peripheralsWithTanks = {}
-
-  for _, name in ipairs(peripherals) do
-      local peripheral = peripheral.wrap(name)
-      if peripheral.tanks then
-          table.insert(peripheralsWithTanks, peripheral)
-      else
-          for _, peripheralType in ipairs(peripheral.all) do
-              if peripheralType == "tanks" then
-                  local info = peripheral.getPeripherals() -- Get the peripherals of the tanks object
-                  for _, periph in ipairs(info) do
-                      local actualPeriph = peripheral.wrap(periph)
-                      if actualPeriph.tanks then
-                          table.insert(peripheralsWithTanks, actualPeriph)
-                      end
-                  end
-              end
-          end
+-- Function to print the functions of a peripheral
+function printFunctions(peripheralName)
+  local functions, err = pcall(peripheral.getMethods, peripheralName)
+  
+  if functions then
+      print("Peripheral: " .. peripheralName)
+      print("Functions: ")
+      for _, func in ipairs(peripheral.getMethods(peripheralName)) do
+          print("  - " .. func)
       end
+  else
+      print("Could not retrieve functions for " .. peripheralName .. ": " .. err)
   end
+end
 
-  return peripheralsWithTanks
+-- Function to get the list of all connected peripherals
+function getPeripherals()
+  -- Get the list of all connected peripherals
+  local peripherals = peripheral.getNames()
+
+  -- Check if there are any peripherals connected
+  if #peripherals == 0 then
+      print("No peripherals connected.")
+      return {}  -- Return an empty table if no peripherals are found
+  else
+      return peripherals  -- Return the list of peripherals
+  end
 end
 
 return aeutils
