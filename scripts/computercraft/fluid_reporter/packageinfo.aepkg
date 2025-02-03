@@ -5,9 +5,10 @@
 	website = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/",
 	newestversion = "1.3",
 	install = {
-        type = "script",
-        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporter.lua"
-    }
+		url = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporter.lua",
+		filename = "fluid_reporter.lua",
+		type = "library",
+	},
 	dependencies = {
 		aeutils = "2.5",
 		aeprint = "1.6"
