@@ -158,7 +158,7 @@ function checkTankInfo()
   -- If values have changed, broadcast the message
   if isChanged then
     local message = table.concat(formattedOutput, "\n")
-    aenet.send(socket, "encrypted_message") -- Use a specific message header if desired
+    aenet.send(socket, message) -- Use a specific message header if desired
     print("Broadcasting tank information change:\n" .. message)
   end
 end
@@ -166,7 +166,6 @@ end
 -- Function to send messages or commands to the server
 function handleCommands(socket)
     while true do
-        checkTankInfo()
         write("Enter command to send (or 'exit' to quit): ")
         local command = read()
 
@@ -177,6 +176,9 @@ function handleCommands(socket)
 
         -- Send the command to the server
         aenet.send(socket, command)
+
+        
+        checkTankInfo()
     end
 end
 
