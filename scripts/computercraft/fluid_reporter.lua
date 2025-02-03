@@ -1,4 +1,5 @@
 os.loadAPI("lib/aeutils")
+os.loadAPI("lib/aeprint")
 
 -- Valve, Monitor & Wireless Modem
 local mon = peripheral.find("monitor")
@@ -52,17 +53,20 @@ local function checkTankInfo()
 
   local isChanged = false
   local formattedOutput = {}
-  
+
   -- Clear the monitor
   if mon then
       mon.clear()
       mon.setCursorPos(1, 1)
   end
 
+  -- Get monitor width for formatting
+  local monitorWidth = mon.getSize()  -- Get the monitor width
+
   -- Header
   if mon then
       mon.setCursorPos(1, 1)
-      mon.write("========================")
+      mon.write(string.rep("=", monitorWidth))  -- Adjust header based on monitor width
   end
 
   local lineOffset = 2  -- Starting line for tank information display
@@ -76,16 +80,22 @@ local function checkTankInfo()
           local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
           local tankInfo = tankPeripheral.tanks()  -- Adjust method name if needed
           tankData[peripheralName] = tankInfo
+          
           for i, tank in ipairs(tankInfo) do
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
                   local amountInBuckets = tank.amount / 1000  -- Convert amount to buckets
-                  table.insert(formattedOutput, string.format("Tank %d: %s - Amount: %d B / %.2f B", i, formattedName, tank.amount, amountInBuckets))
+                  local displayText = string.format("[%d] %s - %d B", i, formattedName, amountInBuckets)
+
+                  -- Ensure the display text fits within monitor width
+                  if #displayText > monitorWidth then
+                      displayText = displayText:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
+                  end
 
                   -- Display on monitor
                   if mon then
                       mon.setCursorPos(1, lineOffset)  -- Set cursor position for each tank info
-                      mon.write(string.format("[%d] %s - %d B", i, formattedName, tank.amount))
+                      mon.write(displayText)  -- Write the display text
                       lineOffset = lineOffset + 1  -- Move to the next line for the next tank
                   end
 
@@ -97,12 +107,16 @@ local function checkTankInfo()
                   -- Save current tank information for the next comparison
                   previousTankInfo[i] = { name = tank.name, amount = tank.amount }
               else
-                  local emptyMessage = string.format("Tank %d: Empty", i)
-                  table.insert(formattedOutput, emptyMessage)
+                  local emptyMessage = string.format("[%d] Empty", i)
+
+                  -- Ensure the empty message fits within monitor width
+                  if #emptyMessage > monitorWidth then
+                      emptyMessage = emptyMessage:sub(1, monitorWidth - 3) .. "..."  -- Truncate with ellipsis
+                  end
 
                   if mon then
                       mon.setCursorPos(1, lineOffset)
-                      mon.write(string.format("[%d] Empty", i))
+                      mon.write(emptyMessage)
                       lineOffset = lineOffset + 1
                   end
                   previousTankInfo[i] = nil -- Clear previous info if undefined
@@ -116,14 +130,14 @@ local function checkTankInfo()
 
   -- Footer
   if mon then
-    mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
-    mon.write("========================")
-    lineOffset = lineOffset + 1
+      mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
+      mon.write(string.rep("=", monitorWidth))  -- Adjust footer based on monitor width
+      lineOffset = lineOffset + 1
 
-    -- Display current status indication
-    mon.setCursorPos(1, lineOffset)
-    local totalTanks = #tankData or 0
-    mon.write(string.format("==========[1/%d]==========", totalTanks))
+      -- Display current status indication
+      mon.setCursorPos(1, lineOffset)
+      local totalTanks = #tankData[peripheralName] or 0
+      mon.write(string.format("==========[1/%d]==========", totalTanks))
   end
 
   -- If values have changed, broadcast the message
