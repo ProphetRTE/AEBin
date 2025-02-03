@@ -141,7 +141,7 @@ local function checkTankInfo()
 
   -- If values have changed, broadcast the message
   if isChanged then
-      local message = table.concat(formattedOutput, "\n")
+      local message = formattedOutput.."\n"
       rednet.broadcast(message) -- Use a specific message header if desired
       print("Broadcasting tank information change:\n" .. message)
   end
