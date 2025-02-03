@@ -24,13 +24,13 @@ end
 
 -- Main function to check tank information
 local function checkTankInfo()
-  local peripheralsWithTanks = aeutils.getPeripheralsWithTanks()
+  local peripherals = aeutils.getPeripherals()
 
-  if #peripheralsWithTanks == 0 then
-      print("No tanks found.")
+  if #peripherals == 0 then
+      print("No peripherals found.")
       if mon then
           mon.clear()
-          mon.write("No tanks found.")
+          mon.write("No peripherals found.")
       end
       return
   end
@@ -44,7 +44,7 @@ local function checkTankInfo()
       mon.setCursorPos(1, 1)
   end
 
-  for _, tankPeripheral in ipairs(peripheralsWithTanks) do
+  for _, tankPeripheral in ipairs(peripherals) do
       local tankInfo = tankPeripheral.tanks()  -- Get the tanks from the current peripheral
 
       for i, tank in ipairs(tankInfo) do
