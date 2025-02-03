@@ -74,7 +74,7 @@ local function checkTankInfo()
       if isAcceptedTankType(peripheralType) then
           local tankPeripheral = peripheral.wrap(peripheralName)  -- Wrap the peripheral to access its methods
           local tankInfo = tankPeripheral.tanks()  -- Adjust method name if needed
-
+          tankData[peripheralName] = tankInfo
           for i, tank in ipairs(tankInfo) do
               if tank and tank.name and tank.amount then
                   local formattedName = aeutils.formatName(tank.name)
@@ -111,17 +111,18 @@ local function checkTankInfo()
           print(string.format("Peripheral %s is not recognized as a tank. Type: %s", peripheralName, peripheralType))
       end
 
-      -- Footer
-      if mon then
-        mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
-        mon.write("========================")
-        lineOffset = lineOffset + 1
+  end
 
-        -- Display current status indication
-        mon.setCursorPos(1, lineOffset)
-        local totalTanks = #tankInfo
-        mon.write(string.format("==========[1/%d]==========", totalTanks))
-      end
+  -- Footer
+  if mon then
+    mon.setCursorPos(1, lineOffset)  -- Move to the next line for the footer
+    mon.write("========================")
+    lineOffset = lineOffset + 1
+
+    -- Display current status indication
+    mon.setCursorPos(1, lineOffset)
+    local totalTanks = #tankData or 0
+    mon.write(string.format("==========[1/%d]==========", totalTanks))
   end
 
   -- If values have changed, broadcast the message
