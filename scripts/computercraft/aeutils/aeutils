@@ -203,4 +203,16 @@ function getPeripherals()
   end
 end
 
+-- Function to get the type of a specific peripheral
+function getPeripheralType(peripheralName)
+  -- Check if the peripheral is connected
+  if peripheral.isPresent(peripheralName) then
+      -- Return the type of the peripheral
+      return peripheral.getType(peripheralName)
+  else
+      print("Peripheral '" .. peripheralName .. "' is not connected.")
+      return nil  -- Return nil if the peripheral is not found
+  end
+end
+
 return aeutils
