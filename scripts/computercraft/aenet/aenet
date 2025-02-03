@@ -3967,7 +3967,7 @@ function host(serverName, discoverable, hideCertificate, modemSide, certificate,
 
 	-- Open the server's channel (derived from the server name) so it can be used
 	-- for communication.
-  local channel = aeutils.getChannel(serverName)
+  local channel = aeutils.getChannel(sha256, serverName)
   modem.open(channel)
   log("Hosting on channel "..channel..".")
 
@@ -4554,7 +4554,7 @@ function requestCertificate(serverName, timeout, certAuthKey, allowUnsigned, mod
 
   modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = aeutils.getChannel(serverName)
+  local channel = aeutils.getChannel(sha256, serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)
@@ -4757,7 +4757,7 @@ function connect(serverName, timeout, certTimeout, certificate, modemSide, certA
 
   modemSide = aeutils.resolveModemSide(modemSide)
   local modem = peripheral.wrap(modemSide)
-  local channel = aeutils.getChannel(serverName)
+  local channel = aeutils.getChannel(sha256, serverName)
 	-- Remember if the modem was already open so we can
 	-- close it afterwards if it wasn't.
   local wasOpen = modem.isOpen(channel)

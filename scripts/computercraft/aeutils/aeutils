@@ -59,7 +59,7 @@ end
 -- This function will always return the same channel for a given server name,
 -- allowing clients to find out the channel of a server without any prior
 -- communications with it.
-function getChannel(serverName)
+function getChannel(sha256, serverName)
   local nameHash = sha256.digest(serverName)
 	-- Use the first two bytes of the hash as the channel number, so that the full range
 	-- of acceptable channels can be used.
