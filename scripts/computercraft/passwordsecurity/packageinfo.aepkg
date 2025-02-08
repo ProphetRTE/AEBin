@@ -3,7 +3,7 @@
 	comment = "Reports how much of each tank you have for all available tanks on the network.",
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/",
-	newestversion = "1.9",
+	newestversion = "2.0",
 	dependencies = {
 		aeutils = "2.7",
 		aeprint = "1.6"
