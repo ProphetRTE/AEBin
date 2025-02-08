@@ -5,6 +5,7 @@ os.loadAPI("lib/aeprint")
 local wmod = aeutils.resolveModemSide(nil)
 local peripherals = aeutils.getPeripherals()
 local mon = peripheral.find("monitor")
+local bank = peripheral.find("create_new_age:carbon_brushes")
 
 if not peripherals then
     aeprint.error("No peripherals found")
@@ -21,6 +22,11 @@ if not mon then
     return
 end
 
+if not bank then
+    aeprint.error("No bank found")
+    return
+end
+
 local function getEnergy(peripheral) 
     return peripheral.getEnergy()
 end
@@ -32,11 +38,10 @@ end
 local function getEnergyPercent(peripheral)
     return getEnergy(peripheral) / getEnergyCapacity(peripheral) * 100 or 0
 end
-
 local function drawEnergyBar()
-    local energy = getEnergy(peripherals[1])
-    local energyCapacity = getEnergyCapacity(peripherals[1])
-    local energyPercent = getEnergyPercent(peripherals[1])
+    local energy = getEnergy(bank)
+    local energyCapacity = getEnergyCapacity(bank)
+    local energyPercent = getEnergyPercent(bank)
 
     mon.clear()
     mon.setCursorPos(1, 1)
