@@ -10,6 +10,6 @@
 	},
     install = {
         type = "script",
-        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/energy_reporter/fluid_reporterinstall.lua"
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/energy_reporter/energy_reporterinstall.lua"
     },	
 }
