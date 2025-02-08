@@ -11,6 +11,7 @@
 		fileutils = "https://cc.prophecypixel.com/scripts/computercraft/fileutils/packageinfo.aepkg",
 		httputils = "https://cc.prophecypixel.com/scripts/computercraft/httputils/packageinfo.aepkg",
         fluid_reporter = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/packageinfo.aepkg",
+        password_security = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/packageinfo.aepkg",
     },
     ccptversion = "1.0"
 }

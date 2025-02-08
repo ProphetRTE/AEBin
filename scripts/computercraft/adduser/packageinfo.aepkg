@@ -4,13 +4,12 @@
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/adduser/",
 	newestversion = "1.3",
-	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/adduser/adduser",
-		filename = "adduser",
-		type = "library",
-	},
 	dependencies = {
 		aenetusermanager = "1.7",
 		aeprint = "1.6"
 	},
+    install = {
+        type = "script",
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/adduser/adduserinstall.lua"
+    },	
 }

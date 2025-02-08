@@ -1,16 +1,15 @@
 {   
-	name = "PasswordSecurity",
-	comment = "Make a computer a password based security system. Simple and effective. Hack proof.",
+	name = "Fluid_Reporter",
+	comment = "Reports how much of each tank you have for all available tanks on the network.",
 	author = "AEV1ridis",
-	website = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/",
-	newestversion = "1.3",
-	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/passwordsecurity",
-		filename = "passwordsecurity",
-		type = "library",
-	},
+	website = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/",
+	newestversion = "1.6",
 	dependencies = {
-		aeutils = "2.8",
+		aeutils = "2.7",
 		aeprint = "1.6"
 	},
+    install = {
+        type = "script",
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporterinstall.lua"
+    },	
 }

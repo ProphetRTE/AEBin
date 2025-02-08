@@ -118,52 +118,21 @@ end
 -- MAIN PROGRAMM --
 if (args[1]=="install") or (args[1]==nil) then
 	print("[Installer] Well, hello there!")
-	print("[Installer] Thank you for downloading the ComputerCraft Package Tool! Installing...")
-	print("[Installer] Installing 'aeprint' library...")
-	if downloadfile("lib/aeprint","https://cc.prophecypixel.com/scripts/computercraft/aeprint/aeprint")== false then
+	print("[Installer] Thank you for downloading the Adduser software! Installing...")
+	print("[Installer] Installing 'adduser'...")
+	if downloadfile("adduser","https://cc.prophecypixel.com/scripts/computercraft/adduser/adduser")==false then
 		return false
 	end
-	print("[Installer] Successfully installed 'aeprint'!")
-	print("[Installer] Installing 'aeprogress' library...")
-	if downloadfile("lib/aeprogress","https://cc.prophecypixel.com/scripts/computercraft/aeprogress/aeprogress")== false then
-		return false
-	end
-	print("[Installer] Successfully installed 'aeprogress'!")
-	print("[Installer] Installing 'aeutils' library...")
-	if downloadfile("lib/aecord","https://cc.prophecypixel.com/scripts/computercraft/aeutils/aeutils")== false then
-		return false
-	end
-	print("[Installer] Successfully installed 'aeutils'!")
-	print("[Installer] Installing 'aepkg'...")
-	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
-		return false
-	end
-	print("[Installer] Successfully installed 'aepkg'!")
-	print("[Installer] Running 'aepkg update'...")
-	shell.run("aepkg","update")
-	print("[Installer] Reading package data...")
-	packagedata = readData("/.aepkg/packagedata")
-	print("[Installer] Storing installed packages...")
-	storeData("/.aepkg/installedpackages",{
-		aepkg = packagedata["aepkg"]["newestversion"],
-		aeprint = packagedata["aeprint"]["newestversion"]
-	})
-	print("[Installer] 'aepkg' successfully installed!")
+	print("[Installer] Successfully installed 'adduser'!")
 elseif args[1]=="update" then
-	print("[Installer] Updating 'aepkg'...")
-	if downloadfile("aepkg","https://cc.prophecypixel.com/scripts/computercraft/aepkg/aepkg")==false then
+	print("[Installer] Updating 'adduser'...")
+	if downloadfile("adduser","https://cc.prophecypixel.com/scripts/computercraft/adduser/adduser")==false then
 		return false
 	end
 elseif args[1]=="remove" then
-	print("[Installer] Uninstalling 'aepkg'...")
-	fs.delete("/aepkg")
-	fs.delete("/.aepkg")
-	shell.setCompletionFunction("aepkg", nil)
-	if file_exists("startup") and startsWith(startup,"-- aepkg Seach for updates\nshell.run(\"aepkg\",\"startup\")") then
-		print("[Installer] Removing 'aepkg' from startup...")
-		startup = readFile("startup","")
-		storeFile("startup",string.sub(startup,56))
-	end
+	print("[Installer] Uninstalling 'adduser'...")
+	fs.delete("/adduser")
+	shell.setCompletionFunction("adduser", nil)
 	print("[Installer] So long, and thanks for all the fish!")
 else
 	print("[Installer] Invalid argument: " .. args[1])

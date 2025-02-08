@@ -1,10 +1,10 @@
 {
-    name = "ComputerCraft Package Tool",
+    name = "AE's ComputerCraft Package Tool",
     id = "aepkg",
     comment = "Package tool for ComputerCraft/CC: Tweaked",
     author = "AEV1ridis",
     website = "https://cc.prophecypixel.com/scripts/computercraft/aepkg",
-    newestversion = "1.0",
+    newestversion = "1.2",
     dependencies = {
         aeprint = "1.6"
     },

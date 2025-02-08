@@ -4,13 +4,12 @@
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/",
 	newestversion = "1.6",
-	install = {
-		url = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporter.lua",
-		filename = "fluid_reporter.lua",
-		type = "library",
-	},
 	dependencies = {
 		aeutils = "2.7",
 		aeprint = "1.6"
 	},
+    install = {
+        type = "script",
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporterinstall.lua"
+    },	
 }
