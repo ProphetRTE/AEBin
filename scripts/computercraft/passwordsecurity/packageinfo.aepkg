@@ -7,7 +7,7 @@
 	dependencies = {
 		aeutils = "2.7",
 		aeprint = "1.6",
-		aecored = "1.3",
+		aecord = "1.3",
 	},
     install = {
         type = "script",
