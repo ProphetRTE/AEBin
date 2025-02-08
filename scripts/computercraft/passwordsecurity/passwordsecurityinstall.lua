@@ -130,9 +130,8 @@ elseif args[1]=="update" then
 		return false
 	end
 elseif args[1]=="remove" then
-	print("[Installer] Uninstalling 'adduser'...")
+	print("[Installer] Uninstalling 'passwordsecurity'...")
 	fs.delete("/passwordsecurity")
-	shell.setCompletionFunction("passwordsecurity", nil)
 	print("[Installer] So long, and thanks for all the fish!")
 else
 	print("[Installer] Invalid argument: " .. args[1])

@@ -132,7 +132,6 @@ elseif args[1]=="update" then
 elseif args[1]=="remove" then
 	print("[Installer] Uninstalling 'adduser'...")
 	fs.delete("/adduser")
-	shell.setCompletionFunction("adduser", nil)
 	print("[Installer] So long, and thanks for all the fish!")
 else
 	print("[Installer] Invalid argument: " .. args[1])

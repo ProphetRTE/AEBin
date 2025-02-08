@@ -1,15 +1,15 @@
 {   
-	name = "Fluid_Reporter",
+	name = "Password_Security",
 	comment = "Reports how much of each tank you have for all available tanks on the network.",
 	author = "AEV1ridis",
-	website = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/",
-	newestversion = "1.6",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/",
+	newestversion = "1.8",
 	dependencies = {
 		aeutils = "2.7",
 		aeprint = "1.6"
 	},
     install = {
         type = "script",
-        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/fluid_reporter/fluid_reporterinstall.lua"
+        scripturl = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/passwordsecurityinstall.lua"
     },	
 }
