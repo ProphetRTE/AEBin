@@ -1,0 +1,65 @@
+os.loadAPI("lib/aeutils")
+os.loadAPI("lib/aeprint")
+
+
+local wmod = aeutils.resolveModemSide(nil)
+local peripherals = aeutils.getPeripherals()
+local mon = peripheral.find("monitor")
+
+if not peripherals then
+    aeprint.error("No peripherals found")
+    return
+end
+
+if not wmod then
+    aeprint.error("No modem found")
+    return
+end
+
+if not mon then
+    aeprint.error("No monitor found")
+    return
+end
+
+local function getEnergy(peripheral) 
+    return peripheral.getEnergy()
+end
+
+local function getEnergyCapacity(peripheral)
+    return peripheral.getEnergyCapacity()
+end
+
+local function getEnergyPercent(peripheral)
+    return getEnergy(peripheral) / getEnergyCapacity(peripheral) * 100 or 0
+end
+
+local function drawEnergyBar()
+    local energy = getEnergy(peripherals[1])
+    local energyCapacity = getEnergyCapacity(peripherals[1])
+    local energyPercent = getEnergyPercent(peripherals[1])
+
+    mon.clear()
+    mon.setCursorPos(1, 1)
+    mon.write("Energy: " .. energy .. " / " .. energyCapacity .. " RF")
+    mon.setCursorPos(1, 2)
+    mon.write("Percent: " .. energyPercent .. "%")
+
+    local barWidth = 20
+    local barHeight = 1
+    local barX = 1
+    local barY = 3
+
+    mon.setCursorPos(barX, barY)
+    mon.write("[")
+    mon.setCursorPos(barX + barWidth + 1, barY)
+    mon.write("]")
+
+    local barFill = math.floor(energyPercent / 100 * barWidth)
+    mon.setCursorPos(barX + 1, barY)
+    mon.write(string.rep("=", barFill))
+end
+
+while true do
+    drawEnergyBar()
+    sleep(1)
+end
