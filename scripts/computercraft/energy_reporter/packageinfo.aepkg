@@ -3,7 +3,7 @@
 	comment = "Reports how much of each tank you have for all available tanks on the network.",
 	author = "AEV1ridis",
 	website = "https://cc.prophecypixel.com/scripts/computercraft/energy_reporter/",
-	newestversion = "1.6",
+	newestversion = "1.7",
 	dependencies = {
 		aeutils = "2.7",
 		aeprint = "1.6"
