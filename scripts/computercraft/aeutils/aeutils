@@ -215,4 +215,17 @@ function getPeripheralType(peripheralName)
   end
 end
 
+
+function lock_os(pullEvent, value)
+  if value == true then
+    os.pullEvent = os.pullEventRaw
+    settings.set("shell.allow_disk_startup", false)
+    settings.save(".settings")
+  else
+    os.pullEvent = pullEvent
+    settings.set("shell.allow_disk_startup", true)
+    settings.save(".settings")
+  end
+end
+
 return aeutils

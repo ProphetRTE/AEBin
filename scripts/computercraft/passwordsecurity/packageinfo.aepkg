@@ -1,0 +1,16 @@
+{   
+	name = "PasswordSecurity",
+	comment = "Make a computer a password based security system. Simple and effective. Hack proof.",
+	author = "AEV1ridis",
+	website = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/",
+	newestversion = "1.3",
+	install = {
+		url = "https://cc.prophecypixel.com/scripts/computercraft/passwordsecurity/passwordsecurity",
+		filename = "passwordsecurity",
+		type = "library",
+	},
+	dependencies = {
+		aeutils = "2.8",
+		aeprint = "1.6"
+	},
+}
