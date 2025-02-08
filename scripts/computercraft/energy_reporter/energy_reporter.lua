@@ -46,7 +46,7 @@ local function displayEnergyInfo(bank, lineOffset, monitorWidth)
     local barLength = monitorWidth - 5  -- Width of the bar
     local filledLength = math.floor((percentage / 100) * barLength)
     local energyBar = string.rep("█", filledLength) .. string.rep("░", barLength - filledLength)  -- Use filled and empty blocks
-    local formattedName = aeutils.formatName(bank.name)
+    local formattedName = aeutils.formatName(peripheral.getName(bank))
     
     -- Create display string
     return string.format("%s [%s] %.2f%% (%d/%d)", formattedName, energyBar, percentage, energy, capacity)
