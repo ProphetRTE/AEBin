@@ -48,7 +48,7 @@ local function displayEnergyInfo(bank, lineOffset, monitorWidth)
     local energyBar = string.rep("|", filledLength) .. string.rep(".", barLength - filledLength)  -- Use filled and empty blocks
     
     -- Create display string
-    return string.format("[%s] %.2f%% (%d/%d)", energyBar, percentage, energy, capacity)
+    return string.format("[%s] %.2f%%", energyBar, percentage)
 end
 
 -- Main function to check bank information
